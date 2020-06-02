@@ -11,7 +11,6 @@ setup(
     author_email='arnavk805@gmail.com',
     url='https://github.com/scrapinghub/number-parser',
     packages=find_packages(exclude=['tests']),
-    package_data={"price_parser": ["py.typed"]},
     install_requires=[
         'attrs >= 17.3.0',
     ],
