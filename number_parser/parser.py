@@ -1,5 +1,12 @@
 import re
 
+# The initial global dictionaries that have been declared below will be changed,
+# should be easily derived automatically from CLDR data/other source for each of the languages.
+
+# We will need to have all values from 1-100 in a dictionary for some languages like hindi while others
+# english / french build 2 digit numbers using MTEN dictionary values.
+# (Difference observable in hi.json and en.json in numeral_language_data)
+
 MULTIPLIERS = {
 "thousand": 1000,
 "thousands": 1000,
@@ -11,6 +18,7 @@ MULTIPLIERS = {
 "trillions": 1000000000000,
 }
 
+# Would be language specific eg) 'et' in french
 VALID_WORDS_IN_NUMBERS = ["and"]
 
 UNITS = {
@@ -36,14 +44,26 @@ MTENS = {
 
 HUNDRED = {"hundred": 100, "hundreds": 100}
 
+ALL_WORDS = {**UNITS , **STENS , **MTENS, **HUNDRED, **MULTIPLIERS}
+
+def handle_single_words(token_list):
+    word = token_list[0]
+    if word in ALL_WORDS:
+        return ALL_WORDS[word]
+
 def number_builder(token_list):
+
+    if len(token_list) == 1:
+        return handle_single_words(token_list)
+
     total_value = 0
     current_grp_value = 0
 
     previous_base_word = False
     previous_multiplier_word = False
     previous_mtens_word = False
-    ## To-Do Change this maintenance of 3 variable to `1` (prevtoken type)
+    ## To-Do simplify logic by changing this maintenance of 3 variable to `1` (previous token value perhaps ?)
+
     for each_token in token_list:
         if ( each_token in UNITS):
             if previous_base_word:
@@ -83,16 +103,20 @@ def number_builder(token_list):
             previous_mtens_word = False
             previous_multiplier_word = True
 
-        # print(total_value)
 
     total_value += current_grp_value
     return total_value
 
-def tokeniser(input_stream):
+# This has been structured to work for a string containing both words and numbers.
+# eg) I have eight dollars -> I have 8 dollars.
+# Currently it just takes word as numbers for inputs and translates them eight -> 8.
+# Also the error handling etc needs to be taken care of.
 
+def tokeniser(input_stream):
     # comma seperated or full stop for different sentences.
     input_stream = input_stream.lower()
     sentences = re.split('[.,]',input_stream)
+
     for each_sentence in sentences:
         tokens_taken = []
         each_sentence = each_sentence.strip()
@@ -102,41 +126,15 @@ def tokeniser(input_stream):
             or (each_token in STENS)
             or (each_token in MTENS)
             or (each_token in MULTIPLIERS)
-            or (each_token in VALID_WORDS_IN_NUMBERS)
+            or ( (each_token in VALID_WORDS_IN_NUMBERS) and len(tokens_taken) != 0)
             or (each_token in HUNDRED) ):
                 tokens_taken.append(each_token)
+
             else:
                 myvalue = number_builder(tokens_taken)
                 tokens_taken = []
-                print(myvalue)
+                return myvalue
 
         if tokens_taken is not None:
             myvalue = number_builder(tokens_taken)
-            print(myvalue)
-    # segments = re.split(r"\s*[\.,;\(\)…\[\]:!\?]+\s*", input_stream)
-    # punct = re.findall(r"\s*[\.,;\(\)…\[\]:!\?]+\s*", input_stream)
-    # print(segments)
-
-tokeniser("two million three thousand nine hundred and eighty four")
-tokeniser("nineteen")
-tokeniser("two thousand and nineteen")
-tokeniser("two million three thousand and nineteen")
-tokeniser('three billion')
-tokeniser('three million')
-tokeniser('one hundred twenty three million four hundred fifty six thousand seven hundred and eighty nine')
-tokeniser('eleven')
-tokeniser('nineteen billion and nineteen')
-tokeniser('one hundred and forty two')
-tokeniser('five')
-tokeniser('two million twenty three thousand and forty nine')
-tokeniser('two point three')
-tokeniser('two million twenty three thousand and forty nine')
-tokeniser('one billion two million twenty three thousand and forty nine')
-tokeniser('one hundred thirty-five')
-tokeniser('hundred')
-tokeniser('thousand')
-tokeniser('million')
-tokeniser('billion')
-tokeniser('nineteen hundred seventy-three')
-tokeniser('thousand thousand two hundreds')
-
+            return myvalue
