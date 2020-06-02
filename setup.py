@@ -3,13 +3,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='price-parser',
-    version='0.3.3',
-    description='Extract price and currency from a raw string',
+    name='number-parser',
+    version='0.1.0',
+    description='parse numbers written in natural language',
     long_description=open('README.rst', encoding="utf8").read() + "\n\n" + open('CHANGES.rst').read(),
-    author='Mikhail Korobov',
-    author_email='kmike84@gmail.com',
-    url='https://github.com/scrapinghub/price-parser',
+    author='Arnav Kapoor',
+    author_email='arnavk805@gmail.com',
+    url='https://github.com/scrapinghub/number-parser',
     packages=find_packages(exclude=['tests']),
     package_data={"price_parser": ["py.typed"]},
     install_requires=[

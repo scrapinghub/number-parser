@@ -112,7 +112,7 @@ def number_builder(token_list):
 # Currently it just takes word as numbers for inputs and translates them eight -> 8.
 # Also the error handling etc needs to be taken care of.
 
-def tokeniser(input_stream):
+def parser(input_stream):
     # comma seperated or full stop for different sentences.
     input_stream = input_stream.lower()
     sentences = re.split('[.,]',input_stream)
