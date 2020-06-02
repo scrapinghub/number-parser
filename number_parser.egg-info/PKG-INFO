@@ -1,0 +1,26 @@
+Metadata-Version: 1.1
+Name: number-parser
+Version: 0.1.0
+Summary: parse numbers written in natural language
+Home-page: https://github.com/scrapinghub/number-parser
+Author: Arnav Kapoor
+Author-email: arnavk805@gmail.com
+License: UNKNOWN
+Description: A tool to convert numbers in natural language to decimal numbers.
+        
+        Changes
+        =======
+        0.1.0 (2019-06-02)
+        ----------------
+        
+        Initial release.
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
