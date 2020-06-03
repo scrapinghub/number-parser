@@ -1,9 +1,9 @@
 # Python
-*.pyc
-*.pyo
+*.py[cod]
 /build/
 /dist/
-*.egg-info
+*.egg-info/
+*.egg
 __pycache__/
 # Mac OS
 *.DS_Store
