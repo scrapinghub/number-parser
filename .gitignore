@@ -16,3 +16,4 @@ __pycache__/
 .tox/
 .pytest_cache/
 .coverage
+.vscode/settings.json
