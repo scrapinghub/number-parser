@@ -1,5 +1,5 @@
 import re
-
+import string
 # The initial global dictionaries that have been declared below will be changed,
 # should be easily derived automatically from CLDR data/other source for each of the languages.
 
@@ -19,26 +19,26 @@ MULTIPLIERS = {
 }
 
 # Would be language specific eg) 'et' in french
-VALID_WORDS_IN_NUMBERS = ["and"]
+VALID_TOKENS_IN_NUMBERS = ["and", "-"]
 
 UNITS = {
     word: value
     for value, word in enumerate(
-        "one two three four five six seven eight nine".split(),1
-        )
+        "one two three four five six seven eight nine".split(), 1
+    )
 }
 
 STENS = {
     word: value
     for value, word in enumerate(
-        "ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(),10
-        )
+        "ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(), 10
+    )
 }
 
 MTENS = {
     word: value * 10
     for value, word in enumerate(
-        "twenty thirty forty fifty sixty seventy eighty ninety".split(),2
+        "twenty thirty forty fifty sixty seventy eighty ninety".split(), 2
     )
 }
 
@@ -50,7 +50,7 @@ ALL_WORDS = {**UNITS, **STENS, **MTENS, **HUNDRED, **MULTIPLIERS}
 def handle_single_words(token_list):
     word = token_list[0]
     if word in ALL_WORDS:
-        return ALL_WORDS[word]
+        return str(ALL_WORDS[word])
 
 
 def number_builder(token_list):
@@ -106,35 +106,65 @@ def number_builder(token_list):
             previous_multiplier_word = True
 
     total_value += current_grp_value
-    return total_value
+    return str(total_value)
 
 # This has been structured to work for a string containing both words and numbers.
 # eg) I have eight dollars -> I have 8 dollars.
 # Currently it just takes word as numbers for inputs and translates them eight -> 8.
 # Also the error handling etc needs to be taken care of.
 
+SENTENCE_SEPERATORS = [".", ","]
 
-def parser(input_stream):
-    # comma seperated or full stop for different sentences.
-    input_stream = input_stream.lower()
-    sentences = re.split('[.,]', input_stream)
 
-    for each_sentence in sentences:
-        tokens_taken = []
-        each_sentence = each_sentence.strip()
-        all_vals = re.split('\W+', each_sentence)
-        for each_token in all_vals:
-            if ((each_token in UNITS) or (each_token in STENS) or
-                (each_token in MTENS) or (each_token in MULTIPLIERS) or
-                ((each_token in VALID_WORDS_IN_NUMBERS) and len(tokens_taken) != 0) or
-                    (each_token in HUNDRED) ):
-                tokens_taken.append(each_token)
+def parser(input_string):
+    # Fails when two numbers have no SENTENCE_SEPERATORS or words between them
+    # eg) 'one two three' doesn't work but 'one,two,three' and 'one apple , two mango , three' works.
+    all_tokens = re.split(r'(\W)', input_string)
 
-            else:
+    if all_tokens is None:
+        return None
+
+    final_sentence = []
+    current_sentence = []
+    tokens_taken = []
+    for each_token in all_tokens:
+
+        if (each_token.isspace() or each_token == ""):
+            # Ignoring whitespace characters that are there when a number is being build.
+            # eg) 'twenty     two' is same as 'twenty two'
+            if not tokens_taken:
+                current_sentence.append(each_token)
+            continue
+
+        if each_token in SENTENCE_SEPERATORS:
+            if tokens_taken:
                 myvalue = number_builder(tokens_taken)
-                tokens_taken = []
-                return myvalue
+                current_sentence.append(myvalue)
+                current_sentence.append(" ")
 
-        if tokens_taken is not None:
-            myvalue = number_builder(tokens_taken)
-            return myvalue
+            current_sentence.append(each_token)
+            final_sentence.extend(current_sentence)
+            tokens_taken = []
+            current_sentence = []
+            continue
+
+        if ((each_token in ALL_WORDS) or (each_token in VALID_TOKENS_IN_NUMBERS and len(tokens_taken) != 0)):
+            tokens_taken.append(each_token)
+
+        else:
+            if tokens_taken:
+                myvalue = number_builder(tokens_taken)
+                current_sentence.append(myvalue)
+                current_sentence.append(" ")
+                tokens_taken = []
+            current_sentence.append(each_token)
+
+    if tokens_taken:
+        myvalue = number_builder(tokens_taken)
+        current_sentence.append(myvalue)
+    final_sentence.extend(current_sentence)
+
+    # Removing any trailing whitespaces added.
+    output_string = ''.join(final_sentence).strip()
+
+    return output_string.strip()
