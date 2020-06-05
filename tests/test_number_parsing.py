@@ -22,3 +22,4 @@ class TestNumberParser():
         assert (parser.parser("I have eight cows") == "I have 8 cows")
         assert (parser.parser("I have eight cows three bulls and seven hundred and twelve million dollars ") == "I have 8 cows 3 bulls and 712000000 dollars")
         assert (parser.parser("They just won seventy-five thousand dollars") == "They just won 75000 dollars")
+        assert (parser.parser("I have eight cows. I don't have eighteen cows") == "I have 8 cows. I don't have eighteen cows")
