@@ -45,65 +45,48 @@ MTENS = {
 HUNDRED = {"hundred": 100, "hundreds": 100}
 
 ALL_WORDS = {**UNITS, **STENS, **MTENS, **HUNDRED, **MULTIPLIERS}
-
-
-def handle_single_words(token_list):
-    word = token_list[0]
-    if word in ALL_WORDS:
-        return str(ALL_WORDS[word])
+BASE_NUMBERS = {**UNITS, **STENS}
 
 
 def number_builder(token_list):
-
     if len(token_list) == 1:
-        return handle_single_words(token_list)
+        return str(ALL_WORDS[token_list[0]])
 
     total_value = 0
     current_grp_value = 0
 
-    previous_base_word = False
-    previous_multiplier_word = False
-    previous_mtens_word = False
-    # To-Do simplify logic by changing this maintenance of 3 variable to `1` (previous token value perhaps ?)
+    previous_word = None
 
     for each_token in token_list:
-        if (each_token in UNITS):
-            if previous_base_word:
+        if (each_token in BASE_NUMBERS):
+            if previous_word in BASE_NUMBERS:
                 return ValueError
-            current_grp_value += UNITS[each_token]
-            previous_base_word = True
-            previous_multiplier_word = False
-
-        if (each_token in STENS):
-            current_grp_value += STENS[each_token]
-            if previous_base_word:
-                return ValueError
-            previous_base_word = True
-            previous_multiplier_word = False
+            current_grp_value += BASE_NUMBERS[each_token]
 
         if (each_token in MTENS):
-            if previous_mtens_word:
+            if previous_word in MTENS:
                 return ValueError
-            previous_mtens_word = True
-            previous_base_word = False
-            previous_multiplier_word = False
             current_grp_value += MTENS[each_token]
 
         if (each_token in HUNDRED):
+            # Words like twenty hundred don't exist but twenty-seven hundred should work.
+            if previous_word in MTENS:
+                return ValueError
+            if current_grp_value == 0:
+                current_grp_value = 1
             current_grp_value *= 100
-            previous_base_word = False
-            previous_multiplier_word = False
-            previous_mtens_word = False
 
         if (each_token in MULTIPLIERS):
-            if previous_multiplier_word:
+            if previous_word in MULTIPLIERS:
                 return ValueError
+            if current_grp_value == 0:
+                current_grp_value = 1
+
             current_grp_value *= MULTIPLIERS[each_token]
             total_value += current_grp_value
             current_grp_value = 0
-            previous_base_word = False
-            previous_mtens_word = False
-            previous_multiplier_word = True
+
+        previous_word = each_token
 
     total_value += current_grp_value
     return str(total_value)
@@ -127,6 +110,7 @@ def parser(input_string):
     final_sentence = []
     current_sentence = []
     tokens_taken = []
+
     for each_token in all_tokens:
 
         if (each_token.isspace() or each_token == ""):
@@ -138,8 +122,10 @@ def parser(input_string):
 
         if each_token in SENTENCE_SEPERATORS:
             if tokens_taken:
+
                 myvalue = number_builder(tokens_taken)
                 current_sentence.append(myvalue)
+                # Adding white-space after built number.
                 current_sentence.append(" ")
 
             current_sentence.append(each_token)
@@ -166,5 +152,4 @@ def parser(input_string):
 
     # Removing any trailing whitespaces added.
     output_string = ''.join(final_sentence).strip()
-
-    return output_string.strip()
+    return output_string
