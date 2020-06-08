@@ -60,25 +60,25 @@ def number_builder(token_list):
     for each_token in token_list:
         if (each_token in BASE_NUMBERS):
             if previous_word in BASE_NUMBERS:
-                return ValueError
+                return None
             current_grp_value += BASE_NUMBERS[each_token]
 
         if (each_token in MTENS):
             if previous_word in MTENS:
-                return ValueError
+                return None
             current_grp_value += MTENS[each_token]
 
         if (each_token in HUNDRED):
             # Words like twenty hundred don't exist but twenty-seven hundred should work.
             if previous_word in MTENS:
-                return ValueError
+                return None
             if current_grp_value == 0:
                 current_grp_value = 1
             current_grp_value *= 100
 
         if (each_token in MULTIPLIERS):
             if previous_word in MULTIPLIERS:
-                return ValueError
+                return None
             if current_grp_value == 0:
                 current_grp_value = 1
 
@@ -124,10 +124,15 @@ def parser(input_string):
             if tokens_taken:
 
                 myvalue = number_builder(tokens_taken)
-                current_sentence.append(myvalue)
-                # Adding white-space after built number.
-                current_sentence.append(" ")
-
+                if myvalue:
+                    current_sentence.append(myvalue)
+                    # Adding white-space after built number.
+                    # current_sentence.append(" ")
+                else:
+                    for old_tokens in tokens_taken:
+                        current_sentence.append(old_tokens)
+                        current_sentence.append(" ")
+                    current_sentence.pop()
             current_sentence.append(each_token)
             final_sentence.extend(current_sentence)
             tokens_taken = []
@@ -140,14 +145,25 @@ def parser(input_string):
         else:
             if tokens_taken:
                 myvalue = number_builder(tokens_taken)
-                current_sentence.append(myvalue)
-                current_sentence.append(" ")
+                if myvalue:
+                    current_sentence.append(myvalue)
+                    current_sentence.append(" ")
+                else:
+                    for old_tokens in tokens_taken:
+                        current_sentence.append(old_tokens)
+                        current_sentence.append(" ")
                 tokens_taken = []
             current_sentence.append(each_token)
 
     if tokens_taken:
         myvalue = number_builder(tokens_taken)
-        current_sentence.append(myvalue)
+        if myvalue:
+            current_sentence.append(myvalue)
+        else:
+            for old_tokens in tokens_taken:
+                current_sentence.append(old_tokens)
+                current_sentence.append(" ")
+
     final_sentence.extend(current_sentence)
 
     # Removing any trailing whitespaces added.
