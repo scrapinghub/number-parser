@@ -19,7 +19,43 @@ class TestNumberParser():
         assert (parser.parser('billion') == "1000000000")
 
     def test_basic_sentences(self):
-        assert (parser.parser("I have eight cows") == "I have 8 cows")
-        assert (parser.parser("I have eight cows three bulls and seven hundred and twelve million dollars ") == "I have 8 cows 3 bulls and 712000000 dollars")
-        assert (parser.parser("They just won seventy-five thousand dollars") == "They just won 75000 dollars")
-        assert (parser.parser("I have eight cows. I don't have eighteen cows") == "I have 8 cows. I don't have 18 cows")
+        input = "twenty-five cows, twelve chickens and one hundred twenty five kg of potatoes."
+        expected = "25 cows, 12 chickens and 125 kg of potatoes."
+        assert(parser.parser(input) == expected)
+
+        input = "I have eight cows"
+        expected = "I have 8 cows"
+        assert(parser.parser(input) == expected)
+
+        input = "I have eight cows three bulls and seven hundred and twelve million dollars "
+        expected = "I have 8 cows 3 bulls and 712000000 dollars"
+        assert(parser.parser(input) == expected)
+
+        input = "They just won seventy-five thousand dollars"
+        expected = "They just won 75000 dollars"
+        assert(parser.parser(input) == expected)
+
+        input = "I have eight cows. I don't have eighteen cows"
+        expected = "I have 8 cows. I don't have 18 cows"
+        assert(parser.parser(input) == expected)
+
+        input = "thirty-four cows = thirty four cows"
+        expected = "34 cows = 34 cows"
+        assert(parser.parser(input) == expected)
+
+        input = "thirty       four       cows = thirty four cows"
+        expected = "34 cows = 34 cows"
+        assert(parser.parser(input) == expected)
+
+        input = "the     sun      is     hundred     and   twelve       km     away."
+        expected = "the     sun      is     112 km     away."
+        assert(parser.parser(input) == expected)
+
+    def test_ambigous_sentences(self):
+        input = "one two three four twenty five."
+        expected = input
+        assert(parser.parser(input) == expected)
+
+        input = "one two three four twenty, five."
+        expected = "one two three four twenty, 5."
+        assert(parser.parser(input) == expected)
