@@ -64,7 +64,7 @@ def number_builder(token_list):
             current_grp_value += BASE_NUMBERS[each_token]
 
         if (each_token in MTENS):
-            if previous_word in MTENS:
+            if (previous_word in MTENS) or (previous_word in BASE_NUMBERS):
                 return None
             current_grp_value += MTENS[each_token]
 
