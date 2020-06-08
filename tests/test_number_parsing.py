@@ -59,3 +59,9 @@ class TestNumberParser():
         input = "one two three four twenty, five."
         expected = "one two three four twenty, 5."
         assert(parser.parser(input) == expected)
+
+        input = "three twenty seven."
+        expected = "three twenty seven."
+        assert(parser.parser(input) == expected)
+
+
