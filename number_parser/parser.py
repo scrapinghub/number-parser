@@ -15,7 +15,9 @@ MULTIPLIERS = {
     "billion": 1000000000,
     "billions": 1000000000,
     "trillion": 1000000000000,
-    "trillions": 1000000000000,
+
+
+        "trillions": 1000000000000,
 }
 
 # Would be language specific eg) 'et' in french
@@ -99,7 +101,7 @@ def number_builder(token_list):
 SENTENCE_SEPERATORS = [".", ","]
 
 
-def parser(input_string):
+def parse(input_string):
     # Fails when two numbers have no SENTENCE_SEPERATORS or words between them
     # eg) 'one two three' doesn't work but 'one,two,three' and 'one apple , two mango , three' works.
     all_tokens = re.split(r'(\W)', input_string)
