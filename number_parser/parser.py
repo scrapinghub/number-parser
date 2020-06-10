@@ -114,15 +114,15 @@ def parse(input_string):
     tokens_taken = []
 
     for each_token in all_tokens:
-
-        if (each_token.isspace() or each_token == ""):
+        compare_token = each_token.lower()
+        if (compare_token.isspace() or compare_token == ""):
             # Ignoring whitespace characters that are there when a number is being build.
             # eg) 'twenty     two' is same as 'twenty two'
             if not tokens_taken:
                 current_sentence.append(each_token)
             continue
 
-        if each_token in SENTENCE_SEPERATORS:
+        if compare_token in SENTENCE_SEPERATORS:
             if tokens_taken:
 
                 myvalue = number_builder(tokens_taken)
@@ -141,8 +141,8 @@ def parse(input_string):
             current_sentence = []
             continue
 
-        if ((each_token in ALL_WORDS) or (each_token in VALID_TOKENS_IN_NUMBERS and len(tokens_taken) != 0)):
-            tokens_taken.append(each_token)
+        if ((compare_token in ALL_WORDS) or (compare_token in VALID_TOKENS_IN_NUMBERS and len(tokens_taken) != 0)):
+            tokens_taken.append(compare_token)
 
         else:
             if tokens_taken:
