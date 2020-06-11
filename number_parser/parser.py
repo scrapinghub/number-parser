@@ -49,38 +49,53 @@ HUNDRED = {"hundred": 100, "hundreds": 100}
 ALL_WORDS = {**UNITS, **STENS, **MTENS, **HUNDRED, **MULTIPLIERS}
 BASE_NUMBERS = {**UNITS, **STENS}
 
+def check_validity(current_token, previous_token):
+    if (current_token in BASE_NUMBERS):
+        if previous_token in BASE_NUMBERS:
+            return False
+
+    if (current_token in MTENS):
+        if (previous_token in MTENS) or (previous_token in BASE_NUMBERS):
+            return False
+
+    if (current_token in HUNDRED):
+            # Words like twenty hundred don't exist but twenty-seven hundred should work.
+            if previous_token in MTENS:
+                return False
+    if (current_token in MULTIPLIERS):
+        if previous_token in MULTIPLIERS:
+            return False
+    return True
 
 def number_builder(token_list):
-    if len(token_list) == 1:
-        return str(ALL_WORDS[token_list[0]])
-
     total_value = 0
     current_grp_value = 0
+    previous_token = None
 
-    previous_word = None
+    value_list = []
 
     for each_token in token_list:
+        valid = check_validity(each_token,previous_token)
+        # Basically implying beginning of a new number hence resetting values.
+        if not valid:
+            total_value += current_grp_value
+            value_list.append(str(total_value))
+            total_value = 0
+            current_grp_value = 0
+            previous_token = None
+
         if (each_token in BASE_NUMBERS):
-            if previous_word in BASE_NUMBERS:
-                return None
             current_grp_value += BASE_NUMBERS[each_token]
 
         if (each_token in MTENS):
-            if (previous_word in MTENS) or (previous_word in BASE_NUMBERS):
-                return None
             current_grp_value += MTENS[each_token]
 
         if (each_token in HUNDRED):
-            # Words like twenty hundred don't exist but twenty-seven hundred should work.
-            if previous_word in MTENS:
-                return None
             if current_grp_value == 0:
                 current_grp_value = 1
             current_grp_value *= 100
 
         if (each_token in MULTIPLIERS):
-            if previous_word in MULTIPLIERS:
-                return None
             if current_grp_value == 0:
                 current_grp_value = 1
 
@@ -88,10 +103,12 @@ def number_builder(token_list):
             total_value += current_grp_value
             current_grp_value = 0
 
-        previous_word = each_token
+        previous_token = each_token
 
     total_value += current_grp_value
-    return str(total_value)
+    value_list.append(str(total_value))
+    print(value_list)
+    return value_list
 
 # This has been structured to work for a string containing both words and numbers.
 # eg) I have eight dollars -> I have 8 dollars.
@@ -124,17 +141,11 @@ def parse(input_string):
 
         if compare_token in SENTENCE_SEPERATORS:
             if tokens_taken:
-
                 myvalue = number_builder(tokens_taken)
-                if myvalue:
-                    current_sentence.append(myvalue)
-                    # Adding white-space after built number.
-                    # current_sentence.append(" ")
-                else:
-                    for old_tokens in tokens_taken:
-                        current_sentence.append(old_tokens)
-                        current_sentence.append(" ")
-                    current_sentence.pop()
+                for each_number in myvalue:
+                    current_sentence.append(each_number)
+                    current_sentence.append(" ")
+                current_sentence.pop()
             current_sentence.append(each_token)
             final_sentence.extend(current_sentence)
             tokens_taken = []
@@ -147,27 +158,21 @@ def parse(input_string):
         else:
             if tokens_taken:
                 myvalue = number_builder(tokens_taken)
-                if myvalue:
-                    current_sentence.append(myvalue)
+                for each_number in myvalue:
+                    current_sentence.append(each_number)
                     current_sentence.append(" ")
-                else:
-                    for old_tokens in tokens_taken:
-                        current_sentence.append(old_tokens)
-                        current_sentence.append(" ")
                 tokens_taken = []
             current_sentence.append(each_token)
 
     if tokens_taken:
         myvalue = number_builder(tokens_taken)
-        if myvalue:
-            current_sentence.append(myvalue)
-        else:
-            for old_tokens in tokens_taken:
-                current_sentence.append(old_tokens)
-                current_sentence.append(" ")
+        for each_number in myvalue:
+            current_sentence.append(each_number)
+            current_sentence.append(" ")
 
     final_sentence.extend(current_sentence)
 
     # Removing any trailing whitespaces added.
     output_string = ''.join(final_sentence).strip()
     return output_string
+parse("nine and hundred")
