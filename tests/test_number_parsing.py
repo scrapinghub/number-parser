@@ -53,15 +53,15 @@ class TestNumberParser():
 
     def test_ambigous_sentences(self):
         input = "one two three four twenty five."
-        expected = input
+        expected = "1 2 3 4 25."
         assert(parser.parse(input) == expected)
 
         input = "one two three four twenty, five."
-        expected = "one two three four twenty, 5."
+        expected = "1 2 3 4 20, 5."
         assert(parser.parse(input) == expected)
 
         input = "three twenty seven."
-        expected = "three twenty seven."
+        expected = "3 27."
         assert(parser.parse(input) == expected)
 
     def test_case_of_string(self):
