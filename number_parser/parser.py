@@ -59,9 +59,8 @@ def check_validity(current_token, previous_token):
             return False
 
     if (current_token in HUNDRED):
-            # Words like twenty hundred don't exist but twenty-seven hundred should work.
-            if previous_token in MTENS:
-                return False
+        if previous_token in MTENS:
+            return False
     if (current_token in MULTIPLIERS):
         if previous_token in MULTIPLIERS:
             return False
@@ -75,8 +74,7 @@ def number_builder(token_list):
     value_list = []
 
     for each_token in token_list:
-        valid = check_validity(each_token,previous_token)
-        # Basically implying beginning of a new number hence resetting values.
+        valid = check_validity(each_token, previous_token)
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
@@ -118,8 +116,6 @@ SENTENCE_SEPERATORS = [".", ","]
 
 
 def parse(input_string):
-    # Fails when two numbers have no SENTENCE_SEPERATORS or words between them
-    # eg) 'one two three' doesn't work but 'one,two,three' and 'one apple , two mango , three' works.
     all_tokens = re.split(r'(\W)', input_string)
 
     if all_tokens is None:
@@ -174,4 +170,3 @@ def parse(input_string):
     # Removing any trailing whitespaces added.
     output_string = ''.join(final_sentence).strip()
     return output_string
-parse("nine and hundred")
