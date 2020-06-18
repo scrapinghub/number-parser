@@ -75,7 +75,6 @@ def number_builder(token_list):
         if each_token.isspace():
             continue
         valid = check_validity(each_token, previous_token)
-        print(valid, each_token)
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
@@ -125,7 +124,6 @@ def parse_number(input_string):
         return int(input_string)
 
     all_tokens = tokeniser(input_string)
-    print(all_tokens)
     for index, each_token in enumerate(all_tokens):
         compare_token = each_token.lower()
         if compare_token in ALL_WORDS or compare_token.isspace():
@@ -193,6 +191,3 @@ def parse(input_string):
     # Removing any trailing whitespaces added.
     output_string = ''.join(final_sentence).strip()
     return output_string
-
-x = parse_number("two million three thousand nine hundred and eighty four")
-print(x)
