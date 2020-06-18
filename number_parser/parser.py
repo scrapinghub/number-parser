@@ -104,8 +104,7 @@ def number_builder(token_list):
         previous_token = each_token
 
     total_value += current_grp_value
-    if total_value != 0:
-        value_list.append(str(total_value))
+    value_list.append(str(total_value))
     return value_list
 
 # This has been structured to work for a string containing both words and numbers.
