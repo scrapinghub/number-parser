@@ -77,4 +77,31 @@ class TestNumberParser():
         expected = "12 11 pm"
         assert(parser.parse(input) == expected)
 
+    def test_parse_number(self):
+        assert (parser.parse_number("two million three thousand nine hundred and eighty four") == 2003984)
+        assert (parser.parse_number("nineteen") == 19)
+        assert (parser.parse_number("two thousand and nineteen") == 2019)
+        assert (parser.parse_number("two million three thousand and nineteen") == 2003019)
+        assert (parser.parse_number('three billion') == 3000000000)
+        assert (parser.parse_number('three million') == 3000000)
+        assert (parser.parse_number('one hundred twenty three million four hundred fifty six thousand seven hundred and eighty nine') == 123456789)
+        assert (parser.parse_number('eleven') == 11)
+        assert (parser.parse_number('nineteen billion and nineteen') == 19000000019)
+        assert (parser.parse_number('one hundred and forty two') == 142)
+        assert (parser.parse_number('two million twenty three thousand and forty nine') == 2023049)
+        assert (parser.parse_number('hundred') == 100)
+        assert (parser.parse_number('thousand') == 1000)
+        assert (parser.parse_number('million') == 1000000)
+        assert (parser.parse_number('billion') == 1000000000)
+        assert (parser.parse_number('twenty one') == 21)
+        assert (parser.parse_number('one twenty one') is None)
+        assert (parser.parse_number('twenty one one') is None)
+        assert (parser.parse_number('one two three') is None)
 
+    def test_parse_number_digits(self):
+        assert (parser.parse_number('100000') == 100000)
+        assert (parser.parse_number('1 2') is None)
+        assert (parser.parse_number('twenty 1') is None)
+        assert (parser.parse_number('12341252352314') == 12341252352314)
+        assert (parser.parse_number('twenty-one') == 21)
+        assert (parser.parse_number('three-hundred and sixty-five') == 365)
