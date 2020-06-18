@@ -15,9 +15,7 @@ MULTIPLIERS = {
     "billion": 1000000000,
     "billions": 1000000000,
     "trillion": 1000000000000,
-
-
-        "trillions": 1000000000000,
+    "trillions": 1000000000000,
 }
 
 # Would be language specific eg) 'et' in french
@@ -74,7 +72,10 @@ def number_builder(token_list):
     value_list = []
 
     for each_token in token_list:
+        if each_token.isspace():
+            continue
         valid = check_validity(each_token, previous_token)
+        print(valid, each_token)
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
@@ -104,7 +105,8 @@ def number_builder(token_list):
         previous_token = each_token
 
     total_value += current_grp_value
-    value_list.append(str(total_value))
+    if total_value != 0:
+        value_list.append(str(total_value))
     return value_list
 
 # This has been structured to work for a string containing both words and numbers.
@@ -114,10 +116,31 @@ def number_builder(token_list):
 
 SENTENCE_SEPERATORS = [".", ","]
 
+def tokeniser(input_string):
+    all_tokens = re.split(r'(\W)', input_string)
+    return all_tokens
+
+def parse_number(input_string):
+    if input_string.isnumeric():
+        return int(input_string)
+
+    all_tokens = tokeniser(input_string)
+    print(all_tokens)
+    for index, each_token in enumerate(all_tokens):
+        compare_token = each_token.lower()
+        if compare_token in ALL_WORDS or compare_token.isspace():
+            continue
+        if (compare_token in VALID_TOKENS_IN_NUMBERS) and (index != 0):
+            continue
+        return None
+
+    number_built = number_builder(all_tokens)
+    if len(number_built) == 1:
+        return int(number_built[0])
+    return None
 
 def parse(input_string):
-    all_tokens = re.split(r'(\W)', input_string)
-
+    all_tokens = tokeniser(input_string)
     if all_tokens is None:
         return None
 
@@ -170,3 +193,6 @@ def parse(input_string):
     # Removing any trailing whitespaces added.
     output_string = ''.join(final_sentence).strip()
     return output_string
+
+x = parse_number("two million three thousand nine hundred and eighty four")
+print(x)
