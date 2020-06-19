@@ -48,33 +48,34 @@ ALL_WORDS = {**UNITS, **STENS, **MTENS, **HUNDRED, **MULTIPLIERS}
 BASE_NUMBERS = {**UNITS, **STENS}
 
 def check_validity(current_token, previous_token):
-    if (current_token in BASE_NUMBERS):
-        if previous_token in BASE_NUMBERS:
-            return False
+    """Identifies whether the new token can continue building the previous number."""
+    if (current_token in BASE_NUMBERS and previous_token in BASE_NUMBERS):
+        return False
 
-    if (current_token in MTENS):
+    elif (current_token in MTENS):
         if (previous_token in MTENS) or (previous_token in BASE_NUMBERS):
             return False
 
-    if (current_token in HUNDRED):
-        if previous_token in MTENS:
-            return False
-    if (current_token in MULTIPLIERS):
-        if previous_token in MULTIPLIERS:
-            return False
+    elif (current_token in HUNDRED and previous_token in MTENS):
+        return False
+
+    elif (current_token in MULTIPLIERS and previous_token in MULTIPLIERS):
+        return False
+
     return True
 
 def number_builder(token_list):
+    """Incrementaly builds a number from the list of tokens."""
     total_value = 0
     current_grp_value = 0
     previous_token = None
 
     value_list = []
 
-    for each_token in token_list:
-        if each_token.isspace():
+    for token in token_list:
+        if token.isspace():
             continue
-        valid = check_validity(each_token, previous_token)
+        valid = check_validity(token, previous_token)
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
@@ -82,76 +83,74 @@ def number_builder(token_list):
             current_grp_value = 0
             previous_token = None
 
-        if (each_token in BASE_NUMBERS):
-            current_grp_value += BASE_NUMBERS[each_token]
+        if (token in BASE_NUMBERS):
+            current_grp_value += BASE_NUMBERS[token]
 
-        if (each_token in MTENS):
-            current_grp_value += MTENS[each_token]
+        elif (token in MTENS):
+            current_grp_value += MTENS[token]
 
-        if (each_token in HUNDRED):
+        elif (token in HUNDRED):
             if current_grp_value == 0:
                 current_grp_value = 1
             current_grp_value *= 100
 
-        if (each_token in MULTIPLIERS):
+        elif (token in MULTIPLIERS):
             if current_grp_value == 0:
                 current_grp_value = 1
 
-            current_grp_value *= MULTIPLIERS[each_token]
+            current_grp_value *= MULTIPLIERS[token]
             total_value += current_grp_value
             current_grp_value = 0
 
-        previous_token = each_token
+        previous_token = token
 
     total_value += current_grp_value
     value_list.append(str(total_value))
     return value_list
 
-# This has been structured to work for a string containing both words and numbers.
-# eg) I have eight dollars -> I have 8 dollars.
-# Currently it just takes word as numbers for inputs and translates them eight -> 8.
-# Also the error handling etc needs to be taken care of.
-
 SENTENCE_SEPERATORS = [".", ","]
 
-def tokeniser(input_string):
-    all_tokens = re.split(r'(\W)', input_string)
-    return all_tokens
+def tokenize(input_string):
+    """Breaks string on any non-word character."""
+    tokens = re.split(r'(\W)', input_string)
+    return tokens
 
 def parse_number(input_string):
+    """Converts a single number written in natural language to a numeric type"""
     if input_string.isnumeric():
         return int(input_string)
 
-    all_tokens = tokeniser(input_string)
-    for index, each_token in enumerate(all_tokens):
-        compare_token = each_token.lower()
+    tokens = tokenize(input_string)
+    for index, token in enumerate(tokens):
+        compare_token = token.lower()
         if compare_token in ALL_WORDS or compare_token.isspace():
             continue
         if (compare_token in VALID_TOKENS_IN_NUMBERS) and (index != 0):
             continue
         return None
 
-    number_built = number_builder(all_tokens)
+    number_built = number_builder(tokens)
     if len(number_built) == 1:
         return int(number_built[0])
     return None
 
 def parse(input_string):
-    all_tokens = tokeniser(input_string)
-    if all_tokens is None:
+    """"""
+    tokens = tokenize(input_string)
+    if tokens is None:
         return None
 
     final_sentence = []
     current_sentence = []
     tokens_taken = []
 
-    for each_token in all_tokens:
-        compare_token = each_token.lower()
+    for token in tokens:
+        compare_token = token.lower()
         if (compare_token.isspace() or compare_token == ""):
             # Ignoring whitespace characters that are there when a number is being build.
             # eg) 'twenty     two' is same as 'twenty two'
             if not tokens_taken:
-                current_sentence.append(each_token)
+                current_sentence.append(token)
             continue
 
         if compare_token in SENTENCE_SEPERATORS:
@@ -161,7 +160,7 @@ def parse(input_string):
                     current_sentence.append(each_number)
                     current_sentence.append(" ")
                 current_sentence.pop()
-            current_sentence.append(each_token)
+            current_sentence.append(token)
             final_sentence.extend(current_sentence)
             tokens_taken = []
             current_sentence = []
@@ -177,7 +176,7 @@ def parse(input_string):
                     current_sentence.append(each_number)
                     current_sentence.append(" ")
                 tokens_taken = []
-            current_sentence.append(each_token)
+            current_sentence.append(token)
 
     if tokens_taken:
         myvalue = number_builder(tokens_taken)
