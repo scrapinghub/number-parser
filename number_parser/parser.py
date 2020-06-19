@@ -18,7 +18,6 @@ MULTIPLIERS = {
     "trillions": 1000000000000,
 }
 
-# Would be language specific eg) 'et' in french
 VALID_TOKENS_IN_NUMBERS = ["and", "-"]
 
 UNITS = {
@@ -135,7 +134,10 @@ def parse_number(input_string):
     return None
 
 def parse(input_string):
-    """"""
+    """
+    Converts all the numbers in a sentence written in natural language to their numeric type while keeping
+    the other words unchanged. Returns the transformed string.
+    """
     tokens = tokenize(input_string)
     if tokens is None:
         return None
@@ -147,8 +149,6 @@ def parse(input_string):
     for token in tokens:
         compare_token = token.lower()
         if (compare_token.isspace() or compare_token == ""):
-            # Ignoring whitespace characters that are there when a number is being build.
-            # eg) 'twenty     two' is same as 'twenty two'
             if not tokens_taken:
                 current_sentence.append(token)
             continue
@@ -186,6 +186,5 @@ def parse(input_string):
 
     final_sentence.extend(current_sentence)
 
-    # Removing any trailing whitespaces added.
     output_string = ''.join(final_sentence).strip()
     return output_string
