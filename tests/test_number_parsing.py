@@ -8,7 +8,8 @@ class TestNumberParser():
         assert (parser.parse("two million three thousand and nineteen") == "2003019")
         assert (parser.parse('three billion') == "3000000000")
         assert (parser.parse('three million') == "3000000")
-        assert (parser.parse('one hundred twenty three million four hundred fifty six thousand seven hundred and eighty nine') == "123456789")
+        assert (parser.parse('one hundred twenty three million four hundred \
+            fifty six thousand seven hundred and eighty nine') == "123456789")
         assert (parser.parse('eleven') == "11")
         assert (parser.parse('nineteen billion and nineteen') == "19000000019")
         assert (parser.parse('one hundred and forty two') == "142")
@@ -84,7 +85,8 @@ class TestNumberParser():
         assert (parser.parse_number("two million three thousand and nineteen") == 2003019)
         assert (parser.parse_number('three billion') == 3000000000)
         assert (parser.parse_number('three million') == 3000000)
-        assert (parser.parse_number('one hundred twenty three million four hundred fifty six thousand seven hundred and eighty nine') == 123456789)
+        assert (parser.parse_number('one hundred twenty three million four hundred fifty six thousand \
+            seven hundred and eighty nine') == 123456789)
         assert (parser.parse_number('eleven') == 11)
         assert (parser.parse_number('nineteen billion and nineteen') == 19000000019)
         assert (parser.parse_number('one hundred and forty two') == 142)
