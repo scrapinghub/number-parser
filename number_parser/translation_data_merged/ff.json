@@ -1,0 +1,29 @@
+{
+    "UNIT_NUMBERS": {
+        "ɓolum": 0,
+        "goʼo": 1,
+        "ɗiɗi": 2,
+        "tati": 3,
+        "nawi": 4,
+        "jowi": 5,
+        "jeegoʼo": 6,
+        "jeeɗiɗi": 7,
+        "jeetati": 8,
+        "jeenawi": 9,
+        "gooto": 1,
+        "ɗiɗo": 2,
+        "tato": 3,
+        "nawo": 4,
+        "njowo": 5,
+        "jeegomo": 6,
+        "jeeɗiɗo": 7,
+        "jeetato": 8,
+        "jeenawo": 9
+    },
+    "BASE_NUMBERS": {},
+    "MTENS": {
+        "noogas": 20
+    },
+    "MHUNDREDS": {},
+    "MULTIPLIERS": {}
+}

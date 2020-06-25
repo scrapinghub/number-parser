@@ -1,0 +1,16 @@
+{
+    "UNIT_NUMBERS": {},
+    "BASE_NUMBERS": {
+        "diecisiete": 17,
+        "dieciocho": 18,
+        "diecinueve": 19,
+        "veintisiete": 27,
+        "veintiocho": 28,
+        "veintinueve": 29
+    },
+    "MTENS": {},
+    "MHUNDREDS": {
+        "ciento": 100
+    },
+    "MULTIPLIERS": {}
+}

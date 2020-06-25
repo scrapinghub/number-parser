@@ -3,7 +3,10 @@ import json
 from pprint import pprint
 import re
 
-ROOT_PATH = "../numeral_translation_data/raw_cldr_translation_data/"
+SOURCE_PATH = "../raw_cldr_translation_data/"
+TARGET_PATH = "../number_parser/translation_data_merged"
+SUPPLEMENTARY_PATH = "../supplementary_translation_data/"
+
 REQUIRED_KEYS = ["spellout-cardinal", "spellout-numbering"]
 CAPTURE_BRACKET_CONTENT = r'\{(.*?)\}'
 
@@ -12,10 +15,7 @@ LARGE_EXCEPTIONS = {}
 UNIT_NUMBERS = {}
 BASE_NUMBERS = {}
 MTENS = {}
-
 MHUNDREDS = {}
-
-HUNDREDS_MULTIPLIER = {}
 MULTIPLIERS = {}
 
 def is_valid(key):
@@ -64,18 +64,13 @@ def parse_multiplier_words(number,word):
         valid_words = re.findall(CAPTURE_BRACKET_CONTENT, required_part)
         for valid_word in valid_words:
             power_of_10_num = pow(10, power_of_10)
-            if power_of_10 == 2:
-                HUNDREDS_MULTIPLIER[valid_word] = power_of_10_num
-            else:
+            if power_of_10 >= 2:
                 MULTIPLIERS[valid_word] = power_of_10_num
 
     else:
         valid_word = required_part.split("[")[0].strip()
         power_of_10_num = pow(10, power_of_10)
-
-        if power_of_10 == 2:
-            HUNDREDS_MULTIPLIER[valid_word] = power_of_10_num
-        else:
+        if power_of_10 >= 2:
             MULTIPLIERS[valid_word] = power_of_10_num
 
 def extract_information(key, word):
@@ -98,28 +93,54 @@ def extract_information(key, word):
     except:
         pass
 
-for files in os.listdir(ROOT_PATH):
-    full_path = os.path.join(ROOT_PATH, files)
-    if (files != 'ru.json'):
-        continue
+for files in os.listdir(SOURCE_PATH):
+    full_source_path = os.path.join(SOURCE_PATH, files)
+    full_target_path = os.path.join(TARGET_PATH, files)
+    full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, files)
 
-    with open(full_path, 'r') as source:
+    with open(full_source_path, 'r') as source:
         data = json.load(source)
-        requisite_data = data['rbnf']['rbnf']['SpelloutRules']
+        try:
+            requisite_data = data['rbnf']['rbnf']['SpelloutRules']
+        except:
+            print(files)
         for keys, vals in requisite_data.items():
             if(is_valid(keys)):
                 for key, val in vals.items():
                     extract_information(key, val)
-    # break
-    print(UNIT_NUMBERS)
-    print("----")
-    print(BASE_NUMBERS)
-    print("----")
-    print(MTENS)
-    print("----")
-    print(MHUNDREDS)
-    print("----")
-    print(HUNDREDS_MULTIPLIER)
-    print("----")
-    print(MULTIPLIERS)
+
+
+    with open(full_supplementary_path,'r') as supplement:
+        data = json.load(supplement)
+
+        unit_numbers = data["UNIT_NUMBERS"]
+        base_numbers = data["BASE_NUMBERS"]
+        mtens = data["MTENS"]
+        mhundreds = data["MHUNDREDS"]
+        multipliers = data["MULTIPLIERS"]
+
+        UNIT_NUMBERS.update(unit_numbers)
+        BASE_NUMBERS.update(base_numbers)
+        MTENS.update(mtens)
+        MHUNDREDS.update(mhundreds)
+        MULTIPLIERS.update(multipliers)
+
+
+    list_of_numbers = {}
+
+    list_of_numbers["UNIT_NUMBERS"] = UNIT_NUMBERS
+    list_of_numbers["BASE_NUMBERS"] = BASE_NUMBERS
+    list_of_numbers["MTENS"] = MTENS
+    list_of_numbers["MHUNDREDS"] = MHUNDREDS
+    list_of_numbers["MULTIPLIERS"] = MULTIPLIERS
+
+    full_target_path = os.path.join(TARGET_PATH, files)
+
+    with open(full_target_path, 'w+') as target:
+        json.dump(list_of_numbers, target, indent=4, ensure_ascii=False)
+
+    UNIT_NUMBERS = {}
     BASE_NUMBERS = {}
+    MTENS = {}
+    MHUNDREDS = {}
+    MULTIPLIERS = {}
