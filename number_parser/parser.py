@@ -1,5 +1,7 @@
 import re
 import string
+import os
+import json
 # The initial global dictionaries that have been declared below will be changed,
 # should be easily derived automatically from CLDR data/other source for each of the languages.
 
@@ -7,59 +9,59 @@ import string
 # english / french build 2 digit numbers using MTEN dictionary values.
 # (Difference observable in hi.json and en.json in numeral_language_data)
 
-MULTIPLIERS = {
-    "thousand": 1000,
-    "thousands": 1000,
-    "million": 1000000,
-    "millions": 1000000,
-    "billion": 1000000000,
-    "billions": 1000000000,
-    "trillion": 1000000000000,
-    "trillions": 1000000000000,
-}
+LANGUAGE_DIRECTORY = "../number_parser/translation_data_merged/"
+UNIT_NUMBERS = {}
+BASE_NUMBERS = {}
+MTENS = {}
+MHUNDREDS = {}
+MULTIPLIERS = {}
+VALID_TOKENS_IN_NUMBERS = []
+ALL_WORDS = {}
+ALL_BASE_WORDS = {}
 
-VALID_TOKENS_IN_NUMBERS = ["and", "-"]
+def populate_dictionaries(lang):
+    file_name = lang + ".json"
+    fpath = os.path.join(LANGUAGE_DIRECTORY, file_name)
 
-UNITS = {
-    word: value
-    for value, word in enumerate(
-        "one two three four five six seven eight nine".split(), 1
-    )
-}
+    with open(fpath, 'r') as lang_file:
+        lang_data = json.load(lang_file)
+        unit_numbers = lang_data["UNIT_NUMBERS"]
+        base_numbers = lang_data["BASE_NUMBERS"]
+        mtens = lang_data["MTENS"]
+        mhundreds = lang_data["MHUNDREDS"]
+        multipliers = lang_data["MULTIPLIERS"]
+        valid_tokens_in_numbers = lang_data["VALID_TOKENS"]["tokens"]
+        all_words = {**unit_numbers, **base_numbers, **mtens, **mhundreds, **multipliers}
+        all_base_words = {**unit_numbers, **base_numbers}
 
-STENS = {
-    word: value
-    for value, word in enumerate(
-        "ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(), 10
-    )
-}
-
-MTENS = {
-    word: value * 10
-    for value, word in enumerate(
-        "twenty thirty forty fifty sixty seventy eighty ninety".split(), 2
-    )
-}
-
-HUNDRED = {"hundred": 100, "hundreds": 100}
-
-ALL_WORDS = {**UNITS, **STENS, **MTENS, **HUNDRED, **MULTIPLIERS}
-BASE_NUMBERS = {**UNITS, **STENS}
+        UNIT_NUMBERS.update(unit_numbers)
+        BASE_NUMBERS.update(base_numbers)
+        MTENS.update(mtens)
+        MHUNDREDS.update(mhundreds)
+        MULTIPLIERS.update(multipliers)
+        ALL_WORDS.update(all_words)
+        ALL_BASE_WORDS.update(all_base_words)
+        VALID_TOKENS_IN_NUMBERS[:] = valid_tokens_in_numbers
 
 def check_validity(current_token, previous_token):
     """Identifies whether the new token can continue building the previous number."""
-    if (current_token in BASE_NUMBERS and previous_token in BASE_NUMBERS):
+    if current_token in ALL_BASE_WORDS and previous_token in ALL_BASE_WORDS:
+        return False
+
+    if current_token in BASE_NUMBERS and previous_token in MTENS:
         return False
 
     elif (current_token in MTENS):
-        if (previous_token in MTENS) or (previous_token in BASE_NUMBERS):
+        if (previous_token in MTENS) or (previous_token in ALL_BASE_WORDS):
             return False
 
-    elif (current_token in HUNDRED and previous_token in MTENS):
-        return False
+    elif (current_token in MHUNDREDS):
+        if previous_token not in MULTIPLIERS and previous_token is not None:
+            return False
 
     elif (current_token in MULTIPLIERS and previous_token in MULTIPLIERS):
-        return False
+        if MULTIPLIERS[current_token] > MULTIPLIERS[previous_token]:
+            return False
 
     return True
 
@@ -68,7 +70,6 @@ def number_builder(token_list):
     total_value = 0
     current_grp_value = 0
     previous_token = None
-
     value_list = []
 
     for token in token_list:
@@ -82,24 +83,25 @@ def number_builder(token_list):
             current_grp_value = 0
             previous_token = None
 
-        if (token in BASE_NUMBERS):
-            current_grp_value += BASE_NUMBERS[token]
+        if (token in ALL_BASE_WORDS):
+            current_grp_value += ALL_BASE_WORDS[token]
 
         elif (token in MTENS):
             current_grp_value += MTENS[token]
 
-        elif (token in HUNDRED):
-            if current_grp_value == 0:
-                current_grp_value = 1
-            current_grp_value *= 100
+        elif (token in MHUNDREDS):
+            current_grp_value += MHUNDREDS[token]
 
         elif (token in MULTIPLIERS):
             if current_grp_value == 0:
                 current_grp_value = 1
 
-            current_grp_value *= MULTIPLIERS[token]
-            total_value += current_grp_value
-            current_grp_value = 0
+            if MULTIPLIERS[token] == 100:
+                current_grp_value *= MULTIPLIERS[token]
+            else:
+                current_grp_value *= MULTIPLIERS[token]
+                total_value += current_grp_value
+                current_grp_value = 0
 
         previous_token = token
 
@@ -114,15 +116,17 @@ def tokenize(input_string):
     tokens = re.split(r'(\W)', input_string)
     return tokens
 
-def parse_number(input_string):
+def parse_number(input_string, lang='en'):
+    populate_dictionaries(lang)
     """Converts a single number written in natural language to a numeric type"""
     if input_string.isnumeric():
         return int(input_string)
 
     tokens = tokenize(input_string)
+
     for index, token in enumerate(tokens):
         compare_token = token.lower()
-        if compare_token in ALL_WORDS or compare_token.isspace():
+        if compare_token in ALL_WORDS or compare_token.isspace() or len(compare_token) == 0:
             continue
         if (compare_token in VALID_TOKENS_IN_NUMBERS) and (index != 0):
             continue
@@ -133,11 +137,12 @@ def parse_number(input_string):
         return int(number_built[0])
     return None
 
-def parse(input_string):
+def parse(input_string, lang='en'):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
+    populate_dictionaries(lang)
     tokens = tokenize(input_string)
     if tokens is None:
         return None
@@ -148,6 +153,7 @@ def parse(input_string):
 
     for token in tokens:
         compare_token = token.lower()
+
         if (compare_token.isspace() or compare_token == ""):
             if not tokens_taken:
                 current_sentence.append(token)
