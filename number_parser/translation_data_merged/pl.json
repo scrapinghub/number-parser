@@ -136,5 +136,6 @@
         "miliardach": 1000000000,
         "bilionach": 1000000000000,
         "biliardach": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

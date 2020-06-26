@@ -30,5 +30,6 @@
         "milyard": 1000000000,
         "trilyon": 1000000000000,
         "katrilyon": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

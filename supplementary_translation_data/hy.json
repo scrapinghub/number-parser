@@ -3,5 +3,6 @@
     "BASE_NUMBERS": {},
     "MTENS": {},
     "MHUNDREDS": {},
-    "MULTIPLIERS": {}
+    "MULTIPLIERS": {},
+    "VALID_TOKENS": {}
 }

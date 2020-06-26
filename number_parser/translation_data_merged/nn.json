@@ -42,5 +42,6 @@
         "milliardar": 1000000000,
         "billionar": 1000000000000,
         "biliardar": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

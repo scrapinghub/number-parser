@@ -41,5 +41,6 @@
         "miljarder": 1000000000,
         "biljoner": 1000000000000,
         "biljarder": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

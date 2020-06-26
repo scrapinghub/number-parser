@@ -21,5 +21,6 @@
         "lluna": 1000000000,
         "trilionu": 1000000000000,
         "kvadrilionu": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

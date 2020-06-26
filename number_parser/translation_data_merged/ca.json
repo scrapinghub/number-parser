@@ -44,5 +44,6 @@
         "miliards": 1000000000,
         "bilions": 1000000000000,
         "biliards": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

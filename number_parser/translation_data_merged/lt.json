@@ -36,5 +36,6 @@
         "milijardų": 1000000000,
         "kvadrilijonų": 1000000000000000,
         "trilijonų": 1000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

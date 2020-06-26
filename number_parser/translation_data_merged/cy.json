@@ -28,5 +28,6 @@
         "biliwn": 1000000000,
         "triliwn": 1000000000000,
         "kwadriliwn": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

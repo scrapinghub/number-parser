@@ -73,5 +73,10 @@
         "mil": 1000,
         "millones": 1000000,
         "billones": 1000000000000
+    },
+    "VALID_TOKENS": {
+        "tokens": [
+            "y"
+        ]
     }
 }

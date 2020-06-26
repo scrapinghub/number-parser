@@ -41,5 +41,6 @@
         "crore": 10000000,
         "trillion": 1000000000000,
         "quadrillion": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

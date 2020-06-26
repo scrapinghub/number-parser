@@ -39,5 +39,6 @@
         "Billiounen": 1000000000000,
         "Billiard": 1000000000000000,
         "Billiarden": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

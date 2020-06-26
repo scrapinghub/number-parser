@@ -24,5 +24,6 @@
         "miliar": 1000000000,
         "triliun": 1000000000000,
         "kuadriliun": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

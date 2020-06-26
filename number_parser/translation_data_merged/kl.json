@@ -32,5 +32,6 @@
         "milliardillit": 1000000000,
         "billioniillit": 1000000000000,
         "billiardillit": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

@@ -16,5 +16,6 @@
     },
     "MTENS": {},
     "MHUNDREDS": {},
-    "MULTIPLIERS": {}
+    "MULTIPLIERS": {},
+    "VALID_TOKENS": {}
 }

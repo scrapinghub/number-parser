@@ -12,5 +12,8 @@
     "MHUNDREDS": {
         "ciento": 100
     },
-    "MULTIPLIERS": {}
+    "MULTIPLIERS": {},
+    "VALID_TOKENS": {
+        "tokens":["y"]
+    }
 }

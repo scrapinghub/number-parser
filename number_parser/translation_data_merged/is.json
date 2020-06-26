@@ -48,5 +48,6 @@
         "milliarður": 1000000000,
         "billiónur": 1000000000000,
         "billiarður": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

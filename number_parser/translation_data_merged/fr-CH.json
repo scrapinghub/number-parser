@@ -40,5 +40,6 @@
         "billions": 1000000000000,
         "billiards": 1000000000000000,
         "cent>%%cents-f>": 100
-    }
+    },
+    "VALID_TOKENS": {}
 }

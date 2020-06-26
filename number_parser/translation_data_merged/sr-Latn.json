@@ -47,5 +47,6 @@
         "milijarda": 1000000000,
         "bilion": 1000000000000,
         "bilijarda": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

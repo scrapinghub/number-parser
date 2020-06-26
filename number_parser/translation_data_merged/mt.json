@@ -56,5 +56,6 @@
         "biljuni": 1000000000,
         "triljuni": 1000000000000,
         "kvadriljuni": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

@@ -29,5 +29,6 @@
         "miljardi": 1000000000,
         "biljoni": 1000000000000,
         "biljardi": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

@@ -24,5 +24,6 @@
         "bilion": 1000000000,
         "trilion": 1000000000000,
         "kuadrilion": 1000000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

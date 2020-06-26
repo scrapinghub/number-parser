@@ -296,5 +296,6 @@
         "miljoonille": 1000000,
         "miljardeille": 1000000000,
         "biljoonille": 1000000000000
-    }
+    },
+    "VALID_TOKENS": {}
 }

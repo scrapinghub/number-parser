@@ -38,5 +38,6 @@
         "nócha": 90
     },
     "MHUNDREDS": {},
-    "MULTIPLIERS": {}
+    "MULTIPLIERS": {},
+    "VALID_TOKENS": {}
 }
