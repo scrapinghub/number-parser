@@ -17,6 +17,7 @@ BASE_NUMBERS = {}
 MTENS = {}
 MHUNDREDS = {}
 MULTIPLIERS = {}
+VALID_TOKENS = {}
 
 def is_valid(key):
     for each in REQUIRED_KEYS:
@@ -102,13 +103,14 @@ for files in os.listdir(SOURCE_PATH):
         data = json.load(source)
         try:
             requisite_data = data['rbnf']['rbnf']['SpelloutRules']
-        except:
-            print(files)
+        except Exception as e:
+            print(e)
+            continue
+
         for keys, vals in requisite_data.items():
             if(is_valid(keys)):
                 for key, val in vals.items():
                     extract_information(key, val)
-
 
     with open(full_supplementary_path,'r') as supplement:
         data = json.load(supplement)
@@ -118,13 +120,14 @@ for files in os.listdir(SOURCE_PATH):
         mtens = data["MTENS"]
         mhundreds = data["MHUNDREDS"]
         multipliers = data["MULTIPLIERS"]
+        valid_tokens = data["VALID_TOKENS"]
 
         UNIT_NUMBERS.update(unit_numbers)
         BASE_NUMBERS.update(base_numbers)
         MTENS.update(mtens)
         MHUNDREDS.update(mhundreds)
         MULTIPLIERS.update(multipliers)
-
+        VALID_TOKENS.update(valid_tokens)
 
     list_of_numbers = {}
 
@@ -133,6 +136,7 @@ for files in os.listdir(SOURCE_PATH):
     list_of_numbers["MTENS"] = MTENS
     list_of_numbers["MHUNDREDS"] = MHUNDREDS
     list_of_numbers["MULTIPLIERS"] = MULTIPLIERS
+    list_of_numbers["VALID_TOKENS"] = VALID_TOKENS
 
     full_target_path = os.path.join(TARGET_PATH, files)
 
@@ -144,3 +148,4 @@ for files in os.listdir(SOURCE_PATH):
     MTENS = {}
     MHUNDREDS = {}
     MULTIPLIERS = {}
+    VALID_TOKENS = {}
