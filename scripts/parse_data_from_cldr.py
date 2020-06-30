@@ -24,6 +24,8 @@ def _is_valid(key):
 
 
 def _parse_base_words(number, word, language_data):
+    if(word == "ERROR"):
+        return
     if number <= 9:
         language_data["UNIT_NUMBERS"][word] = number
     elif number <= 99:
@@ -48,6 +50,9 @@ def _parse_compound_words(number, word, language_data):
         return
 
     root_word = word.split("[")[0]
+    if(root_word == ""):
+        return
+
     if power_of_10 == 1:
         language_data["MTENS"][root_word] = number
     elif power_of_10 == 2:
@@ -103,7 +108,7 @@ def write_complete_data():
 
         language_data_populated = {}
 
-        with open(full_source_path, 'r') as source:
+        with open(full_source_path, 'rb') as source:
             language_data = {}
             for keys in REQUIRED_DATA_POINTS:
                 language_data[keys] = {}
