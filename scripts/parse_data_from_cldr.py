@@ -108,7 +108,7 @@ def write_complete_data():
 
         language_data_populated = {}
 
-        with open(full_source_path, 'rb') as source:
+        with open(full_source_path, 'r', encoding='utf-8') as source:
             language_data = {}
             for keys in REQUIRED_DATA_POINTS:
                 language_data[keys] = {}
@@ -127,15 +127,15 @@ def write_complete_data():
 
             language_data_populated = language_data
 
-        with open(full_supplementary_path, 'r') as supplement:
+        with open(full_supplementary_path, 'r', encoding='utf-8') as supplement:
             data = json.load(supplement)
             for keys in REQUIRED_DATA_POINTS:
                 language_data_populated[keys].update(data[keys])
 
         encoding_comment = "# -*- coding: utf-8 -*-\n"
         translation_data = json.dumps(language_data_populated, indent=4, ensure_ascii=False)
-        out_text = (encoding_comment + 'info = ' + translation_data + '\n').encode('utf-8')
-        with open(full_target_path, 'wb+') as target_file:
+        out_text = (encoding_comment + 'info = ' + translation_data + '\n')
+        with open(full_target_path, 'w+', encoding="utf-8") as target_file:
             target_file.write(out_text)
 
 
