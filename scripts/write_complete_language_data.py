@@ -20,14 +20,14 @@ REQUIRED_DATA_POINTS = ["UNIT_NUMBERS", "BASE_NUMBERS", "MTENS", "MHUNDREDS", "M
 
 def _is_valid(key):
     """Identifying whether the given key of the source language file needs to be extracted."""
-    needed = False
+    is_valid = False
     for valid_key in VALID_KEYS:
         if valid_key in key:
-            needed = True
+            is_valid = True
     for invalid_key in INVALID_KEYS:
         if invalid_key in key:
-            needed = False
-    return needed
+            is_valid = False
+    return is_valid
 
 
 def _add_base_words(number, word, language_data):
@@ -41,7 +41,7 @@ def _add_base_words(number, word, language_data):
 
 
 def _count_zero(number):
-    """Counting the number of zeroes in the given number.""" 
+    """Counting the number of zeroes in the given number."""
     zero_count = 0
     while number > 9:
         if number % 10 == 0:
@@ -130,13 +130,10 @@ def write_complete_data():
         full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0]+".py")
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
-        language_data = {}
-        ordered_language_data = OrderedDict()
-        with open(full_source_path, 'r') as source:
-            for keys in REQUIRED_DATA_POINTS:
-                language_data[keys] = {}
-                ordered_language_data[keys] = {}
+        language_data = {key: {} for key in REQUIRED_DATA_POINTS}
+        ordered_language_data = OrderedDict((key, {}) for key in REQUIRED_DATA_POINTS)
 
+        with open(full_source_path, 'r') as source:
             data = json.load(source)
             try:
                 requisite_data = data['rbnf']['rbnf']['SpelloutRules']
@@ -153,14 +150,14 @@ def write_complete_data():
             data = json.load(supplementary_data)
             for keys in REQUIRED_DATA_POINTS:
                 language_data[keys].update(data[keys])
-                sorted_tuples = sorted(language_data[keys].items(), key=lambda x: x[1])    
+                sorted_tuples = sorted(language_data[keys].items(), key=lambda x: (x[1], x[0]))
                 for items in sorted_tuples:
-                    word, number = items[0],items[1]
+                    word, number = items[0], items[1]
                     ordered_language_data[keys][word] = number
 
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
         out_text = ('info = ' + translation_data + '\n')
-        with open(full_target_path, 'w+', encoding="utf-8") as target_file:
+        with open(full_target_path, 'w+') as target_file:
             target_file.write(out_text)
 
 
