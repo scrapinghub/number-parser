@@ -64,7 +64,7 @@ def _add_compound_words(number, word, language_data):
     else:
         root_word = word.split(">")[0].strip()
 
-    if(root_word == ""):
+    if root_word == "":
         return
 
     if power_of_10 == 1:
