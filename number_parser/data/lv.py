@@ -1,23 +1,23 @@
 info = {
     "UNIT_NUMBERS": {
         "nulle": 0,
-        "viens": 1,
         "viena": 1,
-        "divi": 2,
+        "viens": 1,
         "divas": 2,
+        "divi": 2,
         "trīs": 3,
-        "četri": 4,
         "četras": 4,
-        "pieci": 5,
+        "četri": 4,
         "piecas": 5,
-        "seši": 6,
+        "pieci": 5,
         "sešas": 6,
-        "septiņi": 7,
+        "seši": 6,
         "septiņas": 7,
-        "astoņi": 8,
+        "septiņi": 7,
         "astoņas": 8,
-        "deviņi": 9,
-        "deviņas": 9
+        "astoņi": 8,
+        "deviņas": 9,
+        "deviņi": 9
     },
     "BASE_NUMBERS": {
         "desmit": 10

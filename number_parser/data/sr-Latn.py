@@ -2,8 +2,8 @@ info = {
     "UNIT_NUMBERS": {
         "nula": 0,
         "jedan": 1,
-        "jedno": 1,
         "jedna": 1,
+        "jedno": 1,
         "dva": 2,
         "dve": 2,
         "tri": 3,
@@ -41,8 +41,8 @@ info = {
         "trista": 300
     },
     "MULTIPLIERS": {
-        "hiljadu": 1000,
         "hiljada": 1000,
+        "hiljadu": 1000,
         "milion": 1000000,
         "milijarda": 1000000000,
         "bilion": 1000000000000,

@@ -1,9 +1,9 @@
 info = {
     "UNIT_NUMBERS": {
         "null": 0,
+        "een": 1,
         "eent": 1,
         "eng": 1,
-        "een": 1,
         "zwee": 2,
         "zwou": 2,
         "dräi": 3,

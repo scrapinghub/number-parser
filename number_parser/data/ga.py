@@ -1,31 +1,31 @@
 info = {
     "UNIT_NUMBERS": {
-        "náid": 0,
         "a náid": 0,
-        "aon": 1,
+        "náid": 0,
         "a haon": 1,
-        "dó": 2,
+        "aon": 1,
         "a dó": 2,
         "dhá": 2,
-        "trí": 3,
+        "dó": 2,
         "a trí": 3,
-        "ceathair": 4,
+        "trí": 3,
         "a ceathair": 4,
+        "ceathair": 4,
         "ceithre": 4,
-        "cúig": 5,
         "a cúig": 5,
-        "sé": 6,
+        "cúig": 5,
         "a sé": 6,
-        "seacht": 7,
+        "sé": 6,
         "a seacht": 7,
-        "ocht": 8,
+        "seacht": 7,
         "a hocht": 8,
-        "naoi": 9,
-        "a naoi": 9
+        "ocht": 8,
+        "a naoi": 9,
+        "naoi": 9
     },
     "BASE_NUMBERS": {
-        "deich": 10,
-        "a deich": 10
+        "a deich": 10,
+        "deich": 10
     },
     "MTENS": {
         "fiche": 20,

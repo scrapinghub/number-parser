@@ -2,8 +2,8 @@ info = {
     "UNIT_NUMBERS": {
         "nula": 0,
         "jeden": 1,
-        "jedno": 1,
         "jedna": 1,
+        "jedno": 1,
         "dva": 2,
         "dvě": 2,
         "tři": 3,
@@ -35,9 +35,9 @@ info = {
     },
     "MHUNDREDS": {},
     "MULTIPLIERS": {
-        "stě": 100,
-        "sta": 100,
         "set": 100,
+        "sta": 100,
+        "stě": 100,
         "tisíc": 1000,
         "tisíce": 1000,
         "milión": 1000000,

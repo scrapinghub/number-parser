@@ -1,8 +1,8 @@
 info = {
     "UNIT_NUMBERS": {
         "hwee": 0,
-        "koro": 1,
         "biako": 1,
+        "koro": 1,
         "abien": 2,
         "abiasa": 3,
         "anan": 4,

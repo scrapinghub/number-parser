@@ -1,8 +1,8 @@
 info = {
     "UNIT_NUMBERS": {
         "ɓolum": 0,
-        "goʼo": 1,
         "gooto": 1,
+        "goʼo": 1,
         "ɗiɗi": 2,
         "ɗiɗo": 2,
         "tati": 3,
@@ -11,8 +11,8 @@ info = {
         "nawo": 4,
         "jowi": 5,
         "njowo": 5,
-        "jeegoʼo": 6,
         "jeegomo": 6,
+        "jeegoʼo": 6,
         "jeeɗiɗi": 7,
         "jeeɗiɗo": 7,
         "jeetati": 8,

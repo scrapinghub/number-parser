@@ -2,8 +2,8 @@ info = {
     "UNIT_NUMBERS": {
         "nula": 0,
         "jedan": 1,
-        "jedno": 1,
         "jedna": 1,
+        "jedno": 1,
         "dva": 2,
         "dvije": 2,
         "tri": 3,
@@ -47,8 +47,8 @@ info = {
         "devetsto": 900
     },
     "MULTIPLIERS": {
-        "tisuće": 1000,
         "tisuća": 1000,
+        "tisuće": 1000,
         "milijun": 1000000,
         "milijuna": 1000000,
         "milijarda": 1000000000,

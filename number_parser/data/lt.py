@@ -1,24 +1,24 @@
 info = {
     "UNIT_NUMBERS": {
         "nulis": 0,
-        "vienas": 1,
         "viena": 1,
-        "dvi": 2,
+        "vienas": 1,
         "du": 2,
+        "dvi": 2,
         "tris": 3,
         "trys": 3,
-        "keturias": 4,
         "keturi": 4,
-        "penkias": 5,
+        "keturias": 4,
         "penki": 5,
-        "šešias": 6,
+        "penkias": 5,
         "šeši": 6,
-        "septynias": 7,
+        "šešias": 6,
         "septyni": 7,
-        "aštuonias": 8,
+        "septynias": 7,
         "aštuoni": 8,
-        "devynias": 9,
-        "devyni": 9
+        "aštuonias": 8,
+        "devyni": 9,
+        "devynias": 9
     },
     "BASE_NUMBERS": {
         "dešimt": 10,

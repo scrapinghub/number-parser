@@ -27,8 +27,8 @@ info = {
     "MTENS": {},
     "MHUNDREDS": {},
     "MULTIPLIERS": {
-        "tusinde": 1000,
         "tusind": 1000,
+        "tusinde": 1000,
         "millioner": 1000000,
         "milliarder": 1000000000,
         "billioner": 1000000000000,

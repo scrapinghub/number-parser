@@ -1,12 +1,12 @@
 info = {
     "UNIT_NUMBERS": {
         "null": 0,
-        "eins": 1,
         "ein": 1,
         "eine": 1,
         "einen": 1,
         "einer": 1,
         "eines": 1,
+        "eins": 1,
         "zwei": 2,
         "drei": 3,
         "vier": 4,

@@ -36,22 +36,22 @@ info = {
         "noventa": 90
     },
     "MHUNDREDS": {
-        "duzentos": 200,
         "duzentas": 200,
-        "trezentos": 300,
+        "duzentos": 200,
         "trezentas": 300,
-        "quatrocentos": 400,
+        "trezentos": 300,
         "quatrocentas": 400,
-        "quinhentos": 500,
+        "quatrocentos": 400,
         "quinhentas": 500,
-        "seiscentos": 600,
+        "quinhentos": 500,
         "seiscentas": 600,
-        "setecentos": 700,
+        "seiscentos": 600,
         "setecentas": 700,
-        "oitocentos": 800,
+        "setecentos": 700,
         "oitocentas": 800,
-        "novecentos": 900,
-        "novecentas": 900
+        "oitocentos": 800,
+        "novecentas": 900,
+        "novecentos": 900
     },
     "MULTIPLIERS": {
         "mil": 1000,

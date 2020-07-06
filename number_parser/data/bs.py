@@ -2,8 +2,8 @@ info = {
     "UNIT_NUMBERS": {
         "nula": 0,
         "jedan": 1,
-        "jedno": 1,
         "jedinica": 1,
+        "jedno": 1,
         "dva": 2,
         "dve": 2,
         "tri": 3,
