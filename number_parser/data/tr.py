@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "sıfır": 0,

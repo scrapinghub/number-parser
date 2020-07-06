@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "zero": 0,
         "unu": 1,
+        "una": 1,
         "doi": 2,
+        "două": 2,
         "trei": 3,
         "patru": 4,
         "cinci": 5,
         "şase": 6,
         "şapte": 7,
         "opt": 8,
-        "nouă": 9,
-        "una": 1,
-        "două": 2
+        "nouă": 9
     },
     "BASE_NUMBERS": {
         "zece": 10,

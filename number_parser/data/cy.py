@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "dim": 0,
         "un": 1,
         "dau": 2,
+        "dwy": 2,
         "tri": 3,
+        "tair": 3,
         "pedwar": 4,
+        "pedair": 4,
         "pump": 5,
+        "pum": 5,
         "chwech": 6,
+        "chwe": 6,
         "saith": 7,
         "wyth": 8,
-        "naw": 9,
-        "pum": 5,
-        "chwe": 6,
-        "dwy": 2,
-        "tair": 3,
-        "pedair": 4
+        "naw": 9
     },
     "BASE_NUMBERS": {},
     "MTENS": {

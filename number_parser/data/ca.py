@@ -1,20 +1,18 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
-        "s": 0,
         "zero": 0,
         "u": 1,
         "un": 1,
+        "una": 1,
         "dos": 2,
+        "dues": 2,
         "tres": 3,
         "quatre": 4,
         "cinc": 5,
         "sis": 6,
         "set": 7,
         "vuit": 8,
-        "nou": 9,
-        "una": 1,
-        "dues": 2
+        "nou": 9
     },
     "BASE_NUMBERS": {
         "deu": 10,

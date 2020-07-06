@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "zero": 0,
         "një": 1,
         "dy": 2,
         "tre": 3,
+        "tri": 3,
         "katër": 4,
         "pesë": 5,
         "gjashtë": 6,
         "shtatë": 7,
         "tetë": 8,
-        "nëntë": 9,
-        "tri": 3
+        "nëntë": 9
     },
     "BASE_NUMBERS": {
         "dhjetë": 10

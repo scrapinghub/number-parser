@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "null": 0,
         "ein": 1,
+        "eitt": 1,
         "tveir": 2,
+        "tvey": 2,
+        "tvær": 2,
         "tríggir": 3,
+        "trý": 3,
+        "tríggjar": 3,
         "fýre": 4,
         "fimm": 5,
         "seks": 6,
         "sjey": 7,
         "átta": 8,
-        "níggju": 9,
-        "eitt": 1,
-        "tvey": 2,
-        "trý": 3,
-        "tvær": 2,
-        "tríggjar": 3
+        "níggju": 9
     },
     "BASE_NUMBERS": {
         "tíggju": 10,

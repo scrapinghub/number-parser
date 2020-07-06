@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "zéro": 0,
         "un": 1,
+        "une": 1,
         "deux": 2,
         "trois": 3,
         "quatre": 4,
@@ -10,8 +10,7 @@ info = {
         "six": 6,
         "sept": 7,
         "huit": 8,
-        "neuf": 9,
-        "une": 1
+        "neuf": 9
     },
     "BASE_NUMBERS": {
         "dix": 10,
@@ -34,13 +33,12 @@ info = {
     },
     "MHUNDREDS": {},
     "MULTIPLIERS": {
-        "cent>%%cents-m>": 100,
+        "cent": 100,
         "mille": 1000,
         "millions": 1000000,
         "milliards": 1000000000,
         "billions": 1000000000000,
-        "billiards": 1000000000000000,
-        "cent>%%cents-f>": 100
+        "billiards": 1000000000000000
     },
     "VALID_TOKENS": {}
 }

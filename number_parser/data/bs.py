@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "nula": 0,
         "jedan": 1,
+        "jedno": 1,
+        "jedinica": 1,
         "dva": 2,
+        "dve": 2,
         "tri": 3,
         "četiri": 4,
         "pet": 5,
         "šest": 6,
         "sedam": 7,
         "osam": 8,
-        "devet": 9,
-        "jedno": 1,
-        "jedinica": 1,
-        "dve": 2
+        "devet": 9
     },
     "BASE_NUMBERS": {
         "deset": 10,

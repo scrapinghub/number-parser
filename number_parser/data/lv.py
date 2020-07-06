@@ -1,23 +1,22 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "nulle": 0,
         "viens": 1,
+        "viena": 1,
         "divi": 2,
+        "divas": 2,
         "trīs": 3,
         "četri": 4,
-        "pieci": 5,
-        "seši": 6,
-        "septiņi": 7,
-        "astoņi": 8,
-        "deviņi": 9,
-        "viena": 1,
-        "divas": 2,
         "četras": 4,
+        "pieci": 5,
         "piecas": 5,
+        "seši": 6,
         "sešas": 6,
+        "septiņi": 7,
         "septiņas": 7,
+        "astoņi": 8,
         "astoņas": 8,
+        "deviņi": 9,
         "deviņas": 9
     },
     "BASE_NUMBERS": {

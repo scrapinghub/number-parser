@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "ꮭ ꭺꮝꮧ": 0,
@@ -25,14 +24,14 @@ info = {
         "ꮠꮑꮃꮪ": 19
     },
     "MTENS": {
-        "ꮤꮅꮝꭺ>%%spellout-tens>": 20,
-        "ꮶꭲꮝꭺ>%%spellout-tens>": 30,
-        "ꮕꭹꮝꭺ>%%spellout-tens>": 40,
-        "ꭿꮝꭹꮝꭺ>%%spellout-tens>": 50,
-        "ꮡꮣꮅꮝꭺ>%%spellout-tens>": 60,
-        "ꭶꮅꮖꮝꭺ>%%spellout-tens>": 70,
-        "ꮷꮑꮃꮝꭺ>%%spellout-tens>": 80,
-        "ꮠꮑꮃꮝꭺ>%%spellout-tens>": 90
+        "ꮤꮅꮝꭺ": 20,
+        "ꮶꭲꮝꭺ": 30,
+        "ꮕꭹꮝꭺ": 40,
+        "ꭿꮝꭹꮝꭺ": 50,
+        "ꮡꮣꮅꮝꭺ": 60,
+        "ꭶꮅꮖꮝꭺ": 70,
+        "ꮷꮑꮃꮝꭺ": 80,
+        "ꮠꮑꮃꮝꭺ": 90
     },
     "MHUNDREDS": {},
     "MULTIPLIERS": {

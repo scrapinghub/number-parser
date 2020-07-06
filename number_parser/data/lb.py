@@ -1,19 +1,18 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "null": 0,
         "eent": 1,
+        "eng": 1,
+        "een": 1,
         "zwee": 2,
+        "zwou": 2,
         "dräi": 3,
         "véier": 4,
         "fënnef": 5,
         "sechs": 6,
         "siwen": 7,
         "aacht": 8,
-        "néng": 9,
-        "eng": 1,
-        "zwou": 2,
-        "een": 1
+        "néng": 9
     },
     "BASE_NUMBERS": {
         "zéng": 10,

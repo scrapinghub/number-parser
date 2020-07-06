@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "zero": 0,
         "um": 1,
+        "uma": 1,
         "dois": 2,
+        "duas": 2,
         "três": 3,
         "quatro": 4,
         "cinco": 5,
         "seis": 6,
         "sete": 7,
         "oito": 8,
-        "nove": 9,
-        "uma": 1,
-        "duas": 2
+        "nove": 9
     },
     "BASE_NUMBERS": {
         "dez": 10,
@@ -38,20 +37,20 @@ info = {
     },
     "MHUNDREDS": {
         "duzentos": 200,
-        "trezentos": 300,
-        "quatrocentos": 400,
-        "quinhentos": 500,
-        "seiscentos": 600,
-        "setecentos": 700,
-        "oitocentos": 800,
-        "novecentos": 900,
         "duzentas": 200,
+        "trezentos": 300,
         "trezentas": 300,
+        "quatrocentos": 400,
         "quatrocentas": 400,
+        "quinhentos": 500,
         "quinhentas": 500,
+        "seiscentos": 600,
         "seiscentas": 600,
+        "setecentos": 700,
         "setecentas": 700,
+        "oitocentos": 800,
         "oitocentas": 800,
+        "novecentos": 900,
         "novecentas": 900
     },
     "MULTIPLIERS": {

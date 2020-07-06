@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "noll": 0,
         "ett": 1,
+        "et": 1,
+        "en": 1,
         "två": 2,
         "tre": 3,
         "fyra": 4,
@@ -10,9 +11,7 @@ info = {
         "sex": 6,
         "sju": 7,
         "åtta": 8,
-        "nio": 9,
-        "et": 1,
-        "en": 1
+        "nio": 9
     },
     "BASE_NUMBERS": {
         "tio": 10,

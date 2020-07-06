@@ -1,8 +1,9 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "zero": 0,
         "uno": 1,
+        "un": 1,
+        "una": 1,
         "due": 2,
         "tre": 3,
         "quattro": 4,
@@ -10,9 +11,7 @@ info = {
         "sei": 6,
         "sette": 7,
         "otto": 8,
-        "nove": 9,
-        "un": 1,
-        "una": 1
+        "nove": 9
     },
     "BASE_NUMBERS": {
         "dieci": 10,
@@ -27,30 +26,14 @@ info = {
         "diciannove": 19
     },
     "MTENS": {
-        "vent>%%msco-with-i>": 20,
-        "trent>%%msco-with-a>": 30,
-        "quarant>%%msco-with-a>": 40,
-        "cinquant>%%msco-with-a>": 50,
-        "sessant>%%msco-with-a>": 60,
-        "settant>%%msco-with-a>": 70,
-        "ottant>%%msco-with-a>": 80,
-        "novant>%%msco-with-a>": 90,
-        "vent>%%msc-with-i>": 20,
-        "trent>%%msc-with-a>": 30,
-        "quarant>%%msc-with-a>": 40,
-        "cinquant>%%msc-with-a>": 50,
-        "sessant>%%msc-with-a>": 60,
-        "settant>%%msc-with-a>": 70,
-        "ottant>%%msc-with-a>": 80,
-        "novant>%%msc-with-a>": 90,
-        "vent>%%fem-with-i>": 20,
-        "trent>%%fem-with-a>": 30,
-        "quarant>%%fem-with-a>": 40,
-        "cinquant>%%fem-with-a>": 50,
-        "sessant>%%fem-with-a>": 60,
-        "settant>%%fem-with-a>": 70,
-        "ottant>%%fem-with-a>": 80,
-        "novant>%%fem-with-a>": 90
+        "vent": 20,
+        "trent": 30,
+        "quarant": 40,
+        "cinquant": 50,
+        "sessant": 60,
+        "settant": 70,
+        "ottant": 80,
+        "novant": 90
     },
     "MHUNDREDS": {},
     "MULTIPLIERS": {

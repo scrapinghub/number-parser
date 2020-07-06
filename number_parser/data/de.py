@@ -1,8 +1,12 @@
-# -*- coding: utf-8 -*-
 info = {
     "UNIT_NUMBERS": {
         "null": 0,
         "eins": 1,
+        "ein": 1,
+        "eine": 1,
+        "einen": 1,
+        "einer": 1,
+        "eines": 1,
         "zwei": 2,
         "drei": 3,
         "vier": 4,
@@ -10,12 +14,7 @@ info = {
         "sechs": 6,
         "sieben": 7,
         "acht": 8,
-        "neun": 9,
-        "ein": 1,
-        "eine": 1,
-        "einen": 1,
-        "einer": 1,
-        "eines": 1
+        "neun": 9
     },
     "BASE_NUMBERS": {
         "zehn": 10,
