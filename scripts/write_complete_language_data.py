@@ -87,7 +87,6 @@ def _add_multiplier_words(number, word, language_data):
             if power_of_10 >= 2:
                 language_data["MULTIPLIERS"][valid_word] = power_of_10_num
         return
-    valid_word = ""
     if "[" in required_part:
         valid_word = required_part.split("[")[0].strip()
     else:
