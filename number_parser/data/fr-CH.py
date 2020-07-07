@@ -12,7 +12,7 @@ info = {
         "huit": 8,
         "neuf": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "dix": 10,
         "onze": 11,
         "douze": 12,
@@ -21,7 +21,7 @@ info = {
         "quinze": 15,
         "seize": 16
     },
-    "MTENS": {
+    "TENS": {
         "vingt": 20,
         "trente": 30,
         "quarante": 40,
@@ -31,8 +31,8 @@ info = {
         "huitante": 80,
         "nonante": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "cent": 100,
         "mille": 1000,
         "millions": 1000000,
@@ -40,5 +40,5 @@ info = {
         "billions": 1000000000000,
         "billiards": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

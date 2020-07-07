@@ -11,11 +11,11 @@ info = {
         "ရှစ်": 8,
         "ကိုး": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "ဆယ်": 10
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

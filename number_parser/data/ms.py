@@ -11,13 +11,13 @@ info = {
         "lapan": 8,
         "sembilan": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "sepuluh": 10,
         "sebelas": 11
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "ratus": 100,
         "ribu": 1000,
         "juta": 1000000,
@@ -25,5 +25,5 @@ info = {
         "trilion": 1000000000000,
         "kuadrilion": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

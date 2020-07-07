@@ -23,11 +23,11 @@ info = {
         "a naoi": 9,
         "naoi": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "a deich": 10,
         "deich": 10
     },
-    "MTENS": {
+    "TENS": {
         "fiche": 20,
         "tríocha": 30,
         "daichead": 40,
@@ -37,7 +37,7 @@ info = {
         "ochtó": 80,
         "nócha": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

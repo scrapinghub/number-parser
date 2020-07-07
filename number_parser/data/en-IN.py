@@ -11,7 +11,7 @@ info = {
         "eight": 8,
         "nine": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "ten": 10,
         "eleven": 11,
         "twelve": 12,
@@ -23,7 +23,7 @@ info = {
         "eighteen": 18,
         "nineteen": 19
     },
-    "MTENS": {
+    "TENS": {
         "twenty": 20,
         "thirty": 30,
         "forty": 40,
@@ -33,8 +33,8 @@ info = {
         "eighty": 80,
         "ninety": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "hundred": 100,
         "thousand": 1000,
         "lakh": 100000,
@@ -42,5 +42,5 @@ info = {
         "trillion": 1000000000000,
         "quadrillion": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

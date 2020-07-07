@@ -11,10 +11,10 @@ info = {
         "pusaq": 8,
         "isqun": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "pachak": 100,
         "waranqa": 1000,
         "hunu": 1000000,
@@ -22,5 +22,5 @@ info = {
         "trilionu": 1000000000000,
         "kvadrilionu": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

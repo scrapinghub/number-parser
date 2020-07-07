@@ -11,8 +11,8 @@ info = {
         "ប្រាំបី": 8,
         "ប្រាំបួន": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {
         "ម្ភៃ": 20,
         "សាមសិប": 30,
         "សែសិប": 40,
@@ -22,7 +22,7 @@ info = {
         "ប៉ែតសិប": 80,
         "កៅសិប": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

@@ -20,7 +20,7 @@ info = {
         "disaʼ": 9,
         "disgħa": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "għaxar": 10,
         "għaxra": 10,
         "ħdax": 11,
@@ -42,11 +42,11 @@ info = {
         "dsatax": 19,
         "dsatax-il": 19
     },
-    "MTENS": {},
-    "MHUNDREDS": {
+    "TENS": {},
+    "HUNDREDS": {
         "mitejn": 200
     },
-    "MULTIPLIERS": {
+    "BIG_POWERS_OF_TEN": {
         "mija": 100,
         "elef": 1000,
         "miljuni": 1000000,
@@ -54,5 +54,5 @@ info = {
         "triljuni": 1000000000000,
         "kvadriljuni": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

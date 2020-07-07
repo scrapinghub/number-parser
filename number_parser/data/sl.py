@@ -13,7 +13,7 @@ info = {
         "osem": 8,
         "devet": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "deset": 10,
         "enajst": 11,
         "dvanajst": 12,
@@ -25,10 +25,10 @@ info = {
         "asemnajst": 18,
         "devetnajst": 19
     },
-    "MTENS": {
+    "TENS": {
         "dvaset": 20
     },
-    "MHUNDREDS": {
+    "HUNDREDS": {
         "dvjesto": 200,
         "tristo": 300,
         "štiristo": 400,
@@ -38,7 +38,7 @@ info = {
         "osemsto": 800,
         "devetsto": 900
     },
-    "MULTIPLIERS": {
+    "BIG_POWERS_OF_TEN": {
         "tisuće": 1000,
         "tisuću": 1000,
         "milijun": 1000000,
@@ -50,5 +50,5 @@ info = {
         "biliarda": 1000000000000000,
         "biliardy": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

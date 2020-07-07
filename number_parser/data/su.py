@@ -12,12 +12,12 @@ info = {
         "dalapan": 8,
         "salapan": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "sapuluh": 10,
         "sabelas": 11
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

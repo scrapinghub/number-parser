@@ -11,11 +11,11 @@ info = {
         "แปด": 8,
         "เก้า": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {
         "ยี่​สิบ": 20
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

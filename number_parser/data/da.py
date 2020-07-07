@@ -12,7 +12,7 @@ info = {
         "otte": 8,
         "ni": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "ti": 10,
         "elleve": 11,
         "tolv": 12,
@@ -24,9 +24,9 @@ info = {
         "atten": 18,
         "nitten": 19
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "tusind": 1000,
         "tusinde": 1000,
         "millioner": 1000000,
@@ -34,5 +34,5 @@ info = {
         "billioner": 1000000000000,
         "billiarder": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

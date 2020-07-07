@@ -13,7 +13,7 @@ info = {
         "ocho": 8,
         "nueve": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "diez": 10,
         "once": 11,
         "doce": 12,
@@ -37,7 +37,7 @@ info = {
         "veintiocho": 28,
         "veintinueve": 29
     },
-    "MTENS": {
+    "TENS": {
         "treinta": 30,
         "cuarenta": 40,
         "cincuenta": 50,
@@ -46,7 +46,7 @@ info = {
         "ochenta": 80,
         "noventa": 90
     },
-    "MHUNDREDS": {
+    "HUNDREDS": {
         "ciento": 100,
         "doscientos": 200,
         "dos­cientas": 200,
@@ -69,14 +69,12 @@ info = {
         "nove­cientas": 900,
         "nove­cientos": 900
     },
-    "MULTIPLIERS": {
+    "BIG_POWERS_OF_TEN": {
         "mil": 1000,
         "millones": 1000000,
         "billones": 1000000000000
     },
-    "VALID_TOKENS": {
-        "tokens": [
-            "y"
-        ]
-    }
+    "SKIP_TOKENS": [
+        "y"
+    ]
 }

@@ -208,7 +208,7 @@ info = {
         "yhdeksää": 9,
         "yhdeksään": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "kymmeneen": 10,
         "kymmeneksi": 10,
         "kymmenelle": 10,
@@ -230,9 +230,9 @@ info = {
         "kymmeniä": 10,
         "kymmentä": 10
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "miljoona": 1000000,
         "miljoonaa": 1000000,
         "miljoonaan": 1000000,
@@ -297,5 +297,5 @@ info = {
         "biljoonissa": 1000000000000,
         "biljoonista": 1000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

@@ -19,7 +19,7 @@ info = {
         "átta": 8,
         "níu": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "tíu": 10,
         "ellefu": 11,
         "tólf": 12,
@@ -31,7 +31,7 @@ info = {
         "átján": 18,
         "nítján": 19
     },
-    "MTENS": {
+    "TENS": {
         "tuttugu": 20,
         "þrjátíu": 30,
         "fjörutíu": 40,
@@ -41,13 +41,13 @@ info = {
         "áttatíu": 80,
         "níutíu": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "þúsund": 1000,
         "milliónur": 1000000,
         "milliarður": 1000000000,
         "billiónur": 1000000000000,
         "billiarður": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

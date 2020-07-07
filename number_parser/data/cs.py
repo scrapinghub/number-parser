@@ -14,7 +14,7 @@ info = {
         "osm": 8,
         "devět": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "deset": 10,
         "jedenáct": 11,
         "dvanáct": 12,
@@ -26,15 +26,15 @@ info = {
         "osmnáct": 18,
         "devatenáct": 19
     },
-    "MTENS": {
+    "TENS": {
         "padesát": 50,
         "šedesát": 60,
         "sedmdesát": 70,
         "osmdesát": 80,
         "devadesát": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "set": 100,
         "sta": 100,
         "stě": 100,
@@ -53,5 +53,5 @@ info = {
         "biliardy": 1000000000000000,
         "biliardů": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

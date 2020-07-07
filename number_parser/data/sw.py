@@ -11,8 +11,8 @@ info = {
         "nane": 8,
         "tisa": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {
         "ishirini": 20,
         "thelathini": 30,
         "arobaini": 40,
@@ -22,7 +22,7 @@ info = {
         "themanini": 80,
         "tisini": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

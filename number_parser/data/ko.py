@@ -25,10 +25,10 @@ info = {
         "구": 9,
         "아홉": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "스무": 20
     },
-    "MTENS": {
+    "TENS": {
         "스물": 20,
         "서른": 30,
         "마흔": 40,
@@ -38,7 +38,7 @@ info = {
         "여든": 80,
         "아흔": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

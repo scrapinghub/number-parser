@@ -16,20 +16,20 @@ info = {
         "acht": 8,
         "neun": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "zehn": 10,
         "elf": 11,
         "zwölf": 12,
         "sechzehn": 16,
         "siebzehn": 17
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "Millionen": 1000000,
         "Milliarden": 1000000000,
         "Billionen": 1000000000000,
         "Billiarden": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

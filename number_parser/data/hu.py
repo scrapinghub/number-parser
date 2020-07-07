@@ -12,11 +12,11 @@ info = {
         "nyolc": 8,
         "kilenc": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "tíz": 10,
         "húsz": 20
     },
-    "MTENS": {
+    "TENS": {
         "harminc": 30,
         "negyven": 40,
         "ötven": 50,
@@ -25,7 +25,7 @@ info = {
         "nyolcvan": 80,
         "kilencven": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

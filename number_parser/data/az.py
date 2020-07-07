@@ -11,8 +11,8 @@ info = {
         "səkkiz": 8,
         "doqquz": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {
         "iyirmi": 20,
         "otuz": 30,
         "qırx": 40,
@@ -22,8 +22,8 @@ info = {
         "səqsən": 80,
         "doxsan": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "yüz": 100,
         "min": 1000,
         "milyon": 1000000,
@@ -31,5 +31,5 @@ info = {
         "trilyon": 1000000000000,
         "katrilyon": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

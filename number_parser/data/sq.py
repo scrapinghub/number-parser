@@ -12,21 +12,21 @@ info = {
         "tetë": 8,
         "nëntë": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "dhjetë": 10
     },
-    "MTENS": {
+    "TENS": {
         "njëzet": 20,
         "tridhjetë": 30,
         "dyzet": 40
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "mijë": 1000,
         "milionë": 1000000,
         "miliarë": 1000000000,
         "bilionë": 1000000000000,
         "biliarë": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

@@ -11,12 +11,12 @@ info = {
         "kaheksa": 8,
         "üheksa": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "kümme": 10
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "tuhat": 1000,
         "miljon": 1000000,
         "miljonit": 1000000,
@@ -27,5 +27,5 @@ info = {
         "biljard": 1000000000000000,
         "biljardit": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

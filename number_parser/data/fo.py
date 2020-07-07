@@ -16,7 +16,7 @@ info = {
         "átta": 8,
         "níggju": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "tíggju": 10,
         "ellivu": 11,
         "tólv": 12,
@@ -28,7 +28,7 @@ info = {
         "átjan": 18,
         "nítjan": 19
     },
-    "MTENS": {
+    "TENS": {
         "tjúgo": 20,
         "tríati": 30,
         "fýrati": 40,
@@ -38,13 +38,13 @@ info = {
         "áttati": 80,
         "níti": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "tusin": 1000,
         "millióner": 1000000,
         "milliarder": 1000000000,
         "billióner": 1000000000000,
         "billiarder": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

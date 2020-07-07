@@ -11,7 +11,7 @@ info = {
         "agt": 8,
         "nege": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "tien": 10,
         "elf": 11,
         "twaalf": 12,
@@ -23,13 +23,13 @@ info = {
         "agttien": 18,
         "negentien": 19
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "miljoen": 1000000,
         "miljard": 1000000000,
         "biljoen": 1000000000000,
         "biljard": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

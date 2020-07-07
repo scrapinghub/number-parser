@@ -16,12 +16,12 @@ info = {
         "wyth": 8,
         "naw": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {
         "dau ddeg": 20
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "cant": 100,
         "mil": 1000,
         "miliwn": 1000000,
@@ -29,5 +29,5 @@ info = {
         "triliwn": 1000000000000,
         "kwadriliwn": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

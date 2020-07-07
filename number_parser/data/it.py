@@ -13,7 +13,7 @@ info = {
         "otto": 8,
         "nove": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "dieci": 10,
         "undici": 11,
         "dodici": 12,
@@ -25,7 +25,7 @@ info = {
         "diciotto": 18,
         "diciannove": 19
     },
-    "MTENS": {
+    "TENS": {
         "vent": 20,
         "trent": 30,
         "quarant": 40,
@@ -35,12 +35,12 @@ info = {
         "ottant": 80,
         "novant": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "milioni": 1000000,
         "miliardi": 1000000000,
         "bilioni": 1000000000000,
         "biliardi": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

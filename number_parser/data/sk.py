@@ -14,7 +14,7 @@ info = {
         "osem": 8,
         "deväť": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "desať": 10,
         "jedenásť": 11,
         "dvanásť": 12,
@@ -26,13 +26,13 @@ info = {
         "osemnásť": 18,
         "devätnásť": 19
     },
-    "MTENS": {
+    "TENS": {
         "dvadsať": 20,
         "tridsať": 30,
         "štyridsať": 40
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "tisíc": 1000,
         "milión": 1000000,
         "miliónov": 1000000,
@@ -47,5 +47,5 @@ info = {
         "biliardov": 1000000000000000,
         "biliardy": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

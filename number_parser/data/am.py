@@ -11,10 +11,10 @@ info = {
         "ስምንት": 8,
         "ዘጠኝ": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "መቶ": 100,
         "ሺ": 1000,
         "ሚሊዮን": 1000000,
@@ -22,5 +22,5 @@ info = {
         "ቲሪሊዮን": 1000000000000,
         "ቈዲሪሊዮን": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

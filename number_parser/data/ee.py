@@ -3,9 +3,9 @@ info = {
         "ɖekeo": 0,
         "ɖeka": 1
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "DIRECT_NUMBERS": {},
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }
