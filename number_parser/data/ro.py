@@ -13,13 +13,13 @@ info = {
         "opt": 8,
         "nouă": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "zece": 10,
         "unsprezece": 11
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "sute": 100,
         "mii": 1000,
         "milioane": 1000000,
@@ -31,5 +31,5 @@ info = {
         "biliard": 1000000000000000,
         "biliarde": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

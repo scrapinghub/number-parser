@@ -11,7 +11,7 @@ info = {
         "arfineq-pingasut": 8,
         "arfineq-sisamat": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "qulit": 10,
         "aqqanilit": 11,
         "aqqaneq-marluk": 12,
@@ -23,9 +23,9 @@ info = {
         "arfersaneq-pingasut": 18,
         "arfersaneq-sisamat": 19
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "uutritillit": 100,
         "tuusintillit": 1000,
         "millionillit": 1000000,
@@ -33,5 +33,5 @@ info = {
         "billioniillit": 1000000000000,
         "billiardillit": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

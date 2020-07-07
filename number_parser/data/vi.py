@@ -11,14 +11,14 @@ info = {
         "tám": 8,
         "chín": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "trăm": 100,
         "nghìn": 1000,
         "triệu": 1000000,
         "tỷ": 1000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

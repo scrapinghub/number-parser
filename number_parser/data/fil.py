@@ -11,12 +11,12 @@ info = {
         "waló": 8,
         "siyám": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "sampû": 10
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "daán": 100,
         "libó": 1000,
         "milyón": 1000000,
@@ -24,5 +24,5 @@ info = {
         "trilyón": 1000000000000,
         "katrilyón": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

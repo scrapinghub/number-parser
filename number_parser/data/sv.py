@@ -13,7 +13,7 @@ info = {
         "åtta": 8,
         "nio": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "tio": 10,
         "elva": 11,
         "tolv": 12,
@@ -25,7 +25,7 @@ info = {
         "arton": 18,
         "nitton": 19
     },
-    "MTENS": {
+    "TENS": {
         "tjugo": 20,
         "trettio": 30,
         "fyrtio": 40,
@@ -35,12 +35,12 @@ info = {
         "åttio": 80,
         "nittio": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "miljoner": 1000000,
         "miljarder": 1000000000,
         "biljoner": 1000000000000,
         "biljarder": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

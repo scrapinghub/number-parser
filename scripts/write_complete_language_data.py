@@ -15,7 +15,7 @@ TARGET_PATH = "../number_parser/data/"
 VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]
 INVALID_KEYS = ["cents"]
 CAPTURE_BRACKET_CONTENT = r'\{(.*?)\}'
-REQUIRED_DATA_POINTS = ["UNIT_NUMBERS", "BASE_NUMBERS", "MTENS", "MHUNDREDS", "MULTIPLIERS", "VALID_TOKENS"]
+REQUIRED_NUMBERS_DATA = ["UNIT_NUMBERS", "DIRECT_NUMBERS", "TENS", "HUNDREDS", "BIG_POWERS_OF_TEN"]
 
 
 def _is_valid(key):
@@ -37,7 +37,7 @@ def _add_base_words(number, word, language_data):
     if number <= 9:
         language_data["UNIT_NUMBERS"][word] = number
     elif number <= 99:
-        language_data["BASE_NUMBERS"][word] = number
+        language_data["DIRECT_NUMBERS"][word] = number
 
 
 def _count_zero(number):
@@ -68,9 +68,9 @@ def _add_compound_words(number, word, language_data):
         return
 
     if power_of_10 == 1:
-        language_data["MTENS"][root_word] = number
+        language_data["TENS"][root_word] = number
     elif power_of_10 == 2:
-        language_data["MHUNDREDS"][root_word] = number
+        language_data["HUNDREDS"][root_word] = number
 
 
 def _add_multiplier_words(number, word, language_data):
@@ -85,7 +85,7 @@ def _add_multiplier_words(number, word, language_data):
         for valid_word in valid_words:
             power_of_10_num = pow(10, power_of_10)
             if power_of_10 >= 2:
-                language_data["MULTIPLIERS"][valid_word] = power_of_10_num
+                language_data["BIG_POWERS_OF_TEN"][valid_word] = power_of_10_num
         return
     if "[" in required_part:
         valid_word = required_part.split("[")[0].strip()
@@ -94,7 +94,7 @@ def _add_multiplier_words(number, word, language_data):
 
     power_of_10_num = pow(10, power_of_10)
     if power_of_10 >= 2:
-        language_data["MULTIPLIERS"][valid_word] = power_of_10_num
+        language_data["BIG_POWERS_OF_TEN"][valid_word] = power_of_10_num
 
 
 def _extract_information(key, word, language_data):
@@ -129,9 +129,8 @@ def write_complete_data():
         full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0]+".py")
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
-        language_data = {key: {} for key in REQUIRED_DATA_POINTS}
-        ordered_language_data = OrderedDict((key, {}) for key in REQUIRED_DATA_POINTS)
-
+        language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
+        ordered_language_data = OrderedDict((key, {}) for key in REQUIRED_NUMBERS_DATA)
         with open(full_source_path, 'r') as source:
             data = json.load(source)
             try:
@@ -147,13 +146,14 @@ def write_complete_data():
 
         with open(full_supplementary_path, 'r') as supplementary_data:
             data = json.load(supplementary_data)
-            for keys in REQUIRED_DATA_POINTS:
+            for keys in REQUIRED_NUMBERS_DATA:
                 language_data[keys].update(data[keys])
                 sorted_tuples = sorted(language_data[keys].items(), key=lambda x: (x[1], x[0]))
                 for items in sorted_tuples:
                     word, number = items[0], items[1]
                     ordered_language_data[keys][word] = number
-
+            skip_tokens = sorted(data["SKIP_TOKENS"])
+        ordered_language_data["SKIP_TOKENS"] = skip_tokens
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
         out_text = ('info = ' + translation_data + '\n')
         with open(full_target_path, 'w+') as target_file:

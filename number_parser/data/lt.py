@@ -20,20 +20,20 @@ info = {
         "devyni": 9,
         "devynias": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "dešimt": 10,
         "vienuolika": 11,
         "dvylika": 12,
         "trylika": 13
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "šimtai": 100,
         "milijonų": 1000000,
         "milijardų": 1000000000,
         "trilijonų": 1000000000000,
         "kvadrilijonų": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

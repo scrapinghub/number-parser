@@ -14,7 +14,7 @@ info = {
         "osam": 8,
         "devet": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "deset": 10,
         "jedenaest": 11,
         "dvanaest": 12,
@@ -26,7 +26,7 @@ info = {
         "osamnaest": 18,
         "devetnaest": 19
     },
-    "MTENS": {
+    "TENS": {
         "dvadeset": 20,
         "trideset": 30,
         "četrdeset": 40,
@@ -36,7 +36,7 @@ info = {
         "osamdeset": 80,
         "devedeset": 90
     },
-    "MHUNDREDS": {
+    "HUNDREDS": {
         "dvesta": 200,
         "trista": 300,
         "četristo": 400,
@@ -46,12 +46,12 @@ info = {
         "osamsto": 800,
         "devetsto": 900
     },
-    "MULTIPLIERS": {
+    "BIG_POWERS_OF_TEN": {
         "hiljada": 1000,
         "milion": 1000000,
         "miliard": 1000000000,
         "bilion": 1000000000000,
         "biliard": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

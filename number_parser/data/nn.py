@@ -12,7 +12,7 @@ info = {
         "åtte": 8,
         "ni": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "ti": 10,
         "elleve": 11,
         "tolv": 12,
@@ -24,7 +24,7 @@ info = {
         "atten": 18,
         "nitten": 19
     },
-    "MTENS": {
+    "TENS": {
         "tjue": 20,
         "tretti": 30,
         "førti": 40,
@@ -34,8 +34,8 @@ info = {
         "åtti": 80,
         "nitti": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "hundre": 100,
         "tusen": 1000,
         "millionar": 1000000,
@@ -43,5 +43,5 @@ info = {
         "billionar": 1000000000000,
         "biliardar": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

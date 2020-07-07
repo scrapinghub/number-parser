@@ -1,6 +1,6 @@
 {
     "UNIT_NUMBERS": {},
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "diecisiete": 17,
         "dieciocho": 18,
         "diecinueve": 19,
@@ -8,12 +8,12 @@
         "veintiocho": 28,
         "veintinueve": 29
     },
-    "MTENS": {},
-    "MHUNDREDS": {
+    "TENS": {},
+    "HUNDREDS": {
         "ciento": 100
     },
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {
-        "tokens":["y"]
-    }
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": [
+        "y"
+    ]
 }

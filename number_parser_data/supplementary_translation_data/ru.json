@@ -1,8 +1,8 @@
 {
     "UNIT_NUMBERS": {},
-    "BASE_NUMBERS": {},
-    "MTENS": {},
-    "MHUNDREDS": {
+    "DIRECT_NUMBERS": {},
+    "TENS": {},
+    "HUNDREDS": {
         "сто": 100,
         "двести": 200,
         "триста": 300,
@@ -13,6 +13,6 @@
         "восемьсот": 800,
         "девятьсот": 900
     },
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

@@ -22,9 +22,9 @@ info = {
         "九": 9,
         "玖": 9
     },
-    "BASE_NUMBERS": {},
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {},
-    "VALID_TOKENS": {}
+    "DIRECT_NUMBERS": {},
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {},
+    "SKIP_TOKENS": []
 }

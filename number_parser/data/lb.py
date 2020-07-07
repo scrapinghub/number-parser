@@ -14,7 +14,7 @@ info = {
         "aacht": 8,
         "néng": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "zéng": 10,
         "eelef": 11,
         "zwielef": 12,
@@ -26,9 +26,9 @@ info = {
         "uechtzéng": 18,
         "nonzéng": 19
     },
-    "MTENS": {},
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "TENS": {},
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "Millioun": 1000000,
         "Milliounen": 1000000,
         "Milliard": 1000000000,
@@ -38,5 +38,5 @@ info = {
         "Billiard": 1000000000000000,
         "Billiarden": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

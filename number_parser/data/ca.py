@@ -14,7 +14,7 @@ info = {
         "vuit": 8,
         "nou": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "deu": 10,
         "onze": 11,
         "dotze": 12,
@@ -26,7 +26,7 @@ info = {
         "divuit": 18,
         "dinou": 19
     },
-    "MTENS": {
+    "TENS": {
         "vint": 20,
         "trenta": 30,
         "quaranta": 40,
@@ -36,13 +36,13 @@ info = {
         "vuitanta": 80,
         "noranta": 90
     },
-    "MHUNDREDS": {},
-    "MULTIPLIERS": {
+    "HUNDREDS": {},
+    "BIG_POWERS_OF_TEN": {
         "mil": 1000,
         "milions": 1000000,
         "miliards": 1000000000,
         "bilions": 1000000000000,
         "biliards": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }

@@ -64,7 +64,7 @@ info = {
         "dziewięćdziesiąt": 9,
         "dziewięćdziesięciu": 9
     },
-    "BASE_NUMBERS": {
+    "DIRECT_NUMBERS": {
         "dziesięcioma": 10,
         "dziesięciu": 10,
         "dziesięć": 10,
@@ -96,7 +96,7 @@ info = {
         "dziewiętnastu": 19,
         "dziewiętnaście": 19
     },
-    "MTENS": {
+    "TENS": {
         "dwudziestoma": 20,
         "trzydziestoma": 30,
         "czterdziestoma": 40,
@@ -106,11 +106,11 @@ info = {
         "osiemdziesięcioma": 80,
         "dziewięćdziesięcioma": 90
     },
-    "MHUNDREDS": {
+    "HUNDREDS": {
         "dwieście": 200,
         "dwustu": 200
     },
-    "MULTIPLIERS": {
+    "BIG_POWERS_OF_TEN": {
         "tysiącach": 1000,
         "tysiącami": 1000,
         "tysiące": 1000,
@@ -137,5 +137,5 @@ info = {
         "biliardy": 1000000000000000,
         "biliardów": 1000000000000000
     },
-    "VALID_TOKENS": {}
+    "SKIP_TOKENS": []
 }
