@@ -37,14 +37,14 @@ def _check_validity(current_token, previous_token, lang):
         return False
 
     elif current_token in lang.tens:
-        if (previous_token in lang.tens) or (previous_token in lang.unit_and_direct_numbers):
+        if previous_token in lang.tens or previous_token in lang.unit_and_direct_numbers:
             return False
 
-    elif (current_token in lang.hundreds):
+    elif current_token in lang.hundreds:
         if previous_token not in lang.big_powers_of_ten and previous_token is not None:
             return False
 
-    elif (current_token in lang.big_powers_of_ten and previous_token in lang.big_powers_of_ten):
+    elif current_token in lang.big_powers_of_ten and previous_token in lang.big_powers_of_ten:
         if lang.big_powers_of_ten[current_token] > lang.big_powers_of_ten[previous_token]:
             return False
 
@@ -69,16 +69,16 @@ def _number_builder(token_list, lang):
             current_grp_value = 0
             previous_token = None
 
-        if (token in lang.unit_and_direct_numbers):
+        if token in lang.unit_and_direct_numbers:
             current_grp_value += lang.unit_and_direct_numbers[token]
 
-        elif (token in lang.tens):
+        elif token in lang.tens:
             current_grp_value += lang.tens[token]
 
-        elif (token in lang.hundreds):
+        elif token in lang.hundreds:
             current_grp_value += lang.hundreds[token]
 
-        elif (token in lang.big_powers_of_ten):
+        elif token in lang.big_powers_of_ten:
             if current_grp_value == 0:
                 current_grp_value = 1
 
@@ -114,7 +114,7 @@ def parse_number(input_string, language='en'):
         compare_token = token.lower()
         if compare_token in lang.all_numbers or compare_token.isspace() or len(compare_token) == 0:
             continue
-        if (compare_token in lang.skip_tokens) and (index != 0):
+        if compare_token in lang.skip_tokens and index != 0:
             continue
         return None
 
@@ -141,7 +141,7 @@ def parse(input_string, language='en'):
     for token in tokens:
         compare_token = token.lower()
 
-        if (compare_token.isspace() or compare_token == ""):
+        if compare_token.isspace() or compare_token == "":
             if not tokens_taken:
                 current_sentence.append(token)
             continue
@@ -159,7 +159,7 @@ def parse(input_string, language='en'):
             current_sentence = []
             continue
 
-        if ((compare_token in lang.all_numbers) or (compare_token in lang.skip_tokens and len(tokens_taken) != 0)):
+        if (compare_token in lang.all_numbers) or (compare_token in lang.skip_tokens and len(tokens_taken) != 0):
             tokens_taken.append(compare_token)
 
         else:
