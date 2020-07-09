@@ -1,10 +1,10 @@
 import re
-import os
-import json
 from importlib import import_module
+SENTENCE_SEPERATORS = [".", ","]
 
 
 class Language:
+    """Main language class to populate the requisite language-specific variables."""
     unit_numbers = {}
     direct_numbers = {}
     tens = {}
@@ -23,7 +23,8 @@ class Language:
         self.big_powers_of_ten = language_info["BIG_POWERS_OF_TEN"]
         self.skip_tokens = language_info["SKIP_TOKENS"]
 
-        self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens, **self.hundreds, **self.big_powers_of_ten}
+        self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
+                            **self.hundreds, **self.big_powers_of_ten}
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
 
 
@@ -94,8 +95,6 @@ def _number_builder(token_list, lang):
     value_list.append(str(total_value))
     return value_list
 
-SENTENCE_SEPERATORS = [".", ","]
-
 
 def _tokenize(input_string):
     """Breaks string on any non-word character."""
@@ -103,7 +102,7 @@ def _tokenize(input_string):
     return tokens
 
 
-def parse_number(input_string, language ='en'):
+def parse_number(input_string, language='en'):
     """Converts a single number written in natural language to a numeric type"""
     lang = Language(language)
     if input_string.isnumeric():
@@ -149,7 +148,7 @@ def parse(input_string, language='en'):
 
         if compare_token in SENTENCE_SEPERATORS:
             if tokens_taken:
-                myvalue = _number_builder(tokens_taken,lang)
+                myvalue = _number_builder(tokens_taken, lang)
                 for each_number in myvalue:
                     current_sentence.append(each_number)
                     current_sentence.append(" ")
@@ -165,7 +164,7 @@ def parse(input_string, language='en'):
 
         else:
             if tokens_taken:
-                myvalue = _number_builder(tokens_taken,lang)
+                myvalue = _number_builder(tokens_taken, lang)
                 for each_number in myvalue:
                     current_sentence.append(each_number)
                     current_sentence.append(" ")
@@ -173,7 +172,7 @@ def parse(input_string, language='en'):
             current_sentence.append(token)
 
     if tokens_taken:
-        myvalue = _number_builder(tokens_taken,lang)
+        myvalue = _number_builder(tokens_taken, lang)
         for each_number in myvalue:
             current_sentence.append(each_number)
             current_sentence.append(" ")
