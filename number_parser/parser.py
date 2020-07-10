@@ -70,7 +70,6 @@ def _build_number(token_list, lang_data):
             value_list.append(str(total_value))
             total_value = 0
             current_grp_value = 0
-            previous_token = None
 
         if token in lang_data.unit_and_direct_numbers:
             current_grp_value += lang_data.unit_and_direct_numbers[token]
@@ -147,7 +146,7 @@ def parse(input_string, language='en'):
                 current_sentence.append(token)
             continue
 
-        if compare_token in SENTENCE_SEPARATORS:
+        elif compare_token in SENTENCE_SEPARATORS:
             if tokens_taken:
                 myvalue = _build_number(tokens_taken, lang_data)
                 for each_number in myvalue:
@@ -160,7 +159,7 @@ def parse(input_string, language='en'):
             current_sentence = []
             continue
 
-        if (compare_token in lang_data.all_numbers or
+        elif (compare_token in lang_data.all_numbers or
                 (compare_token in lang_data.skip_tokens and len(tokens_taken) != 0)):
             tokens_taken.append(compare_token)
 
