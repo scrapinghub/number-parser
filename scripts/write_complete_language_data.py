@@ -142,6 +142,8 @@ def write_complete_data():
             for keys, vals in requisite_data.items():
                 if _is_valid(keys):
                     for key, val in vals.items():
+                        # Removing soft-hyphens from the source file.
+                        val = val.replace('\xad', '')
                         _extract_information(key, val, language_data)
 
         with open(full_supplementary_path, 'r') as supplementary_data:
