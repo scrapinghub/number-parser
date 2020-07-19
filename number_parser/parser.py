@@ -31,7 +31,7 @@ class LanguageData:
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
 
 
-def _check_validity(current_token, previous_token, total_value, current_grp_value, lang_data):
+def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):
     """Identifies whether the new token can continue building the previous number."""
     if current_token in lang_data.unit_and_direct_numbers and previous_token in lang_data.unit_and_direct_numbers:
         return False
@@ -51,8 +51,8 @@ def _check_validity(current_token, previous_token, total_value, current_grp_valu
         power_of_ten = lang_data.big_powers_of_ten[current_token]
         if power_of_ten < current_grp_value:
             return False
-        if power_of_ten != 100 and total_value != 0:
-            if power_of_ten * power_of_ten > total_value:
+        if total_value != 0 and previous_power_of_10 is not None:
+            if power_of_ten >= previous_power_of_10:
                 return False
     return True
 
@@ -73,24 +73,37 @@ def _build_number(token_list, lang_data):
     total_value = 0
     current_grp_value = 0
     previous_token = None
+    previous_power_of_10 = None
     value_list = []
+    used_skip_tokens = []
+
     for token in token_list:
-        if token.isspace():
+        if token.isspace() or token == "":
             continue
+        if token in lang_data.skip_tokens:
+            used_skip_tokens.append(token)
+            continue
+
         is_large_multiplier = _check_large_multiplier(token, total_value, current_grp_value, lang_data)
         if is_large_multiplier:
             combined_value = total_value + current_grp_value
             total_value = combined_value * lang_data.big_powers_of_ten[token]
             previous_token = token
             current_grp_value = 0
+            used_skip_tokens = []
+            previous_power_of_10 = lang_data.big_powers_of_ten[token]
             continue
 
-        valid = _check_validity(token, previous_token, total_value, current_grp_value, lang_data)
+        valid = _check_validity(token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data)
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
             total_value = 0
             current_grp_value = 0
+            for skip_token in used_skip_tokens:
+                value_list.append(skip_token)
+            used_skip_tokens = []
+            previous_power_of_10 = None
 
         if token in lang_data.unit_and_direct_numbers:
             current_grp_value += lang_data.unit_and_direct_numbers[token]
@@ -107,12 +120,13 @@ def _build_number(token_list, lang_data):
                 current_grp_value = 1
 
             current_grp_value *= power_of_ten
-            if power_of_ten != 100:
+            if power_of_ten > 100:
                 total_value += current_grp_value
                 current_grp_value = 0
+                previous_power_of_10 = power_of_ten
 
         previous_token = token
-
+        used_skip_tokens = []
     total_value += current_grp_value
     value_list.append(str(total_value))
     return value_list
@@ -124,6 +138,10 @@ def _tokenize(input_string):
     return tokens
 
 
+def _normalize_tokens(token_list):
+    return [token.lower() for token in token_list]
+
+
 def parse_number(input_string, language='en'):
     """Converts a single number written in natural language to a numeric type"""
     lang_data = LanguageData(language)
@@ -131,16 +149,14 @@ def parse_number(input_string, language='en'):
         return int(input_string)
 
     tokens = _tokenize(input_string)
-    lower_case_tokens = []
-    for index, token in enumerate(tokens):
-        compare_token = token.lower()
-        lower_case_tokens.append(compare_token)
-        if compare_token in lang_data.all_numbers or compare_token.isspace() or len(compare_token) == 0:
+    normalized_tokens = _normalize_tokens(tokens)
+    for index, token in enumerate(normalized_tokens):
+        if token in lang_data.all_numbers or token.isspace() or len(token) == 0:
             continue
-        if compare_token in lang_data.skip_tokens and index != 0:
+        if token in lang_data.skip_tokens and index != 0:
             continue
         return None
-    number_built = _build_number(lower_case_tokens, lang_data)
+    number_built = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
         return int(number_built[0])
     return None
