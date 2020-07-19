@@ -3,7 +3,9 @@
     "DIRECT_NUMBERS": {},
     "TENS": {},
     "HUNDREDS": {},
-    "BIG_POWERS_OF_TEN": {},
+    "BIG_POWERS_OF_TEN": {
+        "quintillion": 1e18
+    },
     "SKIP_TOKENS": [
         "and",
         "-"

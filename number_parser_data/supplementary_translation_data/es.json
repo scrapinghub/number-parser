@@ -10,9 +10,15 @@
     },
     "TENS": {},
     "HUNDREDS": {
+        "cien": 100,
         "ciento": 100
     },
-    "BIG_POWERS_OF_TEN": {},
+    "BIG_POWERS_OF_TEN": {
+        "millón": 1000000,
+        "millardo": 1000000000,
+        "billón": 1000000000000,
+        "trillones": 1000000000000000000
+    },
     "SKIP_TOKENS": [
         "y"
     ]

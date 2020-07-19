@@ -47,6 +47,7 @@ info = {
         "noventa": 90
     },
     "HUNDREDS": {
+        "cien": 100,
         "ciento": 100,
         "doscientas": 200,
         "doscientos": 200,
@@ -68,7 +69,11 @@ info = {
     "BIG_POWERS_OF_TEN": {
         "mil": 1000,
         "millones": 1000000,
-        "billones": 1000000000000
+        "millón": 1000000,
+        "millardo": 1000000000,
+        "billones": 1000000000000,
+        "billón": 1000000000000,
+        "trillones": 1000000000000000000
     },
     "SKIP_TOKENS": [
         "y"
