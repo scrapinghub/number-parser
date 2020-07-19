@@ -1,56 +1,51 @@
-from number_parser import parser
 import pytest
-
+from number_parser import parse, parse_number
 LANG = 'es'
 
 
 class TestNumberParser():
     @pytest.mark.parametrize(
-        "expected,test_input",
+        "test_input,expected",
         [
-            pytest.param(1_432_524, "un millón cuatrocientos treinta y dos mil quinientos veinticuatro",
-                         marks=pytest.mark.xfail(reason="millón missing in lang data")),
-
-            (302, "trescientos dos"),
-
-            (5_000_320_000_000, "cinco billones trescientos veinte millones"),
-
-            (3_023_001_432, "tres mil veintitrés millones mil cuatrocientos treinta y dos"),
-
-            (101, "ciento uno"),
-
-            pytest.param(5_764_607_500_000_000_031, "cinco trillones setecientos sesenta y cuatro mil seiscientos siete billones \
-            quinientos mil millones treinta y uno", marks=pytest.mark.xfail(reason="trillones missing in lang data")),
-
-            (31, "treinta y una"),
-
-            (26, "veintiséis"),
-
-            (424, "cuatrocientos veinticuatro"),
-
-            (1_000_000_000, "mil millones"),
-
-            pytest.param(1_000_000_000, "millardo", marks=pytest.mark.xfail(reason="millardo missing in lang data")),
-
-            (342, "trescientas cuarenta y dos"),
-
-            (3000000024, "tres mil millones veinticuatro"),
-
-            pytest.param(10**24, "cuatrillón", marks=pytest.mark.xfail(reason="cuatrillón missing in lang data")),
-
-            (256, "Doscientos cincuenta y seis"),
-
-            (666, "seiscientos sesenta y seis"),
-
-            (2_147_483_647, "Dos mil ciento cuarenta y siete millones cuatrocientos ochenta \
-                y tres mil seiscientos cuarenta y siete"),
-
-            pytest.param(10**100, "Gúgol", marks=pytest.mark.xfail(reason="Gúgol missing in lang data")),
-
-            pytest.param(10**600, "centillón", marks=pytest.mark.xfail(reason="centillón missing in lang data")),
-
-            pytest.param(100000, "Cien mil", marks=pytest.mark.xfail(reason="cien missing in lang data")),
+            ("veintiséis", 26),
+            ("treinta y una", 31),
+            ("ciento uno", 101),
+            ("Doscientos cincuenta y seis", 256),
+            ("trescientos dos", 302),
+            ("trescientas cuarenta y dos", 342),
+            ("cuatrocientos veinticuatro", 424),
+            ("seiscientos sesenta y seis", 666),
+            pytest.param("Cien mil", 100000, marks=pytest.mark.xfail(reason="cien missing in lang data")),
+            pytest.param("un millón cuatrocientos treinta y dos mil quinientos veinticuatro",
+                         1_432_524, marks=pytest.mark.xfail(reason="millón missing in lang data")),
+            ("mil millones", 1_000_000_000),
+            pytest.param("millardo", 1_000_000_000, marks=pytest.mark.xfail(reason="millardo missing in lang data")),
+            ("Dos mil ciento cuarenta y siete millones cuatrocientos ochenta \
+                y tres mil seiscientos cuarenta y siete", 2_147_483_647),
+            ("tres mil millones veinticuatro", 3_000_000_024),
+            ("tres mil veintitrés millones mil cuatrocientos treinta y dos", 3_023_001_432),
+            ("cinco billones trescientos veinte millones", 5_000_320_000_000),
+            pytest.param("cinco trillones setecientos sesenta y cuatro mil seiscientos siete billones \
+            quinientos mil millones treinta y uno", 5_764_607_500_000_000_031, marks=pytest.mark.xfail
+                         (reason="trillones missing in lang data")),
+            pytest.param("cuatrillón", 10**24, marks=pytest.mark.xfail(reason="cuatrillón missing in lang data")),
+            pytest.param("Gúgol", 10**100, marks=pytest.mark.xfail(reason="Gúgol missing in lang data")),
+            pytest.param("centillón", 10**600, marks=pytest.mark.xfail(reason="centillón missing in lang data")),
         ]
     )
     def test_parse_number(self, expected, test_input):
-        assert parser.parse_number(test_input, LANG) == expected
+        assert parse_number(test_input, LANG) == expected
+
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            ("Hay tres gallinas y veintitrés patos", "Hay 3 gallinas y 23 patos"),
+            ("En España viven cuarenta y seis millones novecientas cuarenta mil personas",
+             "En España viven 46940000 personas"),
+            ("dos y dos son cuatro cuatro y dos son seis seis y dos son ocho y ocho dieciséis",
+             "2 y 2 son 4 4 y 2 son 6 6 y 2 son 8 y 8 16"),
+            ("doscientos cincuenta y doscientos treinta y uno y doce", "250 y 231 y 12"),
+        ]
+    )
+    def test_parse(self, expected, test_input):
+        assert parse(test_input, LANG) == expected
