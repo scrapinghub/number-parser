@@ -51,13 +51,13 @@ def _check_validity(current_token, previous_token, previous_power_of_10, total_v
         power_of_ten = lang_data.big_powers_of_ten[current_token]
         if power_of_ten < current_grp_value:
             return False
-        if total_value != 0 and previous_power_of_10 is not None:
-            if power_of_ten >= previous_power_of_10:
-                return False
+        if total_value != 0 and previous_power_of_10 is not None and power_of_ten >= previous_power_of_10:
+            return False
     return True
 
 
 def _check_large_multiplier(current_token, total_value, current_grp_value, lang_data):
+    """Checks if the current token (power of ten) is larger than the total value formed till now."""
     combined_value = total_value + current_grp_value
     if combined_value == 0:
         return False
@@ -102,7 +102,6 @@ def _build_number(token_list, lang_data):
             current_grp_value = 0
             for skip_token in used_skip_tokens:
                 value_list.append(skip_token)
-            used_skip_tokens = []
             previous_power_of_10 = None
 
         if token in lang_data.unit_and_direct_numbers:
