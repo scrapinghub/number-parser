@@ -15,11 +15,10 @@ class TestNumberParser():
             ("trescientas cuarenta y dos", 342),
             ("cuatrocientos veinticuatro", 424),
             ("seiscientos sesenta y seis", 666),
-            pytest.param("Cien mil", 100000, marks=pytest.mark.xfail(reason="cien missing in lang data")),
-            pytest.param("un millón cuatrocientos treinta y dos mil quinientos veinticuatro",
-                         1_432_524, marks=pytest.mark.xfail(reason="millón missing in lang data")),
+            ("Cien mil", 100000),
+            ("un millón cuatrocientos treinta y dos mil quinientos veinticuatro", 1_432_524),
             ("mil millones", 1_000_000_000),
-            pytest.param("millardo", 1_000_000_000, marks=pytest.mark.xfail(reason="millardo missing in lang data")),
+            ("millardo", 1_000_000_000),
             ("Dos mil ciento cuarenta y siete millones cuatrocientos ochenta \
                 y tres mil seiscientos cuarenta y siete", 2_147_483_647),
             ("tres mil millones veinticuatro", 3_000_000_024),
@@ -27,7 +26,7 @@ class TestNumberParser():
             ("cinco billones trescientos veinte millones", 5_000_320_000_000),
             pytest.param("cinco trillones setecientos sesenta y cuatro mil seiscientos siete billones \
             quinientos mil millones treinta y uno", 5_764_607_500_000_000_031, marks=pytest.mark.xfail
-                         (reason="trillones missing in lang data")),
+                         (reason="long scale allows larger curreng_grp_value upto 1_000_000")),
             pytest.param("cuatrillón", 10**24, marks=pytest.mark.xfail(reason="cuatrillón missing in lang data")),
             pytest.param("Gúgol", 10**100, marks=pytest.mark.xfail(reason="Gúgol missing in lang data")),
             pytest.param("centillón", 10**600, marks=pytest.mark.xfail(reason="centillón missing in lang data")),
