@@ -26,7 +26,7 @@ class TestNumberParser():
             ("cinco billones trescientos veinte millones", 5_000_320_000_000),
             pytest.param("cinco trillones setecientos sesenta y cuatro mil seiscientos siete billones \
             quinientos mil millones treinta y uno", 5_764_607_500_000_000_031, marks=pytest.mark.xfail
-                         (reason="long scale allows larger curreng_grp_value upto 1_000_000")),
+                         (reason="long scale allows larger current_grp_value upto 1_000_000")),
             pytest.param("cuatrillón", 10**24, marks=pytest.mark.xfail(reason="cuatrillón missing in lang data")),
             pytest.param("Gúgol", 10**100, marks=pytest.mark.xfail(reason="Gúgol missing in lang data")),
             pytest.param("centillón", 10**600, marks=pytest.mark.xfail(reason="centillón missing in lang data")),
