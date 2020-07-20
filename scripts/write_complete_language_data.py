@@ -142,6 +142,8 @@ def write_complete_data():
             for keys, vals in requisite_data.items():
                 if _is_valid(keys):
                     for key, val in vals.items():
+                        # Removing soft-hyphens from the source file.
+                        val = val.replace('\xad', '')
                         _extract_information(key, val, language_data)
 
         with open(full_supplementary_path, 'r') as supplementary_data:
@@ -151,7 +153,7 @@ def write_complete_data():
                 sorted_tuples = sorted(language_data[keys].items(), key=lambda x: (x[1], x[0]))
                 for items in sorted_tuples:
                     word, number = items[0], items[1]
-                    ordered_language_data[keys][word] = number
+                    ordered_language_data[keys][word] = int(number)
             skip_tokens = sorted(data["SKIP_TOKENS"])
         ordered_language_data["SKIP_TOKENS"] = skip_tokens
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)

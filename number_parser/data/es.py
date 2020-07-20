@@ -47,32 +47,33 @@ info = {
         "noventa": 90
     },
     "HUNDREDS": {
+        "cien": 100,
         "ciento": 100,
+        "doscientas": 200,
         "doscientos": 200,
-        "dos­cientas": 200,
+        "trescientas": 300,
         "trescientos": 300,
-        "tres­cientas": 300,
+        "cuatrocientas": 400,
         "cuatrocientos": 400,
-        "cuatro­cientas": 400,
         "quinientas": 500,
         "quinientos": 500,
+        "seiscientas": 600,
         "seiscientos": 600,
-        "seis­cientas": 600,
-        "seis­cientos": 600,
+        "setecientas": 700,
         "setecientos": 700,
-        "sete­cientas": 700,
-        "sete­cientos": 700,
+        "ochocientas": 800,
         "ochocientos": 800,
-        "ocho­cientas": 800,
-        "ocho­cientos": 800,
-        "novecientos": 900,
-        "nove­cientas": 900,
-        "nove­cientos": 900
+        "novecientas": 900,
+        "novecientos": 900
     },
     "BIG_POWERS_OF_TEN": {
         "mil": 1000,
         "millones": 1000000,
-        "billones": 1000000000000
+        "millón": 1000000,
+        "millardo": 1000000000,
+        "billones": 1000000000000,
+        "billón": 1000000000000,
+        "trillones": 1000000000000000000
     },
     "SKIP_TOKENS": [
         "y"
