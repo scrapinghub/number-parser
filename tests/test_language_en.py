@@ -1,5 +1,9 @@
 import pytest
+import os
+import csv
 from number_parser import parse, parse_number
+from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY
+
 LANG = 'en'
 
 
@@ -87,3 +91,14 @@ class TestNumberParser():
     )
     def test_parse_ambiguity_in_multipliers(self, expected, test_input):
         assert parse(test_input, LANG) == expected
+
+    def test_parse_number_till_hundred(self):
+        for filename in os.listdir(HUNDREDS_DIRECTORY):
+            language = filename.split("_")[0]
+            if language == LANG:
+                file_path = os.path.join(HUNDREDS_DIRECTORY, filename)
+                with open(file_path, "r") as data_file:
+                    data_reader = csv.reader(data_file)
+                    next(data_reader)
+                    for test_case in data_reader:
+                        assert(parse_number(test_case[1], LANG) == int(test_case[0]))
