@@ -131,8 +131,10 @@ def _build_number(token_list, lang_data):
     return value_list
 
 
-def _tokenize(input_string):
+def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
+    if language == "hi":
+        return input_string.split()
     tokens = re.split(r'(\W)', input_string)
     return tokens
 
@@ -147,7 +149,7 @@ def parse_number(input_string, language='en'):
     if input_string.isnumeric():
         return int(input_string)
 
-    tokens = _tokenize(input_string)
+    tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
     for index, token in enumerate(normalized_tokens):
         if token in lang_data.all_numbers or token.isspace() or len(token) == 0:
@@ -167,7 +169,7 @@ def parse(input_string, language='en'):
     the other words unchanged. Returns the transformed string.
     """
     lang_data = LanguageData(language)
-    tokens = _tokenize(input_string)
+    tokens = _tokenize(input_string, language)
     if tokens is None:
         return None
 
