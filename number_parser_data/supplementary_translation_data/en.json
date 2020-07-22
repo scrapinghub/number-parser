@@ -4,7 +4,8 @@
     "TENS": {},
     "HUNDREDS": {},
     "BIG_POWERS_OF_TEN": {
-        "quintillion": 1e18
+        "quintillion": 1e18,
+        "sextillion": 1e21
     },
     "SKIP_TOKENS": [
         "and",
