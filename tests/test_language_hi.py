@@ -1,8 +1,7 @@
 import pytest
-import csv
 from number_parser import parse, parse_number
 from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY
-from tests import get_test_files
+from tests import _test_files
 LANG = 'hi'
 
 
@@ -28,15 +27,7 @@ class TestNumberParser():
         assert parse_number(test_input, LANG) == expected
 
     def test_parse_number_till_hundred(self):
-        for filename in get_test_files(HUNDREDS_DIRECTORY, f'{LANG}_'):
-            with open(filename, "r") as csv_file:
-                csv_reader = csv.DictReader(csv_file)
-                for row in csv_reader:
-                    assert parse_number(row['text'], LANG) == int(row['number'])
+        _test_files(HUNDREDS_DIRECTORY, LANG)
 
     def test_parse_number_permutations(self):
-        for filename in get_test_files(PERMUTATION_DIRECTORY, f'{LANG}_'):
-            with open(filename, "r") as csv_file:
-                csv_reader = csv.DictReader(csv_file)
-                for row in csv_reader:
-                    assert parse_number(row['text'], LANG) == int(row['number'])
+        _test_files(PERMUTATION_DIRECTORY, LANG)
