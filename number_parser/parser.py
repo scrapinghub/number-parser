@@ -3,6 +3,7 @@ from importlib import import_module
 import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
+RE_BUG_LANGUAGES = ['hi']
 
 
 class LanguageData:
@@ -134,9 +135,9 @@ def _build_number(token_list, lang_data):
 
 def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
-    if language == "hi":
-        return input_string.split()
     input_string = input_string.replace('\xad', '')
+    if language in RE_BUG_LANGUAGES:
+        return input_string.split()
     tokens = re.split(r'(\W)', input_string)
     return tokens
 
