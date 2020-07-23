@@ -1,5 +1,6 @@
 import re
 from importlib import import_module
+import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 
@@ -19,11 +20,11 @@ class LanguageData:
         if lang_data not in SUPPORTED_LANGUAGES:
             raise ValueError(f'"{lang_data}" is not a supported language')
         language_info = getattr(import_module('number_parser.data.' + lang_data), 'info')
-        self.unit_numbers = language_info["UNIT_NUMBERS"]
-        self.direct_numbers = language_info["DIRECT_NUMBERS"]
-        self.tens = language_info["TENS"]
-        self.hundreds = language_info["HUNDREDS"]
-        self.big_powers_of_ten = language_info["BIG_POWERS_OF_TEN"]
+        self.unit_numbers = _normalise_dict(language_info["UNIT_NUMBERS"])
+        self.direct_numbers = _normalise_dict(language_info["DIRECT_NUMBERS"])
+        self.tens = _normalise_dict(language_info["TENS"])
+        self.hundreds = _normalise_dict(language_info["HUNDREDS"])
+        self.big_powers_of_ten = _normalise_dict(language_info["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
 
         self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
@@ -135,12 +136,26 @@ def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
     if language == "hi":
         return input_string.split()
+    input_string = input_string.replace('\xad', '')
     tokens = re.split(r'(\W)', input_string)
     return tokens
 
 
+def _strip_accents(word):
+    """Removes accent from the input word."""
+    return ''.join(char for char in unicodedata.normalize('NFD', word) if unicodedata.category(char) != 'Mn')
+
+
 def _normalize_tokens(token_list):
-    return [token.lower() for token in token_list]
+    """Converts all tokens to lowercase then removes accents."""
+    lower_case_tokens = [token.lower() for token in token_list]
+    normalized_tokens = [_strip_accents(token) for token in lower_case_tokens]
+    return normalized_tokens
+
+
+def _normalise_dict(lang_dict):
+    """Removes the accent from each key of input dictionary"""
+    return {_strip_accents(word): number for word, number in lang_dict.items()}
 
 
 def parse_number(input_string, language='en'):
@@ -178,7 +193,7 @@ def parse(input_string, language='en'):
     tokens_taken = []
 
     for token in tokens:
-        compare_token = token.lower()
+        compare_token = _strip_accents(token.lower())
         if compare_token.isspace() or compare_token == "":
             if not tokens_taken:
                 current_sentence.append(token)
