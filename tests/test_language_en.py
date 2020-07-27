@@ -1,5 +1,7 @@
 import pytest
 from number_parser import parse, parse_number
+from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY
+from tests import _test_files
 LANG = 'en'
 
 
@@ -87,3 +89,9 @@ class TestNumberParser():
     )
     def test_parse_ambiguity_in_multipliers(self, expected, test_input):
         assert parse(test_input, LANG) == expected
+
+    def test_parse_number_till_hundred(self):
+        _test_files(HUNDREDS_DIRECTORY, LANG)
+
+    def test_parse_number_permutations(self):
+        _test_files(PERMUTATION_DIRECTORY, LANG)

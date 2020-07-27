@@ -41,7 +41,8 @@ info = {
         "billion": 1000000000,
         "trillion": 1000000000000,
         "quadrillion": 1000000000000000,
-        "quintillion": 1000000000000000000
+        "quintillion": 1000000000000000000,
+        "sextillion": 1000000000000000000000
     },
     "SKIP_TOKENS": [
         "-",

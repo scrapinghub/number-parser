@@ -1,7 +1,10 @@
 import re
 from importlib import import_module
+import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
+RE_BUG_LANGUAGES = ['hi']
+LONG_SCALES_LANGUAGES = ['es']
 
 
 class LanguageData:
@@ -15,20 +18,23 @@ class LanguageData:
     all_numbers = {}
     unit_and_direct_numbers = {}
 
-    def __init__(self, lang_data):
-        if lang_data not in SUPPORTED_LANGUAGES:
-            raise ValueError(f'"{lang_data}" is not a supported language')
-        language_info = getattr(import_module('number_parser.data.' + lang_data), 'info')
-        self.unit_numbers = language_info["UNIT_NUMBERS"]
-        self.direct_numbers = language_info["DIRECT_NUMBERS"]
-        self.tens = language_info["TENS"]
-        self.hundreds = language_info["HUNDREDS"]
-        self.big_powers_of_ten = language_info["BIG_POWERS_OF_TEN"]
+    def __init__(self, language):
+        if language not in SUPPORTED_LANGUAGES:
+            raise ValueError(f'"{language}" is not a supported language')
+        language_info = getattr(import_module('number_parser.data.' + language), 'info')
+        self.unit_numbers = _normalize_dict(language_info["UNIT_NUMBERS"])
+        self.direct_numbers = _normalize_dict(language_info["DIRECT_NUMBERS"])
+        self.tens = _normalize_dict(language_info["TENS"])
+        self.hundreds = _normalize_dict(language_info["HUNDREDS"])
+        self.big_powers_of_ten = _normalize_dict(language_info["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
 
         self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
                             **self.hundreds, **self.big_powers_of_ten}
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
+        self.maximum_group_value = 100
+        if language in LONG_SCALES_LANGUAGES:
+            self.maximum_group_value = 10000
 
 
 def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):
@@ -119,7 +125,7 @@ def _build_number(token_list, lang_data):
                 current_grp_value = 1
 
             current_grp_value *= power_of_ten
-            if power_of_ten > 100:
+            if power_of_ten > lang_data.maximum_group_value:
                 total_value += current_grp_value
                 current_grp_value = 0
                 previous_power_of_10 = power_of_ten
@@ -131,14 +137,28 @@ def _build_number(token_list, lang_data):
     return value_list
 
 
-def _tokenize(input_string):
+def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
+    input_string = input_string.replace('\xad', '')
+    if language in RE_BUG_LANGUAGES:
+        return input_string.split()
     tokens = re.split(r'(\W)', input_string)
     return tokens
 
 
+def _strip_accents(word):
+    """Removes accent from the input word."""
+    return ''.join(char for char in unicodedata.normalize('NFD', word) if unicodedata.category(char) != 'Mn')
+
+
 def _normalize_tokens(token_list):
-    return [token.lower() for token in token_list]
+    """Converts all tokens to lowercase then removes accents."""
+    return [_strip_accents(token.lower()) for token in token_list]
+
+
+def _normalize_dict(lang_dict):
+    """Removes the accent from each key of input dictionary"""
+    return {_strip_accents(word): number for word, number in lang_dict.items()}
 
 
 def parse_number(input_string, language='en'):
@@ -147,7 +167,7 @@ def parse_number(input_string, language='en'):
     if input_string.isnumeric():
         return int(input_string)
 
-    tokens = _tokenize(input_string)
+    tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
     for index, token in enumerate(normalized_tokens):
         if token in lang_data.all_numbers or token.isspace() or len(token) == 0:
@@ -167,7 +187,7 @@ def parse(input_string, language='en'):
     the other words unchanged. Returns the transformed string.
     """
     lang_data = LanguageData(language)
-    tokens = _tokenize(input_string)
+    tokens = _tokenize(input_string, language)
     if tokens is None:
         return None
 
@@ -176,7 +196,7 @@ def parse(input_string, language='en'):
     tokens_taken = []
 
     for token in tokens:
-        compare_token = token.lower()
+        compare_token = _strip_accents(token.lower())
         if compare_token.isspace() or compare_token == "":
             if not tokens_taken:
                 current_sentence.append(token)
