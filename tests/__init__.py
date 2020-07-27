@@ -1,7 +1,5 @@
 import os
 import csv
-import sys
-import logging
 from number_parser import parse_number
 
 TEST_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +22,5 @@ def _test_files(path, language):
             for row in csv_reader:
                 try:
                     assert parse_number(row['text'], language) == int(row['number'])
-                except AssertionError:
-                    logging.error(F"Failed execution of {row['text']}", exc_info=True)
-                    sys.exit()
+                except AssertionError as e:
+                    raise AssertionError(F"Failed execution of {row['text']}") from e
