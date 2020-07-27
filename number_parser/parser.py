@@ -4,6 +4,7 @@ import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
+LONG_SCALES_LANGUAGES = ['es']
 
 
 class LanguageData:
@@ -17,20 +18,23 @@ class LanguageData:
     all_numbers = {}
     unit_and_direct_numbers = {}
 
-    def __init__(self, lang_data):
-        if lang_data not in SUPPORTED_LANGUAGES:
-            raise ValueError(f'"{lang_data}" is not a supported language')
-        language_info = getattr(import_module('number_parser.data.' + lang_data), 'info')
-        self.unit_numbers = _normalise_dict(language_info["UNIT_NUMBERS"])
-        self.direct_numbers = _normalise_dict(language_info["DIRECT_NUMBERS"])
-        self.tens = _normalise_dict(language_info["TENS"])
-        self.hundreds = _normalise_dict(language_info["HUNDREDS"])
-        self.big_powers_of_ten = _normalise_dict(language_info["BIG_POWERS_OF_TEN"])
+    def __init__(self, language):
+        if language not in SUPPORTED_LANGUAGES:
+            raise ValueError(f'"{language}" is not a supported language')
+        language_info = getattr(import_module('number_parser.data.' + language), 'info')
+        self.unit_numbers = _normalize_dict(language_info["UNIT_NUMBERS"])
+        self.direct_numbers = _normalize_dict(language_info["DIRECT_NUMBERS"])
+        self.tens = _normalize_dict(language_info["TENS"])
+        self.hundreds = _normalize_dict(language_info["HUNDREDS"])
+        self.big_powers_of_ten = _normalize_dict(language_info["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
 
         self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
                             **self.hundreds, **self.big_powers_of_ten}
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
+        self.maximum_group_value = 100
+        if language in LONG_SCALES_LANGUAGES:
+            self.maximum_group_value = 10000
 
 
 def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):
@@ -121,7 +125,7 @@ def _build_number(token_list, lang_data):
                 current_grp_value = 1
 
             current_grp_value *= power_of_ten
-            if power_of_ten > 100:
+            if power_of_ten > lang_data.maximum_group_value:
                 total_value += current_grp_value
                 current_grp_value = 0
                 previous_power_of_10 = power_of_ten
@@ -149,12 +153,10 @@ def _strip_accents(word):
 
 def _normalize_tokens(token_list):
     """Converts all tokens to lowercase then removes accents."""
-    lower_case_tokens = [token.lower() for token in token_list]
-    normalized_tokens = [_strip_accents(token) for token in lower_case_tokens]
-    return normalized_tokens
+    return [_strip_accents(token.lower()) for token in token_list]
 
 
-def _normalise_dict(lang_dict):
+def _normalize_dict(lang_dict):
     """Removes the accent from each key of input dictionary"""
     return {_strip_accents(word): number for word, number in lang_dict.items()}
 
