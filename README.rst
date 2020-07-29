@@ -22,12 +22,10 @@ Usage
 
 The library provides two major APIs which corresponds to the following two common usages.
 
-1. Identifying the numbers in a text string, converting them to corresponding numeric values while ignoring non-numeric words.
-2. Converting a single number written in words to it's corresponding integer. 
- 
-
 Interface #1: Multiple numbers 
---------------------------------
+------------------------------
+
+Identifying the numbers in a text string, converting them to corresponding numeric values while ignoring non-numeric words.
 
 >>> from number_parser import parse
 >>> parse("I have two hats and thirty seven coats")
@@ -38,6 +36,7 @@ Interface #1: Multiple numbers
 
 Interface #2: Single number 
 --------------------------------
+Converting a single number written in words to it's corresponding integer. 
 
 >>> from number_parser import parse_number
 >>> parse_number("two thousand and twenty")
@@ -53,9 +52,9 @@ Language Support
 The default language is English, you can pass the language parameter with corresponding locale for other languages.
 
 >>> from number_parser import parse, parse_number
->>> parse("Hay tres gallinas y veintitrés patos", language = 'es')
+>>> parse("Hay tres gallinas y veintitrés patos", language='es')
 'Hay 3 gallinas y 23 patos'
->>> parse_number("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", language = 'hi')
+>>> parse_number("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", language='hi')
 1432524 
 
 Supported cases
@@ -66,7 +65,7 @@ Some of the supported cases are described below.
 
 Accurately handling usage of conjunction while forming the number. 
 
->>> parse("doscientos cincuenta y doscientos treinta y uno y doce", language = 'es')
+>>> parse("doscientos cincuenta y doscientos treinta y uno y doce", language='es')
 '250 y 231 y 12'
 
 
@@ -78,13 +77,13 @@ Handling ambiguous cases without proper separators.
 2002000000
 
 
-Handling nuances in the language with different forms of the same number. 
+Handling nuances in the languag ith different forms of the same number. 
 
->>> parse_number("пятисот девяноста шести", language = 'ru')
+>>> parse_number("пятисот девяноста шести", language='ru')
 596
->>> parse_number("пятистам девяноста шести", language = 'ru')
+>>> parse_number("пятистам девяноста шести", language='ru')
 596
->>> parse_number("пятьсот девяносто шесть", language = 'ru')
+>>> parse_number("пятьсот девяносто шесть", language='ru')
 596
 
 Contributing
