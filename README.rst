@@ -7,7 +7,7 @@ number-parser
 
 ``number-parser`` is a simple library that allows you to convert numbers written in the natural
 language to it's equivalent numeric forms. It currently supports cardinal numbers in the following 
-languages - English, Hindi, Spanish and Russian
+languages - English, Hindi, Spanish and Russian.
 
 Installation
 ============
@@ -20,9 +20,9 @@ number-parser requires Python 3.6+.
 Usage
 =====
 
-The library provides two major APIs which corresponds to the two common use-cases.
+The library provides two major APIs which corresponds to the following two common usages.
 
-1. Identifying the numbers in a text string, converting them to corresponding numeric values and returning the new string, while ignoring non-numeric words.
+1. Identifying the numbers in a text string, converting them to corresponding numeric values while ignoring non-numeric words.
 2. Converting a single number written in words to it's corresponding integer. 
  
 
@@ -50,12 +50,12 @@ None
 Language Support
 ----------------
 
-The default language is English , you can pass the language parameter with corresponding locale for other languages.
+The default language is English, you can pass the language parameter with corresponding locale for other languages.
 
 >>> from number_parser import parse, parse_number
 >>> parse("Hay tres gallinas y veintitrés patos", language = 'es')
 'Hay 3 gallinas y 23 patos'
->>> parse_number("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस",language = 'hi')
+>>> parse_number("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", language = 'hi')
 1432524 
 
 Supported cases
