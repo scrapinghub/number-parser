@@ -9,7 +9,7 @@ setup(
     long_description=open('README.rst', encoding="utf8").read() + "\n\n" + open('CHANGES.rst').read(),
     author='Arnav Kapoor',
     author_email='arnavk805@gmail.com',
-    url='https://github.com/scrapinghub/number-parser',
+    url='https://github.com/arnavkapoor/number-parser',
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'attrs >= 17.3.0',
