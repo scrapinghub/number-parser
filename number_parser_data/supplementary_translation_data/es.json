@@ -1,26 +1,36 @@
 {
-    "UNIT_NUMBERS": {},
-    "DIRECT_NUMBERS": {
-        "diecisiete": 17,
-        "dieciocho": 18,
-        "diecinueve": 19,
-        "veintisiete": 27,
-        "veintiocho": 28,
-        "veintinueve": 29
+    "NUMBERS": {
+        "UNIT_NUMBERS": {},
+        "DIRECT_NUMBERS": {
+            "diecisiete": 17,
+            "dieciocho": 18,
+            "diecinueve": 19,
+            "veintisiete": 27,
+            "veintiocho": 28,
+            "veintinueve": 29
+        },
+        "TENS": {},
+        "HUNDREDS": {
+            "cien": 100,
+            "ciento": 100
+        },
+        "BIG_POWERS_OF_TEN": {
+            "millón": 1000000,
+            "millardo": 1000000000,
+            "billón": 1000000000000,
+            "trilón": 1000000000000000000,
+            "trillones": 1000000000000000000
+        }
     },
-    "TENS": {},
-    "HUNDREDS": {
-        "cien": 100,
-        "ciento": 100
-    },
-    "BIG_POWERS_OF_TEN": {
-        "millón": 1000000,
-        "millardo": 1000000000,
-        "billón": 1000000000000,
-        "trilón": 1000000000000000000,
-        "trillones": 1000000000000000000
+    "ORDINAL_NUMBERS": {
+        "UNIT_NUMBERS": {},
+        "DIRECT_NUMBERS": {},
+        "TENS": {},
+        "HUNDREDS": {},
+        "BIG_POWERS_OF_TEN": {}
     },
     "SKIP_TOKENS": [
         "y"
-    ]
+    ],
+    "IS_LONG": true
 }
