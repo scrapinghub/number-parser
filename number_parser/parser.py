@@ -4,7 +4,6 @@ import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
-LONG_SCALES_LANGUAGES = ['es']
 
 
 class LanguageData:
@@ -22,18 +21,18 @@ class LanguageData:
         if language not in SUPPORTED_LANGUAGES:
             raise ValueError(f'"{language}" is not a supported language')
         language_info = getattr(import_module('number_parser.data.' + language), 'info')
-        self.unit_numbers = _normalize_dict(language_info["UNIT_NUMBERS"])
-        self.direct_numbers = _normalize_dict(language_info["DIRECT_NUMBERS"])
-        self.tens = _normalize_dict(language_info["TENS"])
-        self.hundreds = _normalize_dict(language_info["HUNDREDS"])
-        self.big_powers_of_ten = _normalize_dict(language_info["BIG_POWERS_OF_TEN"])
+        self.unit_numbers = _normalize_dict(language_info["NUMBERS"]["UNIT_NUMBERS"])
+        self.direct_numbers = _normalize_dict(language_info["NUMBERS"]["DIRECT_NUMBERS"])
+        self.tens = _normalize_dict(language_info["NUMBERS"]["TENS"])
+        self.hundreds = _normalize_dict(language_info["NUMBERS"]["HUNDREDS"])
+        self.big_powers_of_ten = _normalize_dict(language_info["NUMBERS"]["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
 
         self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
                             **self.hundreds, **self.big_powers_of_ten}
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
         self.maximum_group_value = 100
-        if language in LONG_SCALES_LANGUAGES:
+        if language_info["IS_LONG"]:
             self.maximum_group_value = 10000
 
 
@@ -175,6 +174,7 @@ def parse_number(input_string, language='en'):
         if token in lang_data.skip_tokens and index != 0:
             continue
         return None
+    print(normalized_tokens)
     number_built = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
         return int(number_built[0])

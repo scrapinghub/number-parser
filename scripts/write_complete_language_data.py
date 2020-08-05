@@ -12,19 +12,20 @@ SOURCE_PATH = "../number_parser_data/raw_cldr_translation_data/"
 SUPPLEMENTARY_PATH = "../number_parser_data/supplementary_translation_data/"
 TARGET_PATH = "../number_parser/data/"
 
-VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]
-INVALID_KEYS = ["cents"]
+VALID_CARDINAL_KEYS = ["spellout-cardinal", "spellout-numbering"]
+INVALID_CARDINAL_KEYS = ["cents"]
 CAPTURE_BRACKET_CONTENT = r'\{(.*?)\}'
 REQUIRED_NUMBERS_DATA = ["UNIT_NUMBERS", "DIRECT_NUMBERS", "TENS", "HUNDREDS", "BIG_POWERS_OF_TEN"]
+TYPES_OF_NUMBERS = ["NUMBERS", "ORDINAL_NUMBERS"]
 
 
-def _is_valid(key):
+def _is_valid_cardinal(key):
     """Identifying whether the given key of the source language file needs to be extracted."""
     is_valid = False
-    for valid_key in VALID_KEYS:
+    for valid_key in VALID_CARDINAL_KEYS:
         if valid_key in key:
             is_valid = True
-    for invalid_key in INVALID_KEYS:
+    for invalid_key in INVALID_CARDINAL_KEYS:
         if invalid_key in key:
             is_valid = False
     return is_valid
@@ -129,8 +130,13 @@ def write_complete_data():
         full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0]+".py")
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
-        language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
-        ordered_language_data = OrderedDict((key, {}) for key in REQUIRED_NUMBERS_DATA)
+        language_data = {}
+        ordered_language_data = OrderedDict()
+
+        for number_types in TYPES_OF_NUMBERS:
+            language_data[number_types] = {key: {} for key in REQUIRED_NUMBERS_DATA}
+            ordered_language_data[number_types] = OrderedDict((key, {}) for key in REQUIRED_NUMBERS_DATA)
+
         with open(full_source_path, 'r') as source:
             data = json.load(source)
             try:
@@ -140,22 +146,29 @@ def write_complete_data():
                 continue
 
             for keys, vals in requisite_data.items():
-                if _is_valid(keys):
+                if _is_valid_cardinal(keys):
                     for key, val in vals.items():
                         # Removing soft-hyphens from the source file.
                         val = val.replace('\xad', '')
-                        _extract_information(key, val, language_data)
+                        _extract_information(key, val, language_data["NUMBERS"])
 
         with open(full_supplementary_path, 'r') as supplementary_data:
             data = json.load(supplementary_data)
-            for keys in REQUIRED_NUMBERS_DATA:
-                language_data[keys].update(data[keys])
-                sorted_tuples = sorted(language_data[keys].items(), key=lambda x: (x[1], x[0]))
-                for items in sorted_tuples:
-                    word, number = items[0], items[1]
-                    ordered_language_data[keys][word] = int(number)
+            for number_types in TYPES_OF_NUMBERS:
+                for keys in REQUIRED_NUMBERS_DATA:
+                    language_data[number_types][keys].update(data[number_types][keys])
+                    sorted_tuples = sorted(language_data[number_types][keys].items(), key=lambda x: (x[1], x[0]))
+                    for items in sorted_tuples:
+                        word, number = items[0], items[1]
+                        ordered_language_data[number_types][keys][word] = int(number)
             skip_tokens = sorted(data["SKIP_TOKENS"])
+            is_long = data["IS_LONG"]
         ordered_language_data["SKIP_TOKENS"] = skip_tokens
+        if is_long:
+            ordered_language_data["IS_LONG"] = 1
+        else:
+            ordered_language_data["IS_LONG"] = 0
+
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
         out_text = ('info = ' + translation_data + '\n')
         with open(full_target_path, 'w+') as target_file:

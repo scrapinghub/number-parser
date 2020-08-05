@@ -1,14 +1,24 @@
 {
-    "UNIT_NUMBERS": {},
-    "DIRECT_NUMBERS": {},
-    "TENS": {},
-    "HUNDREDS": {},
-    "BIG_POWERS_OF_TEN": {
-        "quintillion": 1e18,
-        "sextillion": 1e21
+    "NUMBERS": {
+        "UNIT_NUMBERS": {},
+        "DIRECT_NUMBERS": {},
+        "TENS": {},
+        "HUNDREDS": {},
+        "BIG_POWERS_OF_TEN": {
+            "quintillion": 1e+18,
+            "sextillion": 1e+21
+        }
+    },
+    "ORDINAL_NUMBERS": {
+        "UNIT_NUMBERS": {},
+        "DIRECT_NUMBERS": {},
+        "TENS": {},
+        "HUNDREDS": {},
+        "BIG_POWERS_OF_TEN": {}
     },
     "SKIP_TOKENS": [
         "and",
         "-"
-    ]
+    ],
+    "IS_LONG": false
 }
