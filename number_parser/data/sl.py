@@ -51,5 +51,5 @@ info = {
         "biliardy": 1000000000000000
     },
     "SKIP_TOKENS": [],
-    "USE_LONG_SCALE": False
+    "USE_LONG_SCALE": True
 }

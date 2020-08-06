@@ -155,8 +155,12 @@ def write_complete_data():
                     word, number = items[0], items[1]
                     ordered_language_data[keys][word] = int(number)
         ordered_language_data["SKIP_TOKENS"] = sorted(data["SKIP_TOKENS"])
-        ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
+        try:
+            ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
+        except:
+            print(f"long_scale information missing")
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
+        # Overwriting boolean value with capitalized form
         translation_data = re.sub(r'\bfalse\b', 'False', translation_data)
         translation_data = re.sub(r'\btrue\b', 'True', translation_data)
         out_text = ('info = ' + translation_data + '\n')

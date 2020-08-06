@@ -39,6 +39,5 @@ info = {
         "𑄣𑄇𑄴": 100000,
         "𑄇𑄪𑄖𑄨": 10000000
     },
-    "SKIP_TOKENS": [],
-    "USE_LONG_SCALE": False
+    "SKIP_TOKENS": []
 }

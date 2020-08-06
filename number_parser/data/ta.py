@@ -48,6 +48,5 @@ info = {
         "லட்சம்": 100000,
         "கோடி": 10000000
     },
-    "SKIP_TOKENS": [],
-    "USE_LONG_SCALE": False
+    "SKIP_TOKENS": []
 }
