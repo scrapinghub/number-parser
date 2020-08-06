@@ -6,6 +6,7 @@ https://github.com/unicode-cldr/cldr-rbnf
 import os
 import json
 import re
+import logging
 from collections import OrderedDict
 
 SOURCE_PATH = "../number_parser_data/raw_cldr_translation_data/"
@@ -157,8 +158,9 @@ def write_complete_data():
         ordered_language_data["SKIP_TOKENS"] = sorted(data["SKIP_TOKENS"])
         try:
             ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
-        except:
-            print(f"long_scale information missing")
+        except KeyError:
+            logging.exception("long_scale information missing")
+
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
         # Overwriting boolean value with capitalized form
         translation_data = re.sub(r'\bfalse\b', 'False', translation_data)
