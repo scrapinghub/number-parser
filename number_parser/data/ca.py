@@ -44,5 +44,6 @@ info = {
         "bilions": 1000000000000,
         "biliards": 1000000000000000
     },
-    "SKIP_TOKENS": []
+    "SKIP_TOKENS": [],
+    "USE_LONG_SCALE": False
 }

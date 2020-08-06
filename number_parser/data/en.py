@@ -47,5 +47,6 @@ info = {
     "SKIP_TOKENS": [
         "-",
         "and"
-    ]
+    ],
+    "USE_LONG_SCALE": False
 }

@@ -20,5 +20,6 @@ info = {
         "triệu": 1000000,
         "tỷ": 1000000000
     },
-    "SKIP_TOKENS": []
+    "SKIP_TOKENS": [],
+    "USE_LONG_SCALE": False
 }
