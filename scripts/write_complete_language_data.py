@@ -154,9 +154,11 @@ def write_complete_data():
                 for items in sorted_tuples:
                     word, number = items[0], items[1]
                     ordered_language_data[keys][word] = int(number)
-            skip_tokens = sorted(data["SKIP_TOKENS"])
-        ordered_language_data["SKIP_TOKENS"] = skip_tokens
+        ordered_language_data["SKIP_TOKENS"] = sorted(data["SKIP_TOKENS"])
+        ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
+        translation_data = re.sub(r'\bfalse\b', 'False', translation_data)
+        translation_data = re.sub(r'\btrue\b', 'True', translation_data)
         out_text = ('info = ' + translation_data + '\n')
         with open(full_target_path, 'w+') as target_file:
             target_file.write(out_text)
