@@ -158,6 +158,38 @@ def _normalize_dict(lang_dict):
     return {_strip_accents(word): number for word, number in lang_dict.items()}
 
 
+def _is_cardinal_token(token, lang_dict):
+    if token in lang_dict.all_numbers:
+        return token
+    return None
+
+
+def _is_ordinal_token(token, lang_dict):
+    token = _apply_cardinal_conversion(token, lang_dict)
+    return _is_cardinal_token(token, lang_dict)
+
+
+def _is_number_token(token, lang_dict):
+    return _is_cardinal_token(token, lang_dict) or _is_ordinal_token(token, lang_dict)
+
+
+def _apply_cardinal_conversion(input_string, language):
+    # this will be coming from the LanguageData
+    CARDINAL_DIRECT_NUMBERS = {'first': 'one', 'second': 'two', 'third': 'three', 'fifth': 'five', 'eighth': 'eight',
+                               'ninth': 'nine', 'twelfth': 'twelve'}
+    input_string = input_string.lower()
+    for word, number in CARDINAL_DIRECT_NUMBERS.items():
+        input_string = input_string.replace(word, number)
+    input_string = re.sub(r'ieth$', 'y', input_string)
+    input_string = re.sub(r'th$', '', input_string)
+    return input_string
+
+
+def parse_ordinal(input_string, language='en'):
+    input_string = _apply_cardinal_conversion(input_string, language)
+    return parse_number(input_string, language)
+
+
 def parse_number(input_string, language='en'):
     """Converts a single number written in natural language to a numeric type"""
     lang_data = LanguageData(language)
@@ -199,7 +231,7 @@ def parse(input_string, language='en'):
                 current_sentence.append(token)
             continue
 
-        elif compare_token in SENTENCE_SEPARATORS:
+        if compare_token in SENTENCE_SEPARATORS:
             if tokens_taken:
                 myvalue = _build_number(tokens_taken, lang_data)
                 for each_number in myvalue:
