@@ -4,7 +4,6 @@ import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
-LONG_SCALES_LANGUAGES = ['es']
 
 
 class LanguageData:
@@ -32,9 +31,7 @@ class LanguageData:
         self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
                             **self.hundreds, **self.big_powers_of_ten}
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
-        self.maximum_group_value = 100
-        if language in LONG_SCALES_LANGUAGES:
-            self.maximum_group_value = 10000
+        self.maximum_group_value = 10000 if language_info["USE_LONG_SCALE"] else 100
 
 
 def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):

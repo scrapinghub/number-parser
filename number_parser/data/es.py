@@ -78,5 +78,6 @@ info = {
     },
     "SKIP_TOKENS": [
         "y"
-    ]
+    ],
+    "USE_LONG_SCALE": True
 }

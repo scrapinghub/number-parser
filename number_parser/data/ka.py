@@ -41,5 +41,6 @@ info = {
         "ბილიონ": 1000000000000,
         "ბილიარდ": 1000000000000000
     },
-    "SKIP_TOKENS": []
+    "SKIP_TOKENS": [],
+    "USE_LONG_SCALE": False
 }
