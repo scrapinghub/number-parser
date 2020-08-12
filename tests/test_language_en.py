@@ -110,10 +110,13 @@ class TestNumberParser():
             ('two million twenty three thousand and forty ninth', 2_023_049),
             ("two million three thousand nine hundred and eighty fourth", 2_003_984),
             ('billionth', 1_000_000_000),
-            ('fiftieth fifth', 55),  # Is being processed as fifty five for the time-being.
             ('with goldsmith', None),
             ('th th', None),
-            ('fifth fiftieth', None)
+            ('fifth fiftieth', None),
+            # Some ambiguos cases
+            ('fiftieth fifth', 55),
+            ('fiftieth five', 55),
+            ('fifty five', 55)
         ]
     )
     def test_parse_ordinal(self, expected, test_input):
