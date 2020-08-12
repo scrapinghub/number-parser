@@ -114,3 +114,18 @@ class TestNumberParser():
     )
     def test_parse_ordinal(self, expected, test_input):
         assert parse_ordinal(test_input, LANG) == expected
+
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            ('eleventh day of summer', "11 day of summer"),
+            ("nineteenth may two thousand", "19 may 2000"),
+            ('hundredth and one', "101"),
+            ('one hundred and forty second', "142"),
+            ('five thousandth and one', "5001"),
+            ("thirty seven and fifth", "37 and 5"),
+            ('eighth month of year two thousand and twentieth', "8 month of year 2020"),
+        ]
+    )
+    def test_parse_sentences_ordinal(self, expected, test_input):
+        assert parse(test_input, LANG) == expected
