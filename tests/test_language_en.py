@@ -109,7 +109,11 @@ class TestNumberParser():
             ("two million three thousand and nineteenth", 2_003_019),
             ('two million twenty three thousand and forty ninth', 2_023_049),
             ("two million three thousand nine hundred and eighty fourth", 2_003_984),
-            ('billionth', 1_000_000_000)
+            ('billionth', 1_000_000_000),
+            ('fiftieth fifth', 55),  # Is being processed as fifty five for the time-being.
+            ('with goldsmith', None),
+            ('th th', None),
+            ('fifth fiftieth', None)
         ]
     )
     def test_parse_ordinal(self, expected, test_input):
@@ -120,11 +124,13 @@ class TestNumberParser():
         [
             ('eleventh day of summer', "11 day of summer"),
             ("nineteenth may two thousand", "19 may 2000"),
-            ('hundredth and one', "101"),
+            ('hundredth and one', "100 and 1"),
             ('one hundred and forty second', "142"),
-            ('five thousandth and one', "5001"),
+            ('five thousandth and one', "5000 and 1"),
             ("thirty seven and fifth", "37 and 5"),
             ('eighth month of year two thousand and twentieth', "8 month of year 2020"),
+            ('He crieth, a path with fifty fifth steps', "He crieth, a path with 55 steps"),
+            ('twentieth seventh fiftieth third', "20 7 50 3")
         ]
     )
     def test_parse_sentences_ordinal(self, expected, test_input):
