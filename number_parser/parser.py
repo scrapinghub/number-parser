@@ -181,7 +181,7 @@ def _is_number_token(token, lang_data):
     return _is_cardinal_token(token, lang_data)
 
 
-def _apply_cardinal_conversion(token, lang_data):
+def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language.
     """Converts ordinal tokens to cardinal while leaving other tokens unchanged."""
     CARDINAL_DIRECT_NUMBERS = {'first': 'one', 'second': 'two', 'third': 'three', 'fifth': 'five', 'eighth': 'eight',
                                'ninth': 'nine', 'twelfth': 'twelve'}
