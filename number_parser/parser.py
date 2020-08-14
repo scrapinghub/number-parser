@@ -200,8 +200,28 @@ def _apply_cardinal_conversion(token, lang_data):  # Currently only for English 
     return token
 
 
-def parse_ordinal(input_string, language='en'):
+def _detect_language(input_string):
+    counter_each_language = {}
+
+    for language in SUPPORTED_LANGUAGES:
+        lang_data = LanguageData(language)
+        tokens = _tokenize(input_string, language)
+        normalized_tokens = _normalize_tokens(tokens)
+        valid_list = [_is_number_token(token, lang_data) for token in normalized_tokens]
+        cnt_valid_words = sum(word is not None for word in valid_list)
+        counter_each_language[language] = cnt_valid_words
+
+    best_language = max(counter_each_language, key=counter_each_language.get)
+    if counter_each_language[best_language] == 0:  # Incase no matching words return english.
+        return 'en'
+    return best_language
+
+
+def parse_ordinal(input_string, language=None):
     """Converts a single number in ordinal or cardinal form to it's numeric equivalent"""
+    if language is None:
+        language = _detect_language(input_string)
+
     lang_data = LanguageData(language)
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
@@ -210,8 +230,11 @@ def parse_ordinal(input_string, language='en'):
     return parse_number(output_string, language)
 
 
-def parse_number(input_string, language='en'):
+def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
+    if language is None:
+        language = _detect_language(input_string)
+
     lang_data = LanguageData(language)
     if input_string.isnumeric():
         return int(input_string)
@@ -230,11 +253,14 @@ def parse_number(input_string, language='en'):
     return None
 
 
-def parse(input_string, language='en'):
+def parse(input_string, language=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
+    if language is None:
+        language = _detect_language(input_string)
+
     lang_data = LanguageData(language)
     tokens = _tokenize(input_string, language)
     if tokens is None:
