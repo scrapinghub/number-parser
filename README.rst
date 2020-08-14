@@ -7,7 +7,7 @@ number-parser
 
 ``number-parser`` is a simple library that allows you to convert numbers written in the natural
 language to it's equivalent numeric forms. It currently supports cardinal numbers in the following 
-languages - English, Hindi, Spanish and Russian.
+languages - English, Hindi, Spanish and Russian and ordinal numbers in English.
 
 Installation
 ============
@@ -20,18 +20,21 @@ number-parser requires Python 3.6+.
 Usage
 =====
 
-The library provides two major APIs which corresponds to the following two common usages.
+The library provides three major APIs which corresponds to the following common usages.
 
 Interface #1: Multiple numbers 
 ------------------------------
 
 Identifying the numbers in a text string, converting them to corresponding numeric values while ignoring non-numeric words.
+This also supports ordinal number conversion (for English only).
 
 >>> from number_parser import parse
 >>> parse("I have two hats and thirty seven coats")
 'I have 2 hats and 37 coats'
 >>> parse("One, Two, Three go")
 '1, 2, 3 go'
+>>> parse("First day of year two thousand")
+'1 day of year 2000'
 
 
 Interface #2: Single number 
@@ -41,21 +44,33 @@ Converting a single number written in words to it's corresponding integer.
 >>> from number_parser import parse_number
 >>> parse_number("two thousand and twenty")
 2020
->>> output = parse_number("not_a_number")
->>> output
-None
+>>> parse_number("not_a_number")
+
+
+Interface #3: Single number Ordinal
+-------------------------------------
+
+Converting a single ordinal number written in words to it's corresponding integer. (Support for only English)
+
+>>> from number_parser import parse_ordinal
+>>> parse_ordinal("twenty third")
+23
+>>> parse_ordinal("seventy fifth")
+75
 
 
 Language Support
 ----------------
 
 The default language is English, you can pass the language parameter with corresponding locale for other languages.
+It currently supports cardinal numbers in the following 
+languages - English, Hindi, Spanish and Russian and ordinal numbers in English.
 
 >>> from number_parser import parse, parse_number
 >>> parse("Hay tres gallinas y veintitrés patos", language='es')
 'Hay 3 gallinas y 23 patos'
 >>> parse_number("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", language='hi')
-1432524 
+1432524
 
 Supported cases
 ---------------
@@ -72,7 +87,7 @@ Accurately handling usage of conjunction while forming the number.
 Handling ambiguous cases without proper separators.
 
 >>> parse("two thousand thousand")
-2000 1000
+'2000 1000'
 >>> parse_number("two thousand two million")
 2002000000
 

@@ -153,9 +153,61 @@ def _normalize_tokens(token_list):
     return [_strip_accents(token.lower()) for token in token_list]
 
 
-def _normalize_dict(lang_dict):
+def _normalize_dict(lang_data):
     """Removes the accent from each key of input dictionary"""
-    return {_strip_accents(word): number for word, number in lang_dict.items()}
+    return {_strip_accents(word): number for word, number in lang_data.items()}
+
+
+def _is_cardinal_token(token, lang_data):
+    """Checks if the given token is a cardinal number and returns token"""
+    if token in lang_data.all_numbers:
+        return token
+    return None
+
+
+def _is_ordinal_token(token, lang_data):
+    """Checks if the given token is a ordinal number and returns token"""
+    if _is_cardinal_token(token, lang_data) is None:
+        return _is_number_token(token, lang_data)
+    return None
+
+
+def _is_number_token(token, lang_data):
+    """
+    Checks if the given token belongs to either cardinal or ordinal numbers
+    and returns the cardinal form.
+    """
+    token = _apply_cardinal_conversion(token, lang_data)
+    return _is_cardinal_token(token, lang_data)
+
+
+def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language.
+    """Converts ordinal tokens to cardinal while leaving other tokens unchanged."""
+    CARDINAL_DIRECT_NUMBERS = {'first': 'one', 'second': 'two', 'third': 'three', 'fifth': 'five', 'eighth': 'eight',
+                               'ninth': 'nine', 'twelfth': 'twelve'}
+
+    for word, number in CARDINAL_DIRECT_NUMBERS.items():
+        token = token.replace(word, number)
+
+    token_cardinal_form_1 = re.sub(r'ieth$', 'y', token)
+    if _is_cardinal_token(token_cardinal_form_1, lang_data) is not None:
+        return token_cardinal_form_1
+
+    token_cardinal_form_2 = re.sub(r'th$', '', token)
+    if _is_cardinal_token(token_cardinal_form_2, lang_data) is not None:
+        return token_cardinal_form_2
+
+    return token
+
+
+def parse_ordinal(input_string, language='en'):
+    """Converts a single number in ordinal or cardinal form to it's numeric equivalent"""
+    lang_data = LanguageData(language)
+    tokens = _tokenize(input_string, language)
+    normalized_tokens = _normalize_tokens(tokens)
+    processed_tokens = [_apply_cardinal_conversion(token, lang_data) for token in normalized_tokens]
+    output_string = ' '.join(processed_tokens)
+    return parse_number(output_string, language)
 
 
 def parse_number(input_string, language='en'):
@@ -194,12 +246,14 @@ def parse(input_string, language='en'):
 
     for token in tokens:
         compare_token = _strip_accents(token.lower())
+        ordinal_number = _is_ordinal_token(compare_token, lang_data)
+
         if compare_token.isspace() or compare_token == "":
             if not tokens_taken:
                 current_sentence.append(token)
             continue
 
-        elif compare_token in SENTENCE_SEPARATORS:
+        if compare_token in SENTENCE_SEPARATORS:
             if tokens_taken:
                 myvalue = _build_number(tokens_taken, lang_data)
                 for each_number in myvalue:
@@ -212,18 +266,25 @@ def parse(input_string, language='en'):
             current_sentence = []
             continue
 
-        elif (compare_token in lang_data.all_numbers or
-                (compare_token in lang_data.skip_tokens and len(tokens_taken) != 0)):
+        elif ((compare_token in lang_data.all_numbers or
+                (compare_token in lang_data.skip_tokens and len(tokens_taken) != 0)) and ordinal_number is None):
             tokens_taken.append(compare_token)
 
         else:
+            if ordinal_number is not None:
+                tokens_taken.append(ordinal_number)
+
             if tokens_taken:
                 myvalue = _build_number(tokens_taken, lang_data)
                 for each_number in myvalue:
                     current_sentence.append(each_number)
                     current_sentence.append(" ")
                 tokens_taken = []
-            current_sentence.append(token)
+
+            if ordinal_number is None:
+                current_sentence.append(token)
+            else:
+                current_sentence.pop()  # Handling extra space when breaking on ordinal numbers.
 
     if tokens_taken:
         myvalue = _build_number(tokens_taken, lang_data)
