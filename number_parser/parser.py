@@ -181,6 +181,10 @@ def _is_number_token(token, lang_data):
     return _is_cardinal_token(token, lang_data)
 
 
+def _is_skip_token(token, lang_data):
+    return token in lang_data.skip_tokens
+
+
 def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language.
     """Converts ordinal tokens to cardinal while leaving other tokens unchanged."""
     CARDINAL_DIRECT_NUMBERS = {'first': 'one', 'second': 'two', 'third': 'three', 'fifth': 'five', 'eighth': 'eight',
@@ -200,8 +204,29 @@ def _apply_cardinal_conversion(token, lang_data):  # Currently only for English 
     return token
 
 
-def parse_ordinal(input_string, language='en'):
+def _valid_tokens_by_language(input_string):
+    counter_each_language = {}
+
+    for language in SUPPORTED_LANGUAGES:
+        lang_data = LanguageData(language)
+        tokens = _tokenize(input_string, language)
+        normalized_tokens = _normalize_tokens(tokens)
+        valid_list = [_is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
+                      for token in normalized_tokens]
+        cnt_valid_words = valid_list.count(True)
+        counter_each_language[language] = cnt_valid_words
+
+    best_language = max(counter_each_language, key=counter_each_language.get)
+    if counter_each_language[best_language] == 0:  # Incase no matching words return english.
+        return 'en'
+    return best_language
+
+
+def parse_ordinal(input_string, language=None):
     """Converts a single number in ordinal or cardinal form to it's numeric equivalent"""
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
+
     lang_data = LanguageData(language)
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
@@ -210,8 +235,11 @@ def parse_ordinal(input_string, language='en'):
     return parse_number(output_string, language)
 
 
-def parse_number(input_string, language='en'):
+def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
+
     lang_data = LanguageData(language)
     if input_string.isnumeric():
         return int(input_string)
@@ -221,7 +249,7 @@ def parse_number(input_string, language='en'):
     for index, token in enumerate(normalized_tokens):
         if token in lang_data.all_numbers or token.isspace() or len(token) == 0:
             continue
-        if token in lang_data.skip_tokens and index != 0:
+        if _is_skip_token(token, lang_data) and index != 0:
             continue
         return None
     number_built = _build_number(normalized_tokens, lang_data)
@@ -230,11 +258,14 @@ def parse_number(input_string, language='en'):
     return None
 
 
-def parse(input_string, language='en'):
+def parse(input_string, language=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
+
     lang_data = LanguageData(language)
     tokens = _tokenize(input_string, language)
     if tokens is None:
@@ -267,7 +298,7 @@ def parse(input_string, language='en'):
             continue
 
         elif ((compare_token in lang_data.all_numbers or
-                (compare_token in lang_data.skip_tokens and len(tokens_taken) != 0)) and ordinal_number is None):
+                (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) and ordinal_number is None):
             tokens_taken.append(compare_token)
 
         else:
