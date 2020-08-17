@@ -1,5 +1,6 @@
 import pytest
-from number_parser import parse, parse_number, parse_ordinal
+from number_parser import parse, parse_number, parse_ordinal, _valid_tokens_by_language
+
 
 class TestNumberParser():
     @pytest.mark.parametrize(
@@ -47,3 +48,21 @@ class TestNumberParser():
     )
     def test_parse_basic_sentences(self, expected, test_input):
         assert parse(test_input) == expected
+
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            ("twenty-five cows, twelve chickens and one hundred twenty five kg of potatoes.", "en"),
+            ("I have eight cows", "en"),
+            ("dos y dos son cuatro cuatro y dos son seis seis y dos son ocho y ocho dieciséis", "es"),
+            ("doscientos cincuenta y doscientos treinta y uno y doce", "es"),
+            ("robust", "en"),
+            ("y y y one y y", "es"),  # y is the skip token for Spanish and dominates.
+            ("qwertyuiop", "en"),
+            ("тысяче testing", "ru"),
+            ("dos two двух", "en"),  # Code-mix data with equal counts , no guarentee.
+            ("एक लाख five", "hi")
+        ]
+    )
+    def test_valid_tokens_by_language(self, expected, test_input):
+        assert _valid_tokens_by_language(test_input) == expected
