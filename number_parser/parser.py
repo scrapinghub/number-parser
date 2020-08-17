@@ -182,9 +182,7 @@ def _is_number_token(token, lang_data):
 
 
 def _is_skip_token(token, lang_data):
-    if token in lang_data.skip_tokens:
-        return True
-    return False
+    return token in lang_data.skip_tokens
 
 
 def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language.
