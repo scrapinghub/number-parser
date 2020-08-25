@@ -26,6 +26,19 @@ class TestNumberParser():
     def test_parse_number(self, expected, test_input):
         assert parse_number(test_input, LANG) == expected
 
+    @pytest.mark.parametrize(
+        "test_input,expected",
+        [
+            ('तेरह जनवरी 1997 11:08', '13 जनवरी 1997 11:08'),
+            ('मैें बीस साल का हूँ', 'मैें 20 साल का हूँ'),
+            ('एक दो तीन', '1 2 3'),
+            ('उनका मासिक वेतन एक लाख है', 'उनका मासिक वेतन 100000 है'),
+            ('खेल शुरू किया जाय', 'खेल शुरू किया जाय'),
+        ]
+    )
+    def test_parse(self, expected, test_input):
+        assert parse(test_input, LANG) == expected
+
     def test_parse_number_till_hundred(self):
         _test_files(HUNDREDS_DIRECTORY, LANG)
 

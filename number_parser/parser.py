@@ -138,7 +138,7 @@ def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
     input_string = input_string.replace('\xad', '')
     if language in RE_BUG_LANGUAGES:
-        return input_string.split()
+        return re.split(r'(\s+)', input_string)
     tokens = re.split(r'(\W)', input_string)
     return tokens
 
