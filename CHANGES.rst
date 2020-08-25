@@ -9,3 +9,9 @@ Initial release.
 ------------------
 
 Ordinal Number Support
+
+
+0.2.1 (2020-08-25)
+------------------
+
+Fix tokenization bug - Hindi
