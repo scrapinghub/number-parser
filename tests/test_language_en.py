@@ -1,5 +1,5 @@
 import pytest
-from number_parser import parse, parse_number, parse_ordinal
+from number_parser import parse, parse_number
 from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY
 from tests import _test_files
 LANG = 'en'
@@ -100,48 +100,3 @@ def test_parse_number_till_hundred():
 
 def test_parse_number_permutations():
     _test_files(PERMUTATION_DIRECTORY, LANG)
-
-
-@pytest.mark.parametrize(
-    "test_input,expected",
-    [
-        ('eleventh', 11),
-        ("nineteenth", 19),
-        ('hundredth', 100),
-        ('one hundred and forty second', 142),
-        ('thousandth', 1_000),
-        ("two thousand and fifth", 2_005),
-        ('millionth', 1_000_000),
-        ("two million three thousand and nineteenth", 2_003_019),
-        ('two million twenty three thousand and forty ninth', 2_023_049),
-        ("two million three thousand nine hundred and eighty fourth", 2_003_984),
-        ('billionth', 1_000_000_000),
-        ('with goldsmith', None),
-        ('th th', None),
-        ('fifth fiftieth', None),
-        # Some ambiguos cases
-        ('fiftieth fifth', 55),
-        ('fiftieth five', 55),
-        ('fifty five', 55)
-    ]
-)
-def test_parse_ordinal(expected, test_input):
-    assert parse_ordinal(test_input, LANG) == expected
-
-
-@pytest.mark.parametrize(
-    "test_input,expected",
-    [
-        ('eleventh day of summer', "11 day of summer"),
-        ("nineteenth may two thousand", "19 may 2000"),
-        ('hundredth and one', "100 and 1"),
-        ('one hundred and forty second', "142"),
-        ('five thousandth and one', "5000 and 1"),
-        ("thirty seven and fifth", "37 and 5"),
-        ('eighth month of year two thousand and twentieth', "8 month of year 2020"),
-        ('He crieth, a path with fifty fifth steps', "He crieth, a path with 55 steps"),
-        ('twentieth seventh fiftieth third', "20 7 50 3")
-    ]
-)
-def test_parse_sentences_ordinal(expected, test_input):
-    assert parse(test_input, LANG) == expected

@@ -23,4 +23,4 @@ def _test_files(path, language):
                 try:
                     assert parse_number(row['text'], language) == int(row['number'])
                 except AssertionError as e:
-                    raise AssertionError(F"Failed execution of {row['text']}") from e
+                    raise AssertionError(F"Failed execution of {row['text']} (file: \"{filename}\")") from e
