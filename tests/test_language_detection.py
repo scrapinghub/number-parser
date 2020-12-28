@@ -1,5 +1,5 @@
 import pytest
-from number_parser import parse, parse_number, parse_ordinal
+from number_parser import parse, parse_number
 from number_parser.parser import _valid_tokens_by_language
 
 
