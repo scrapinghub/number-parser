@@ -277,11 +277,16 @@ def parse(input_string, language=None):
     current_sentence = []
     tokens_taken = []
 
-    def _build_and_add_number():
-        result = _build_number(tokens_taken, lang_data)
-        for number in result:
-            current_sentence.append(number)
-            current_sentence.append(" ")
+    def _build_and_add_number(pop_last_space=False):
+        if tokens_taken:
+            result = _build_number(tokens_taken, lang_data)
+            tokens_taken.clear()
+
+            for number in result:
+                current_sentence.append(number)
+                current_sentence.append(" ")
+            if pop_last_space:
+                current_sentence.pop()
 
     for token in tokens:
         compare_token = _strip_accents(token.lower())
@@ -293,38 +298,25 @@ def parse(input_string, language=None):
             continue
 
         if compare_token in SENTENCE_SEPARATORS:
-            if tokens_taken:
-                _build_and_add_number()
-                current_sentence.pop()
+            _build_and_add_number(pop_last_space=True)
             current_sentence.append(token)
             final_sentence.extend(current_sentence)
-            tokens_taken = []
             current_sentence = []
             continue
 
-        elif not ordinal_number and (
+        if ordinal_number:
+            tokens_taken.append(ordinal_number)
+            _build_and_add_number(pop_last_space=True)
+        elif (
                 _is_cardinal_token(compare_token, lang_data)
                 or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
         ):
             tokens_taken.append(compare_token)
-
         else:
-            if ordinal_number:
-                tokens_taken.append(ordinal_number)
+            _build_and_add_number()
+            current_sentence.append(token)
 
-            if tokens_taken:
-                _build_and_add_number()
-                tokens_taken = []
-
-            if not ordinal_number:
-                current_sentence.append(token)
-            else:
-                current_sentence.pop()  # Handling extra space when breaking on ordinal numbers.
-
-    if tokens_taken:
-        _build_and_add_number()
+    _build_and_add_number()
 
     final_sentence.extend(current_sentence)
-
-    output_string = ''.join(final_sentence).strip()
-    return output_string
+    return ''.join(final_sentence).strip()
