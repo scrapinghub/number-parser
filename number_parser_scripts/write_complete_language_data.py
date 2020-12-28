@@ -13,6 +13,10 @@ SOURCE_PATH = "../number_parser_data/raw_cldr_translation_data/"
 SUPPLEMENTARY_PATH = "../number_parser_data/supplementary_translation_data/"
 TARGET_PATH = "../number_parser/data/"
 
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+
 VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]
 INVALID_KEYS = ["cents"]
 CAPTURE_BRACKET_CONTENT = r'\{(.*?)\}'
@@ -126,6 +130,9 @@ def write_complete_data():
     and write the combined results to the final target directory.
     """
     for file_name in os.listdir(SOURCE_PATH):
+        if file_name == 'root.json':
+            # ignore as it's not a language
+            continue
         full_source_path = os.path.join(SOURCE_PATH, file_name)
         full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0] + ".py")
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
