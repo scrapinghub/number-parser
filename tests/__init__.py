@@ -1,10 +1,12 @@
 import os
 import csv
-from number_parser import parse_number
+from number_parser import parse_number, parse_ordinal
 
 TEST_ROOT = os.path.dirname(os.path.abspath(__file__))
 HUNDREDS_DIRECTORY = os.path.join(TEST_ROOT, "./data/hundreds")
 PERMUTATION_DIRECTORY = os.path.join(TEST_ROOT, "./data/permutations")
+ORDINALS_DIRECTORY = os.path.join(TEST_ROOT, "./data/ordinals")
+ORDINALS_PERMUTATION_DIRECTORY = os.path.join(TEST_ROOT, "./data/ordinals_permutations")
 
 
 def get_test_files(path, prefix):
@@ -15,12 +17,13 @@ def get_test_files(path, prefix):
     ]
 
 
-def _test_files(path, language):
+def _test_files(path, language, is_ordinal=True):
+    fnx = parse_ordinal if is_ordinal else parse_number
     for filename in get_test_files(path, f'{language}_'):
         with open(filename, "r") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
                 try:
-                    assert parse_number(row['text'], language) == int(row['number'])
+                    assert fnx(row['text'], language) == int(row['number'])
                 except AssertionError as e:
                     raise AssertionError(F"Failed execution of {row['text']} (file: \"{filename}\")") from e
