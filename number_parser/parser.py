@@ -279,8 +279,6 @@ def parse(input_string, language=None):
     lang_data = LanguageData(language)
 
     tokens = _tokenize(input_string, language)
-    if tokens is None:
-        return None
 
     final_sentence = []
     current_sentence = []
