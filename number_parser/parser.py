@@ -290,8 +290,8 @@ def parse(input_string, language=None):
             tokens_taken.clear()
 
             for number in result:
-                current_sentence.append(number)
-                current_sentence.append(" ")
+                current_sentence.extend([number, " "])
+
             if pop_last_space:
                 current_sentence.pop()
 
@@ -320,6 +320,13 @@ def parse(input_string, language=None):
         ):
             tokens_taken.append(compare_token)
         else:
+            if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
+                # when finishing with a skip_token --> keep it
+                skip_token = tokens_taken[-1]
+                tokens_taken.pop()
+                _build_and_add_number()
+                current_sentence.extend([skip_token, " "])
+
             _build_and_add_number()
             current_sentence.append(token)
 

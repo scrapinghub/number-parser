@@ -45,6 +45,7 @@ def test_parse_number(expected, test_input):
         ("dos y dos son cuatro cuatro y dos son seis seis y dos son ocho y ocho dieciséis",
          "2 y 2 son 4 4 y 2 son 6 6 y 2 son 8 y 8 16"),
         ("doscientos cincuenta y doscientos treinta y uno y doce", "250 y 231 y 12"),
+        ('Avisté tres y luego nos fuimos.', 'Avisté 3 y luego nos fuimos.')
     ]
 )
 def test_parse(expected, test_input):
