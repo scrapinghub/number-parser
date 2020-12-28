@@ -275,6 +275,12 @@ def parse(input_string, language=None):
     current_sentence = []
     tokens_taken = []
 
+    def _build_and_add_number():
+        result = _build_number(tokens_taken, lang_data)
+        for number in result:
+            current_sentence.append(number)
+            current_sentence.append(" ")
+
     for token in tokens:
         compare_token = _strip_accents(token.lower())
         ordinal_number = _is_ordinal_token(compare_token, lang_data)
@@ -286,10 +292,7 @@ def parse(input_string, language=None):
 
         if compare_token in SENTENCE_SEPARATORS:
             if tokens_taken:
-                myvalue = _build_number(tokens_taken, lang_data)
-                for each_number in myvalue:
-                    current_sentence.append(each_number)
-                    current_sentence.append(" ")
+                _build_and_add_number()
                 current_sentence.pop()
             current_sentence.append(token)
             final_sentence.extend(current_sentence)
@@ -307,10 +310,7 @@ def parse(input_string, language=None):
                 tokens_taken.append(ordinal_number)
 
             if tokens_taken:
-                myvalue = _build_number(tokens_taken, lang_data)
-                for each_number in myvalue:
-                    current_sentence.append(each_number)
-                    current_sentence.append(" ")
+                _build_and_add_number()
                 tokens_taken = []
 
             if ordinal_number is None:
@@ -319,10 +319,7 @@ def parse(input_string, language=None):
                 current_sentence.pop()  # Handling extra space when breaking on ordinal numbers.
 
     if tokens_taken:
-        myvalue = _build_number(tokens_taken, lang_data)
-        for each_number in myvalue:
-            current_sentence.append(each_number)
-            current_sentence.append(" ")
+        _build_and_add_number()
 
     final_sentence.extend(current_sentence)
 
