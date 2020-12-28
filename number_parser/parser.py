@@ -81,7 +81,7 @@ def _build_number(token_list, lang_data):
     used_skip_tokens = []
 
     for token in token_list:
-        if token.isspace() or token == "":
+        if not token.strip():
             continue
         if token in lang_data.skip_tokens:
             used_skip_tokens.append(token)
@@ -247,7 +247,7 @@ def parse_number(input_string, language=None):
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
     for index, token in enumerate(normalized_tokens):
-        if token in lang_data.all_numbers or token.isspace() or len(token) == 0:
+        if _is_cardinal_token(token, lang_data) or not token.strip():
             continue
         if _is_skip_token(token, lang_data) and index != 0:
             continue
@@ -279,7 +279,7 @@ def parse(input_string, language=None):
         compare_token = _strip_accents(token.lower())
         ordinal_number = _is_ordinal_token(compare_token, lang_data)
 
-        if compare_token.isspace() or compare_token == "":
+        if not compare_token.strip():
             if not tokens_taken:
                 current_sentence.append(token)
             continue
@@ -297,7 +297,7 @@ def parse(input_string, language=None):
             current_sentence = []
             continue
 
-        elif (compare_token in lang_data.all_numbers
+        elif (_is_cardinal_token(compare_token, lang_data)
               or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) \
                 and ordinal_number is None:
             tokens_taken.append(compare_token)
