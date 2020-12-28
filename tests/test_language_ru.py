@@ -1,5 +1,5 @@
 import pytest
-from number_parser import parse, parse_number
+from number_parser import parse_number
 from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY
 from tests import _test_files
 
@@ -72,7 +72,7 @@ class TestNumberParser():
             ("двадцать одним миллионом", 21_000_000),
         ]
     )
-    def test_parse_number(self,  expected,  test_input):
+    def test_parse_number(self, expected, test_input):
         assert parse_number(test_input, LANG) == expected
 
     def test_parse_number_till_hundred(self):

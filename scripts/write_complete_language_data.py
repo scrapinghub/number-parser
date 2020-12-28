@@ -127,7 +127,7 @@ def write_complete_data():
     """
     for file_name in os.listdir(SOURCE_PATH):
         full_source_path = os.path.join(SOURCE_PATH, file_name)
-        full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0]+".py")
+        full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0] + ".py")
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}

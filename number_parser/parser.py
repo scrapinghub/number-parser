@@ -297,8 +297,9 @@ def parse(input_string, language=None):
             current_sentence = []
             continue
 
-        elif ((compare_token in lang_data.all_numbers or
-                (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) and ordinal_number is None):
+        elif (compare_token in lang_data.all_numbers
+              or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) \
+                and ordinal_number is None:
             tokens_taken.append(compare_token)
 
         else:
