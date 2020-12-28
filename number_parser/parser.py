@@ -69,9 +69,7 @@ def _check_validity(current_token, previous_token, previous_power_of_10, total_v
 def _check_large_multiplier(current_token, total_value, current_grp_value, lang_data):
     """Checks if the current token (power of ten) is larger than the total value formed till now."""
     combined_value = total_value + current_grp_value
-    if combined_value == 0:
-        return False
-    if current_token in lang_data.big_powers_of_ten:
+    if combined_value and current_token in lang_data.big_powers_of_ten:
         large_value = lang_data.big_powers_of_ten[current_token]
         if large_value > combined_value and large_value != 100:
             return True
@@ -146,8 +144,7 @@ def _tokenize(input_string, language):
     input_string = input_string.replace('\xad', '')
     if language in RE_BUG_LANGUAGES:
         return re.split(r'(\s+)', input_string)
-    tokens = re.split(r'(\W)', input_string)
-    return tokens
+    return re.split(r'(\W)', input_string)
 
 
 def _strip_accents(word):
@@ -218,8 +215,10 @@ def _valid_tokens_by_language(input_string):
         lang_data = LanguageData(language)
         tokens = _tokenize(input_string, language)
         normalized_tokens = _normalize_tokens(tokens)
-        valid_list = [_is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
-                      for token in normalized_tokens]
+        valid_list = [
+            _is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
+            for token in normalized_tokens
+        ]
         cnt_valid_words = valid_list.count(True)
         language_matches[language] = cnt_valid_words
 
