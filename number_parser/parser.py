@@ -205,7 +205,7 @@ def _apply_cardinal_conversion(token, lang_data):  # Currently only for English 
 
 
 def _valid_tokens_by_language(input_string):
-    counter_each_language = {}
+    language_matches = {}
 
     for language in SUPPORTED_LANGUAGES:
         lang_data = LanguageData(language)
@@ -214,10 +214,10 @@ def _valid_tokens_by_language(input_string):
         valid_list = [_is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
                       for token in normalized_tokens]
         cnt_valid_words = valid_list.count(True)
-        counter_each_language[language] = cnt_valid_words
+        language_matches[language] = cnt_valid_words
 
-    best_language = max(counter_each_language, key=counter_each_language.get)
-    if counter_each_language[best_language] == 0:  # Incase no matching words return english.
+    best_language = max(language_matches, key=language_matches.get)
+    if language_matches[best_language] == 0:  # return English if not matching words
         return 'en'
     return best_language
 
@@ -237,12 +237,13 @@ def parse_ordinal(input_string, language=None):
 
 def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
+    if input_string.isnumeric():
+        return int(input_string)
+
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
-    if input_string.isnumeric():
-        return int(input_string)
 
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
@@ -267,6 +268,7 @@ def parse(input_string, language=None):
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
+
     tokens = _tokenize(input_string, language)
     if tokens is None:
         return None
@@ -300,9 +302,10 @@ def parse(input_string, language=None):
             current_sentence = []
             continue
 
-        elif (_is_cardinal_token(compare_token, lang_data)
-              or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) \
-                and not ordinal_number:
+        elif not ordinal_number and (
+                _is_cardinal_token(compare_token, lang_data)
+                or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
+        ):
             tokens_taken.append(compare_token)
 
         else:
