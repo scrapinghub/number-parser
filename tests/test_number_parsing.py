@@ -123,4 +123,4 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
 
 def test_LanguageData_unsupported_language():
     with pytest.raises(ValueError):
-        lang_data = LanguageData('xxxx')
+        LanguageData('xxxx')
