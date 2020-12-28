@@ -302,18 +302,18 @@ def parse(input_string, language=None):
 
         elif (_is_cardinal_token(compare_token, lang_data)
               or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) \
-                and ordinal_number is None:
+                and not ordinal_number:
             tokens_taken.append(compare_token)
 
         else:
-            if ordinal_number is not None:
+            if ordinal_number:
                 tokens_taken.append(ordinal_number)
 
             if tokens_taken:
                 _build_and_add_number()
                 tokens_taken = []
 
-            if ordinal_number is None:
+            if not ordinal_number:
                 current_sentence.append(token)
             else:
                 current_sentence.pop()  # Handling extra space when breaking on ordinal numbers.
