@@ -243,7 +243,10 @@ def parse_ordinal(input_string, language=None):
 
 def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
-    if input_string.isnumeric():
+    if not input_string.strip():
+        return None
+
+    if input_string.strip().isnumeric():
         return int(input_string)
 
     if language is None:
@@ -276,8 +279,6 @@ def parse(input_string, language=None):
     lang_data = LanguageData(language)
 
     tokens = _tokenize(input_string, language)
-    if tokens is None:
-        return None
 
     final_sentence = []
     current_sentence = []
