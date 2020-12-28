@@ -107,7 +107,7 @@ def _extract_information(key, word, language_data):
     try:
         number = int(key)
     except ValueError:
-        print("The given key {} is not an integer".format(key))
+        print(f"The given key {key} is not an integer")
         return
 
     word = word.replace(";", '')
@@ -130,8 +130,8 @@ def write_complete_data():
     and write the combined results to the final target directory.
     """
     for file_name in os.listdir(SOURCE_PATH):
-        if file_name == 'root.json':
-            # ignore as it's not a language
+        if file_name in ['root.json', 'es-419.json']:
+            # "root" is not a language, "es-419" doesn't contain spell-out rules
             continue
         full_source_path = os.path.join(SOURCE_PATH, file_name)
         full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0] + ".py")
@@ -144,7 +144,7 @@ def write_complete_data():
             try:
                 requisite_data = data['rbnf']['rbnf']['SpelloutRules']
             except KeyError:
-                print("This key doesn't exist in {}".format(file_name))
+                logging.error(f"\"['rbnf']['rbnf']['SpelloutRules']\" doesn't exist in {file_name}")
                 continue
 
             for keys, vals in requisite_data.items():
@@ -166,7 +166,7 @@ def write_complete_data():
         try:
             ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
         except KeyError:
-            logging.exception("long_scale information missing")
+            logging.error(f"long_scale information missing in {file_name}")
 
         translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
         # Overwriting boolean value with capitalized form
