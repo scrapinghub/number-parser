@@ -36,25 +36,32 @@ class LanguageData:
 
 def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):
     """Identifies whether the new token can continue building the previous number."""
+    if previous_token is None:
+        return True
+
     if current_token in lang_data.unit_and_direct_numbers and previous_token in lang_data.unit_and_direct_numbers:
+        # both tokens are "units" or "direct numbers"
         return False
 
-    if current_token in lang_data.direct_numbers and previous_token in lang_data.tens:
+    elif current_token in lang_data.direct_numbers and previous_token in lang_data.tens:
+        # current token in "direct numbers" and previous token in "tens"
         return False
 
-    elif current_token in lang_data.tens:
-        if previous_token in lang_data.tens or previous_token in lang_data.unit_and_direct_numbers:
-            return False
+    elif current_token in lang_data.tens \
+            and (previous_token in lang_data.tens or previous_token in lang_data.unit_and_direct_numbers):
+        # current token in "tens" and previous token in "tens" or it's a "unit" or "direct number"
+        return False
 
-    elif current_token in lang_data.hundreds:
-        if previous_token not in lang_data.big_powers_of_ten and previous_token is not None:
-            return False
+    elif current_token in lang_data.hundreds and previous_token not in lang_data.big_powers_of_ten:
+        # current token in "hundreds" and previous token is not a "big power of ten"
+        return False
 
     elif current_token in lang_data.big_powers_of_ten:
+        # current token is a "big power of ten"
         power_of_ten = lang_data.big_powers_of_ten[current_token]
         if power_of_ten < current_grp_value:
             return False
-        if total_value != 0 and previous_power_of_10 is not None and power_of_ten >= previous_power_of_10:
+        if total_value != 0 and previous_power_of_10 and power_of_ten >= previous_power_of_10:
             return False
     return True
 
