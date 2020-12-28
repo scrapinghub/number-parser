@@ -36,25 +36,32 @@ class LanguageData:
 
 def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):
     """Identifies whether the new token can continue building the previous number."""
+    if previous_token is None:
+        return True
+
     if current_token in lang_data.unit_and_direct_numbers and previous_token in lang_data.unit_and_direct_numbers:
+        # both tokens are "units" or "direct numbers"
         return False
 
-    if current_token in lang_data.direct_numbers and previous_token in lang_data.tens:
+    elif current_token in lang_data.direct_numbers and previous_token in lang_data.tens:
+        # current token in "direct numbers" and previous token in "tens"
         return False
 
-    elif current_token in lang_data.tens:
-        if previous_token in lang_data.tens or previous_token in lang_data.unit_and_direct_numbers:
-            return False
+    elif current_token in lang_data.tens \
+            and (previous_token in lang_data.tens or previous_token in lang_data.unit_and_direct_numbers):
+        # current token in "tens" and previous token in "tens" or it's a "unit" or "direct number"
+        return False
 
-    elif current_token in lang_data.hundreds:
-        if previous_token not in lang_data.big_powers_of_ten and previous_token is not None:
-            return False
+    elif current_token in lang_data.hundreds and previous_token not in lang_data.big_powers_of_ten:
+        # current token in "hundreds" and previous token is not a "big power of ten"
+        return False
 
     elif current_token in lang_data.big_powers_of_ten:
+        # current token is a "big power of ten"
         power_of_ten = lang_data.big_powers_of_ten[current_token]
         if power_of_ten < current_grp_value:
             return False
-        if total_value != 0 and previous_power_of_10 is not None and power_of_ten >= previous_power_of_10:
+        if total_value != 0 and previous_power_of_10 and power_of_ten >= previous_power_of_10:
             return False
     return True
 
@@ -62,9 +69,7 @@ def _check_validity(current_token, previous_token, previous_power_of_10, total_v
 def _check_large_multiplier(current_token, total_value, current_grp_value, lang_data):
     """Checks if the current token (power of ten) is larger than the total value formed till now."""
     combined_value = total_value + current_grp_value
-    if combined_value == 0:
-        return False
-    if current_token in lang_data.big_powers_of_ten:
+    if combined_value and current_token in lang_data.big_powers_of_ten:
         large_value = lang_data.big_powers_of_ten[current_token]
         if large_value > combined_value and large_value != 100:
             return True
@@ -81,7 +86,7 @@ def _build_number(token_list, lang_data):
     used_skip_tokens = []
 
     for token in token_list:
-        if token.isspace() or token == "":
+        if not token.strip():
             continue
         if token in lang_data.skip_tokens:
             used_skip_tokens.append(token)
@@ -139,8 +144,7 @@ def _tokenize(input_string, language):
     input_string = input_string.replace('\xad', '')
     if language in RE_BUG_LANGUAGES:
         return re.split(r'(\s+)', input_string)
-    tokens = re.split(r'(\W)', input_string)
-    return tokens
+    return re.split(r'(\W)', input_string)
 
 
 def _strip_accents(word):
@@ -205,19 +209,21 @@ def _apply_cardinal_conversion(token, lang_data):  # Currently only for English 
 
 
 def _valid_tokens_by_language(input_string):
-    counter_each_language = {}
+    language_matches = {}
 
     for language in SUPPORTED_LANGUAGES:
         lang_data = LanguageData(language)
         tokens = _tokenize(input_string, language)
         normalized_tokens = _normalize_tokens(tokens)
-        valid_list = [_is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
-                      for token in normalized_tokens]
+        valid_list = [
+            _is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
+            for token in normalized_tokens
+        ]
         cnt_valid_words = valid_list.count(True)
-        counter_each_language[language] = cnt_valid_words
+        language_matches[language] = cnt_valid_words
 
-    best_language = max(counter_each_language, key=counter_each_language.get)
-    if counter_each_language[best_language] == 0:  # Incase no matching words return english.
+    best_language = max(language_matches, key=language_matches.get)
+    if language_matches[best_language] == 0:  # return English if not matching words
         return 'en'
     return best_language
 
@@ -237,17 +243,18 @@ def parse_ordinal(input_string, language=None):
 
 def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
+    if input_string.isnumeric():
+        return int(input_string)
+
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
-    if input_string.isnumeric():
-        return int(input_string)
 
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
     for index, token in enumerate(normalized_tokens):
-        if token in lang_data.all_numbers or token.isspace() or len(token) == 0:
+        if _is_cardinal_token(token, lang_data) or not token.strip():
             continue
         if _is_skip_token(token, lang_data) and index != 0:
             continue
@@ -267,6 +274,7 @@ def parse(input_string, language=None):
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
+
     tokens = _tokenize(input_string, language)
     if tokens is None:
         return None
@@ -275,56 +283,46 @@ def parse(input_string, language=None):
     current_sentence = []
     tokens_taken = []
 
+    def _build_and_add_number(pop_last_space=False):
+        if tokens_taken:
+            result = _build_number(tokens_taken, lang_data)
+            tokens_taken.clear()
+
+            for number in result:
+                current_sentence.append(number)
+                current_sentence.append(" ")
+            if pop_last_space:
+                current_sentence.pop()
+
     for token in tokens:
         compare_token = _strip_accents(token.lower())
         ordinal_number = _is_ordinal_token(compare_token, lang_data)
 
-        if compare_token.isspace() or compare_token == "":
+        if not compare_token.strip():
             if not tokens_taken:
                 current_sentence.append(token)
             continue
 
         if compare_token in SENTENCE_SEPARATORS:
-            if tokens_taken:
-                myvalue = _build_number(tokens_taken, lang_data)
-                for each_number in myvalue:
-                    current_sentence.append(each_number)
-                    current_sentence.append(" ")
-                current_sentence.pop()
+            _build_and_add_number(pop_last_space=True)
             current_sentence.append(token)
             final_sentence.extend(current_sentence)
-            tokens_taken = []
             current_sentence = []
             continue
 
-        elif (compare_token in lang_data.all_numbers
-              or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)) \
-                and ordinal_number is None:
+        if ordinal_number:
+            tokens_taken.append(ordinal_number)
+            _build_and_add_number(pop_last_space=True)
+        elif (
+                _is_cardinal_token(compare_token, lang_data)
+                or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
+        ):
             tokens_taken.append(compare_token)
-
         else:
-            if ordinal_number is not None:
-                tokens_taken.append(ordinal_number)
+            _build_and_add_number()
+            current_sentence.append(token)
 
-            if tokens_taken:
-                myvalue = _build_number(tokens_taken, lang_data)
-                for each_number in myvalue:
-                    current_sentence.append(each_number)
-                    current_sentence.append(" ")
-                tokens_taken = []
-
-            if ordinal_number is None:
-                current_sentence.append(token)
-            else:
-                current_sentence.pop()  # Handling extra space when breaking on ordinal numbers.
-
-    if tokens_taken:
-        myvalue = _build_number(tokens_taken, lang_data)
-        for each_number in myvalue:
-            current_sentence.append(each_number)
-            current_sentence.append(" ")
+    _build_and_add_number()
 
     final_sentence.extend(current_sentence)
-
-    output_string = ''.join(final_sentence).strip()
-    return output_string
+    return ''.join(final_sentence).strip()
