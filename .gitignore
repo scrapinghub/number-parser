@@ -10,10 +10,11 @@ __pycache__/
 
 # IDE
 /.idea/
+.vscode/settings.json
 
 .mypy_cache/
 .cache/
 .tox/
 .pytest_cache/
 .coverage
-.vscode/settings.json
+coverage.xml
