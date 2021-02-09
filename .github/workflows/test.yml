@@ -34,5 +34,5 @@ jobs:
       - name: tox
         run: tox -e py
       - name: Upload coverage.xml to codecov
-        if: ${{ matrix.python-version == '3.9' && matrix.env.TOXENV == 'latest'}}
+        if: ${{ matrix.python-version == '3.8'}}
         uses: codecov/codecov-action@v1
