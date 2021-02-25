@@ -1,5 +1,5 @@
 import pytest
-from number_parser import parse, parse_number
+from number_parser import parse, parse_number, parse_fraction
 from number_parser.parser import LanguageData, parse_ordinal
 
 
@@ -119,6 +119,33 @@ def test_parse_ordinal(expected, test_input, lang):
 )
 def test_parse_sentences_ordinal(expected, test_input, lang):
     assert parse(test_input, lang) == expected
+
+
+
+@pytest.mark.parametrize(
+    "test_input,expected,lang",
+    [
+        # empty / not-a-number
+        ('', None, None),
+        ('example of sentence', None, None),
+        # numeric
+        ('32', None, None),
+        (' 3 ', None, None),
+        # en
+        ('eleven', None, 'en'),
+        ('one hundred and forty two by a sentence', None, 'en'),
+        ('sentence / eleven', None, 'en'),
+        ('one hundred and forty two by eleven', '142/11', 'en'),
+        ('one hundred and forty two divided by eleven', '142/11', 'en'),
+        ('one hundred and forty two / eleven', '142/11', 'en'),
+        ('one hundred and forty two over eleven', '142/11', 'en'),
+        ('two million three thousand and nineteen/two thousand and nineteen', '2003019/2019', 'en'),
+        ('billion over nineteen billion and nineteen', '1000000000/19000000019', 'en'),
+
+    ]
+)
+def test_parse_fraction(expected, test_input, lang):
+    assert parse_fraction(test_input, language=lang) == expected
 
 
 def test_LanguageData_unsupported_language():
