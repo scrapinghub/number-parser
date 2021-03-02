@@ -275,9 +275,6 @@ def parse_fraction(input_string, language=None):
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
-    if language != 'en':
-        raise ValueError(f'"{language}" is not a supported language for parsing fraction')
-
     fraction_separators = ["divided by", "over", "by", "/"]
 
     for separator in fraction_separators:
