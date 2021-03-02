@@ -59,6 +59,20 @@ Converting a single ordinal number written in words to it's corresponding intege
 75
 
 
+Interface #3: Fractional number
+-------------------------------------
+
+Converting a fractional number written in words to it's corresponding integeral fraction. (Support for only English)
+
+>>> from number_parser import parse_fraction
+>>> parse_fraction("forty two divided by five hundred and six")
+'42/506'
+>>> parse_fraction("one over two")
+'1/2'
+>>> parse_fraction("forty two / one million")
+'42/1000000'
+
+
 Language Support
 ----------------
 
