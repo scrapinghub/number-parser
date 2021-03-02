@@ -59,7 +59,7 @@ Converting a single ordinal number written in words to it's corresponding intege
 75
 
 
-Interface #3: Fractional number
+Interface #4: Fractional number
 -------------------------------------
 
 Converting a fractional number written in words to it's corresponding integeral fraction. (Support for only English)
