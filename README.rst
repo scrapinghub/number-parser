@@ -22,9 +22,8 @@ Usage
 
 The library provides the following common usages.
 
---------
-- **Converting numbers in-place**
---------
+Converting numbers in-place
+---------------------------
 
 Identifying the numbers in a text string, converting them to corresponding numeric values while ignoring non-numeric words.
 This also supports ordinal number conversion (for English only).
@@ -37,9 +36,8 @@ This also supports ordinal number conversion (for English only).
 >>> parse("First day of year two thousand")
 '1 day of year 2000'
 
---------
-- **Parsing a number**
---------
+Parsing a number
+---------------------------
 
 Converting a single number written in words to it's corresponding integer.
 
@@ -48,9 +46,8 @@ Converting a single number written in words to it's corresponding integer.
 2020
 >>> parse_number("not_a_number")
 
---------
-- **Parsing an ordinal**
---------
+Parsing an ordinal
+---------------------------
 
 Converting a single ordinal number written in words to it's corresponding integer. (Support for only English)
 
@@ -60,9 +57,8 @@ Converting a single ordinal number written in words to it's corresponding intege
 >>> parse_ordinal("seventy fifth")
 75
 
---------
-- **Parsing a fraction**
---------
+Parsing a fraction
+---------------------------
 
 Converting a fractional number written in words to it's corresponding integeral fraction. (Support for only English)
 
