@@ -49,7 +49,7 @@ Converting a single number written in words to it's corresponding integer.
 Parsing an ordinal
 ------------------
 
-Converting a single ordinal number written in words to it's corresponding integer. (Support for only English)
+Converting a single ordinal number written in words to its corresponding integer. (Support for English only)
 
 >>> from number_parser import parse_ordinal
 >>> parse_ordinal("twenty third")
@@ -60,7 +60,7 @@ Converting a single ordinal number written in words to it's corresponding intege
 Parsing a fraction
 ------------------
 
-Converting a fractional number written in words to it's corresponding integeral fraction. (Support for only English)
+Converting a fractional number written in words to its corresponding integral fraction. (Support for English only)
 
 >>> from number_parser import parse_fraction
 >>> parse_fraction("forty two divided by five hundred and six")
