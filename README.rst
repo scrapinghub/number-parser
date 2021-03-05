@@ -37,7 +37,7 @@ This also supports ordinal number conversion (for English only).
 '1 day of year 2000'
 
 Parsing a number
----------------------------
+----------------
 
 Converting a single number written in words to it's corresponding integer.
 
@@ -47,7 +47,7 @@ Converting a single number written in words to it's corresponding integer.
 >>> parse_number("not_a_number")
 
 Parsing an ordinal
----------------------------
+------------------
 
 Converting a single ordinal number written in words to it's corresponding integer. (Support for only English)
 
@@ -58,7 +58,7 @@ Converting a single ordinal number written in words to it's corresponding intege
 75
 
 Parsing a fraction
----------------------------
+------------------
 
 Converting a fractional number written in words to it's corresponding integeral fraction. (Support for only English)
 
