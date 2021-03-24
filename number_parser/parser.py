@@ -265,6 +265,7 @@ def parse_number(input_string, language=None):
     number_built = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
         return int(number_built[0])
+
     return None
 
 def parse_fraction(input_string, language=None):
@@ -275,9 +276,9 @@ def parse_fraction(input_string, language=None):
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
-    fraction_separators = ["divided by", "over", "by", "/"]
+    FRACTION_SEPARATORS = ["divided by", "over", "by", "/"]
 
-    for separator in fraction_separators:
+    for separator in FRACTION_SEPARATORS:
         position_of_separator = input_string.find(separator)
 
         if position_of_separator == -1:
@@ -289,10 +290,10 @@ def parse_fraction(input_string, language=None):
         number_before_separator = parse_number(string_before_separator, language)
         number_after_separator = parse_number(string_after_separator, language)
 
-        if number_before_separator == None or number_after_separator == None:
+        if number_before_separator is None or number_after_separator is None:
             return None
 
-        return str(number_before_separator) + '/' + str(number_after_separator)
+        return f'{number_before_separator}/{number_after_separator}'
 
     return None
 
