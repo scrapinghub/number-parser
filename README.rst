@@ -20,10 +20,10 @@ number-parser requires Python 3.6+.
 Usage
 =====
 
-The library provides three major APIs which corresponds to the following common usages.
+The library provides the following common usages.
 
-Interface #1: Multiple numbers
-------------------------------
+Converting numbers in-place
+---------------------------
 
 Identifying the numbers in a text string, converting them to corresponding numeric values while ignoring non-numeric words.
 This also supports ordinal number conversion (for English only).
@@ -36,9 +36,9 @@ This also supports ordinal number conversion (for English only).
 >>> parse("First day of year two thousand")
 '1 day of year 2000'
 
+Parsing a number
+----------------
 
-Interface #2: Single number
---------------------------------
 Converting a single number written in words to it's corresponding integer.
 
 >>> from number_parser import parse_number
@@ -46,17 +46,29 @@ Converting a single number written in words to it's corresponding integer.
 2020
 >>> parse_number("not_a_number")
 
+Parsing an ordinal
+------------------
 
-Interface #3: Single number Ordinal
--------------------------------------
-
-Converting a single ordinal number written in words to it's corresponding integer. (Support for only English)
+Converting a single ordinal number written in words to its corresponding integer. (Support for English only)
 
 >>> from number_parser import parse_ordinal
 >>> parse_ordinal("twenty third")
 23
 >>> parse_ordinal("seventy fifth")
 75
+
+Parsing a fraction
+------------------
+
+Converting a fractional number written in words to its corresponding integral fraction. (Support for English only)
+
+>>> from number_parser import parse_fraction
+>>> parse_fraction("forty two divided by five hundred and six")
+'42/506'
+>>> parse_fraction("one over two")
+'1/2'
+>>> parse_fraction("forty two / one million")
+'42/1000000'
 
 
 Language Support

@@ -268,6 +268,36 @@ def parse_number(input_string, language=None):
     return None
 
 
+def parse_fraction(input_string, language=None):
+    """Converts a single number written in fraction to a numeric type"""
+    if not input_string.strip():
+        return None
+
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
+
+    FRACTION_SEPARATORS = ["divided by", "over", "by", "/"]
+
+    for separator in FRACTION_SEPARATORS:
+        position_of_separator = input_string.find(separator)
+
+        if position_of_separator == -1:
+            continue
+
+        string_before_separator = input_string[:position_of_separator]
+        string_after_separator = input_string[position_of_separator + len(separator):]
+
+        number_before_separator = parse_number(string_before_separator, language)
+        number_after_separator = parse_number(string_after_separator, language)
+
+        if number_before_separator is None or number_after_separator is None:
+            return None
+
+        return f'{number_before_separator}/{number_after_separator}'
+
+    return None
+
+
 def parse(input_string, language=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
