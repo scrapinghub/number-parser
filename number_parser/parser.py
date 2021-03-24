@@ -265,8 +265,8 @@ def parse_number(input_string, language=None):
     number_built = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
         return int(number_built[0])
-
     return None
+
 
 def parse_fraction(input_string, language=None):
     """Converts a single number written in fraction to a numeric type"""
