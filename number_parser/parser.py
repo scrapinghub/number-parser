@@ -1,6 +1,7 @@
 import re
 from importlib import import_module
 import unicodedata
+
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
@@ -296,6 +297,42 @@ def parse_fraction(input_string, language=None):
         return f'{number_before_separator}/{number_after_separator}'
 
     return None
+
+
+def parse_roman(input_string):
+    tokens = _tokenize(input_string, None)
+
+    def build_roman(roman_number):
+        roman = {'i': 1, 'v': 5, 'x': 10, 'l': 50, 'c': 100, 'd': 500, 'm': 1000}
+        num_tokens = re.split("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", roman_number.lower())
+        num_tokens = [item for item in num_tokens if item != '']
+        built_num = 0
+        for num_token in num_tokens:
+            if len(num_token) == 1:
+                built_num += roman[num_token]
+            elif len(num_token) == 2:
+                if (roman[num_token[0]]) > (roman[num_token[1]]):
+                    built_num += roman[num_token[0]] + roman[num_token[1]]
+                elif (roman[num_token[0]]) < (roman[num_token[1]]):
+                    built_num += roman[num_token[1]] - roman[num_token[0]]
+                else:
+                    built_num += (roman[num_token[0]]) * 2
+            elif len(num_token) == 3:
+                if (roman[num_token[0]]) > (roman[num_token[1]]):
+                    built_num += roman[num_token[0]] + (2 * roman[num_token[1]])
+                else:
+                    built_num += (roman[num_token[0]]) * 3
+            elif len(num_token) == 4:
+                built_num += roman[num_token[0]] + (3 * roman[num_token[1]])
+
+        return built_num
+
+    for token in tokens:
+        if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
+            tokens[tokens.index(token)] = str(build_roman(token))
+        final_sentence = ''.join(tokens)
+
+    return final_sentence
 
 
 def parse(input_string, language=None):
