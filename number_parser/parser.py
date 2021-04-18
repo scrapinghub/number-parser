@@ -308,22 +308,12 @@ def parse_roman(input_string):
         num_tokens = [item for item in num_tokens if item != '']
         built_num = 0
         for num_token in num_tokens:
-            if len(num_token) == 1:
-                built_num += roman[num_token]
-            elif len(num_token) == 2:
-                if (roman[num_token[0]]) > (roman[num_token[1]]):
-                    built_num += roman[num_token[0]] + roman[num_token[1]]
-                elif (roman[num_token[0]]) < (roman[num_token[1]]):
-                    built_num += roman[num_token[1]] - roman[num_token[0]]
-                else:
-                    built_num += (roman[num_token[0]]) * 2
-            elif len(num_token) == 3:
-                if (roman[num_token[0]]) > (roman[num_token[1]]):
-                    built_num += roman[num_token[0]] + (2 * roman[num_token[1]])
-                else:
-                    built_num += (roman[num_token[0]]) * 3
-            elif len(num_token) == 4:
-                built_num += roman[num_token[0]] + (3 * roman[num_token[1]])
+            if re.search('iv|ix|xl|xc|cd|cm', num_token):
+                built_num += roman[num_token[1]] - roman[num_token[0]]
+            elif re.search('[vld][ixc]{1,3}', num_token):
+                built_num += roman[num_token[0]] + (roman[num_token[1]] * (len(num_token) - 1))
+            else:
+                built_num += roman[num_token[0]] * len(num_token)
 
         return built_num
 
