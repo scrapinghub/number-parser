@@ -5,6 +5,7 @@ import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
+NUMERAL_SYSTEM = ['decimal', 'roman']
 
 class LanguageData:
     """Main language class to populate the requisite language-specific variables."""
@@ -227,6 +228,15 @@ def _valid_tokens_by_language(input_string):
         return 'en'
     return best_language
 
+def _valid_input_by_numeral_system(input_string):
+    language = _valid_tokens_by_language(input_string)
+    tokens = _tokenize(input_string, language)
+    best_numeral_system = 'decimal'
+    for token in tokens:
+        if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
+            best_numeral_system = 'roman'
+    return best_numeral_system
+
 def _parse_roman(input_string):
     tokens = _tokenize(input_string, None)
 
@@ -266,13 +276,16 @@ def parse_ordinal(input_string, language=None, numeral_system = 'decimal'):
         return parse_number(output_string, language)
 
 
-def parse_number(input_string, language=None, numeral_system = 'decimal'):
+def parse_number(input_string, language=None, numeral_system = None):
     """Converts a single number written in natural language to a numeric type"""
     if not input_string.strip():
         return None
 
     if input_string.strip().isnumeric():
         return int(input_string)
+
+    if numeral_system == None:
+        numeral_system = _valid_input_by_numeral_system(input_string)
 
     if numeral_system == 'decimal':
         if language is None:
@@ -327,11 +340,14 @@ def parse_fraction(input_string, language=None):
     return None
 
 
-def parse(input_string, language=None, numeral_system = 'decimal'):
+def parse(input_string, language=None, numeral_system = None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
+    if numeral_system == None:
+        numeral_system = _valid_input_by_numeral_system(input_string)
+
     if numeral_system == 'decimal':
         if language is None:
             language = _valid_tokens_by_language(input_string)
