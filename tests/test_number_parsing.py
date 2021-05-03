@@ -60,7 +60,7 @@ def test_parse_number(expected, test_input, lang):
     ]
 )
 def test_parse_basic_sentences(expected, test_input, lang):
-    assert parse(test_input, lang) == expected
+    assert parse(test_input, lang, numeral_systems=['decimal']) == expected
 
 
 @pytest.mark.parametrize(
