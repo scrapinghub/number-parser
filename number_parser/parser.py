@@ -308,23 +308,28 @@ def parse(input_string, language=None, numeral_systems=None):
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
+    global complete_sentence
+
     if numeral_systems is None:
-        numeral_systems = ['decimal']
+        numeral_systems = ['decimal', 'roman']
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
-    if 'decimal' in numeral_systems:
-        final_sentence = _parse_decimal(input_string, language)
-        input_string = final_sentence
-        return  final_sentence
+    for numeral_system in numeral_systems:
 
-    if 'roman' in numeral_systems:
-        final_sentence = _parse_roman(input_string)
-        return final_sentence
+        if numeral_system == 'decimal':
+            complete_sentence = _parse_decimal(input_string, language)
+            input_string = complete_sentence
+
+        if numeral_system == 'roman':
+            complete_sentence = _parse_roman(input_string)
+            input_string = complete_sentence
+
+    return complete_sentence
+
 
 def _parse_decimal(input_string, language):
-
     lang_data = LanguageData(language)
 
     tokens = _tokenize(input_string, language)
@@ -378,7 +383,6 @@ def _parse_decimal(input_string, language):
 
             _build_and_add_number()
             current_sentence.append(token)
-
     _build_and_add_number()
 
     final_sentence.extend(current_sentence)
@@ -386,18 +390,17 @@ def _parse_decimal(input_string, language):
 
 
 def _parse_roman(input_string):
-    global final_sentence
     tokens = _tokenize(input_string, None)
-
     for token in tokens:
         if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
-            tokens[tokens.index(token)] = str(build_roman(token))
-        final_sentence = ''.join(tokens)
+            if _build_roman(token) != 0:
+                tokens[tokens.index(token)] = str(_build_roman(token))
+    final_sentence = ''.join(tokens)
 
     return final_sentence
 
 
-def build_roman(roman_number):
+def _build_roman(roman_number):
     roman = {'i': 1, 'v': 5, 'x': 10, 'l': 50, 'c': 100, 'd': 500, 'm': 1000}
     num_tokens = re.split("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", roman_number.lower())
     num_tokens = [item for item in num_tokens if item != '']
@@ -409,5 +412,4 @@ def build_roman(roman_number):
             built_num += roman[num_token[0]] + (roman[num_token[1]] * (len(num_token) - 1))
         else:
             built_num += roman[num_token[0]] * len(num_token)
-
     return built_num
