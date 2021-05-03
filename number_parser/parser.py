@@ -5,7 +5,8 @@ import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
-NUMERAL_SYSTEM = ['decimal', 'roman']
+NUMERAL_SYSTEMS = ['decimal', 'roman']
+
 
 class LanguageData:
     """Main language class to populate the requisite language-specific variables."""
@@ -228,55 +229,21 @@ def _valid_tokens_by_language(input_string):
         return 'en'
     return best_language
 
-def _valid_input_by_numeral_system(input_string):
-    language = _valid_tokens_by_language(input_string)
-    tokens = _tokenize(input_string, language)
-    best_numeral_system = 'decimal'
-    for token in tokens:
-        if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
-            best_numeral_system = 'roman'
-    return best_numeral_system
 
-def _parse_roman(input_string):
-    tokens = _tokenize(input_string, None)
-
-    def build_roman(roman_number):
-        roman = {'i': 1, 'v': 5, 'x': 10, 'l': 50, 'c': 100, 'd': 500, 'm': 1000}
-        num_tokens = re.split("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", roman_number.lower())
-        num_tokens = [item for item in num_tokens if item != '']
-        built_num = 0
-        for num_token in num_tokens:
-            if re.search('iv|ix|xl|xc|cd|cm', num_token):
-                built_num += roman[num_token[1]] - roman[num_token[0]]
-            elif re.search('[vld][ixc]{1,3}', num_token):
-                built_num += roman[num_token[0]] + (roman[num_token[1]] * (len(num_token) - 1))
-            else:
-                built_num += roman[num_token[0]] * len(num_token)
-
-        return built_num
-
-    for token in tokens:
-        if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
-            tokens[tokens.index(token)] = str(build_roman(token))
-        final_sentence = ''.join(tokens)
-
-    return final_sentence
-
-def parse_ordinal(input_string, language=None, numeral_system = 'decimal'):
+def parse_ordinal(input_string, language=None):
     """Converts a single number in ordinal or cardinal form to it's numeric equivalent"""
-    if numeral_system == 'decimal':
-        if language is None:
-            language = _valid_tokens_by_language(input_string)
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
 
-        lang_data = LanguageData(language)
-        tokens = _tokenize(input_string, language)
-        normalized_tokens = _normalize_tokens(tokens)
-        processed_tokens = [_apply_cardinal_conversion(token, lang_data) for token in normalized_tokens]
-        output_string = ' '.join(processed_tokens)
-        return parse_number(output_string, language)
+    lang_data = LanguageData(language)
+    tokens = _tokenize(input_string, language)
+    normalized_tokens = _normalize_tokens(tokens)
+    processed_tokens = [_apply_cardinal_conversion(token, lang_data) for token in normalized_tokens]
+    output_string = ' '.join(processed_tokens)
+    return parse_number(output_string, language)
 
 
-def parse_number(input_string, language=None, numeral_system = None):
+def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
     if not input_string.strip():
         return None
@@ -284,30 +251,26 @@ def parse_number(input_string, language=None, numeral_system = None):
     if input_string.strip().isnumeric():
         return int(input_string)
 
-    if numeral_system == None:
-        numeral_system = _valid_input_by_numeral_system(input_string)
-
-    if numeral_system == 'decimal':
-        if language is None:
-            language = _valid_tokens_by_language(input_string)
-
-        lang_data = LanguageData(language)
-
-        tokens = _tokenize(input_string, language)
-        normalized_tokens = _normalize_tokens(tokens)
-        for index, token in enumerate(normalized_tokens):
-            if _is_cardinal_token(token, lang_data) or not token.strip():
-                continue
-            if _is_skip_token(token, lang_data) and index != 0:
-                continue
-            return None
-        number_built = _build_number(normalized_tokens, lang_data)
-        if len(number_built) == 1:
-            return int(number_built[0])
-        return None
-
-    elif numeral_system == 'roman':
+    if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", input_string.lower()):
         return int(_parse_roman(input_string))
+
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
+
+    lang_data = LanguageData(language)
+
+    tokens = _tokenize(input_string, language)
+    normalized_tokens = _normalize_tokens(tokens)
+    for index, token in enumerate(normalized_tokens):
+        if _is_cardinal_token(token, lang_data) or not token.strip():
+            continue
+        if _is_skip_token(token, lang_data) and index != 0:
+            continue
+        return None
+    number_built = _build_number(normalized_tokens, lang_data)
+    if len(number_built) == 1:
+        return int(number_built[0])
+    return None
 
 
 def parse_fraction(input_string, language=None):
@@ -340,76 +303,111 @@ def parse_fraction(input_string, language=None):
     return None
 
 
-def parse(input_string, language=None, numeral_system = None):
+def parse(input_string, language=None, numeral_systems=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
-    if numeral_system == None:
-        numeral_system = _valid_input_by_numeral_system(input_string)
+    if numeral_systems is None:
+        numeral_systems = ['decimal']
 
-    if numeral_system == 'decimal':
-        if language is None:
-            language = _valid_tokens_by_language(input_string)
+    if language is None:
+        language = _valid_tokens_by_language(input_string)
 
-        lang_data = LanguageData(language)
+    if 'decimal' in numeral_systems:
+        final_sentence = _parse_decimal(input_string, language)
+        input_string = final_sentence
+        return  final_sentence
 
-        tokens = _tokenize(input_string, language)
+    if 'roman' in numeral_systems:
+        final_sentence = _parse_roman(input_string)
+        return final_sentence
 
-        final_sentence = []
-        current_sentence = []
-        tokens_taken = []
+def _parse_decimal(input_string, language):
 
-        def _build_and_add_number(pop_last_space=False):
-            if tokens_taken:
-                result = _build_number(tokens_taken, lang_data)
-                tokens_taken.clear()
+    lang_data = LanguageData(language)
 
-                for number in result:
-                    current_sentence.extend([number, " "])
+    tokens = _tokenize(input_string, language)
 
-                if pop_last_space:
-                    current_sentence.pop()
+    final_sentence = []
+    current_sentence = []
+    tokens_taken = []
 
-        for token in tokens:
-            compare_token = _strip_accents(token.lower())
-            ordinal_number = _is_ordinal_token(compare_token, lang_data)
+    def _build_and_add_number(pop_last_space=False):
+        if tokens_taken:
+            result = _build_number(tokens_taken, lang_data)
+            tokens_taken.clear()
 
-            if not compare_token.strip():
-                if not tokens_taken:
-                    current_sentence.append(token)
-                continue
+            for number in result:
+                current_sentence.extend([number, " "])
 
-            if compare_token in SENTENCE_SEPARATORS:
-                _build_and_add_number(pop_last_space=True)
+            if pop_last_space:
+                current_sentence.pop()
+
+    for token in tokens:
+        compare_token = _strip_accents(token.lower())
+        ordinal_number = _is_ordinal_token(compare_token, lang_data)
+
+        if not compare_token.strip():
+            if not tokens_taken:
                 current_sentence.append(token)
-                final_sentence.extend(current_sentence)
-                current_sentence = []
-                continue
+            continue
 
-            if ordinal_number:
-                tokens_taken.append(ordinal_number)
-                _build_and_add_number(pop_last_space=True)
-            elif (
-                    _is_cardinal_token(compare_token, lang_data)
-                    or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
-            ):
-                tokens_taken.append(compare_token)
-            else:
-                if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
-                    # when finishing with a skip_token --> keep it
-                    skip_token = tokens_taken[-1]
-                    tokens_taken.pop()
-                    _build_and_add_number()
-                    current_sentence.extend([skip_token, " "])
+        if compare_token in SENTENCE_SEPARATORS:
+            _build_and_add_number(pop_last_space=True)
+            current_sentence.append(token)
+            final_sentence.extend(current_sentence)
+            current_sentence = []
+            continue
 
+        if ordinal_number:
+            tokens_taken.append(ordinal_number)
+            _build_and_add_number(pop_last_space=True)
+        elif (
+                _is_cardinal_token(compare_token, lang_data)
+                or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
+        ):
+            tokens_taken.append(compare_token)
+        else:
+            if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
+                # when finishing with a skip_token --> keep it
+                skip_token = tokens_taken[-1]
+                tokens_taken.pop()
                 _build_and_add_number()
-                current_sentence.append(token)
+                current_sentence.extend([skip_token, " "])
 
-        _build_and_add_number()
+            _build_and_add_number()
+            current_sentence.append(token)
 
-        final_sentence.extend(current_sentence)
-        return ''.join(final_sentence).strip()
+    _build_and_add_number()
 
-    elif numeral_system == 'roman':
-        return _parse_roman(input_string)
+    final_sentence.extend(current_sentence)
+    return ''.join(final_sentence).strip()
+
+
+def _parse_roman(input_string):
+    global final_sentence
+    tokens = _tokenize(input_string, None)
+
+    for token in tokens:
+        if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
+            tokens[tokens.index(token)] = str(build_roman(token))
+        final_sentence = ''.join(tokens)
+
+    return final_sentence
+
+
+def build_roman(roman_number):
+    roman = {'i': 1, 'v': 5, 'x': 10, 'l': 50, 'c': 100, 'd': 500, 'm': 1000}
+    num_tokens = re.split("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", roman_number.lower())
+    num_tokens = [item for item in num_tokens if item != '']
+    built_num = 0
+    for num_token in num_tokens:
+        if re.search('iv|ix|xl|xc|cd|cm', num_token):
+            built_num += roman[num_token[1]] - roman[num_token[0]]
+        elif re.search('[vld][ixc]{1,3}', num_token):
+            built_num += roman[num_token[0]] + (roman[num_token[1]] * (len(num_token) - 1))
+        else:
+            built_num += roman[num_token[0]] * len(num_token)
+
+    return built_num
