@@ -20,7 +20,7 @@ def get_test_files(path, prefix):
 def _test_files(path, language, is_ordinal=True):
     fnx = parse_ordinal if is_ordinal else parse_number
     for filename in get_test_files(path, f'{language}_'):
-        with open(filename, "r") as csv_file:
+        with open(filename, "r", encoding='utf8') as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for row in csv_reader:
                 try:
