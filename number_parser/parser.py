@@ -1,8 +1,9 @@
 import re
 from importlib import import_module
 import unicodedata
+
 SENTENCE_SEPARATORS = [".", ","]
-SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
+SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru', 'rom']
 RE_BUG_LANGUAGES = ['hi']
 
 
@@ -141,6 +142,8 @@ def _build_number(token_list, lang_data):
 
 def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
+    if language == 'rom':
+        return re.split("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", input_string.lower())
     input_string = input_string.replace('\xad', '')
     if language in RE_BUG_LANGUAGES:
         return re.split(r'(\s+)', input_string)
@@ -309,6 +312,14 @@ def parse(input_string, language=None):
     lang_data = LanguageData(language)
 
     tokens = _tokenize(input_string, language)
+
+    if language == 'rom':
+        tokens = _tokenize(input_string, language=None)
+        for token in tokens:
+            if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
+                tokens[tokens.index(token)] = str(parse_number(token, language='rom'))
+        final_sentance = ''.join(tokens)
+        return final_sentance
 
     final_sentence = []
     current_sentence = []
