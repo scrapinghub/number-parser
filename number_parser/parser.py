@@ -5,7 +5,8 @@ import unicodedata
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru']
 RE_BUG_LANGUAGES = ['hi']
-NUMERAL_SYSTEMS = ['decimal', 'roman']
+NUMERAL_SYSTEMS = ('decimal', 'roman')
+ROMAN_REGEX_EXPRESSION = "(?i)^(m{0,3})(cm|cd|d?c{0,4})(xc|xl|l?x{0,4})(ix|iv|v?i{0,4})$"
 
 
 class LanguageData:
@@ -243,7 +244,11 @@ def parse_ordinal(input_string, language=None):
     return parse_number(output_string, language)
 
 
-def parse_number(input_string, language=None):
+def _search_roman(search_string):
+    return re.search(ROMAN_REGEX_EXPRESSION, search_string, re.IGNORECASE)
+
+
+def parse_number(input_string, language=None, numeral_systems=None):
     """Converts a single number written in natural language to a numeric type"""
     if not input_string.strip():
         return None
@@ -251,26 +256,40 @@ def parse_number(input_string, language=None):
     if input_string.strip().isnumeric():
         return int(input_string)
 
-    if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", input_string.lower()):
-        return int(_parse_roman(input_string))
-
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
-    lang_data = LanguageData(language)
+    if numeral_systems is None:
+        numeral_systems = NUMERAL_SYSTEMS
 
-    tokens = _tokenize(input_string, language)
-    normalized_tokens = _normalize_tokens(tokens)
-    for index, token in enumerate(normalized_tokens):
-        if _is_cardinal_token(token, lang_data) or not token.strip():
-            continue
-        if _is_skip_token(token, lang_data) and index != 0:
-            continue
-        return None
-    number_built = _build_number(normalized_tokens, lang_data)
-    if len(number_built) == 1:
-        return int(number_built[0])
-    return None
+    if _search_roman(input_string):
+        numeral_systems = ['roman']
+
+    else:
+        numeral_systems = ['decimal']
+
+    for numeral_system in numeral_systems:
+        if numeral_system == 'decimal':
+            lang_data = LanguageData(language)
+
+            tokens = _tokenize(input_string, language)
+            normalized_tokens = _normalize_tokens(tokens)
+            for index, token in enumerate(normalized_tokens):
+                if _is_cardinal_token(token, lang_data) or not token.strip():
+                    continue
+                if _is_skip_token(token, lang_data) and index != 0:
+                    continue
+                return None
+            number_built = _build_number(normalized_tokens, lang_data)
+            if len(number_built) == 1:
+                return int(number_built[0])
+            return None
+
+        elif numeral_system == 'roman':
+            return int(_parse_roman(input_string))
+
+        else:
+            raise ValueError(f'"{numeral_system}" is not a supported numeral system')
 
 
 def parse_fraction(input_string, language=None):
@@ -308,23 +327,27 @@ def parse(input_string, language=None, numeral_systems=None):
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
-    global complete_sentence
+    complete_sentence = None
 
     if numeral_systems is None:
-        numeral_systems = ['decimal', 'roman']
+        numeral_systems = NUMERAL_SYSTEMS
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
+    temporary_sentence = input_string
     for numeral_system in numeral_systems:
 
         if numeral_system == 'decimal':
-            complete_sentence = _parse_decimal(input_string, language)
-            input_string = complete_sentence
+            complete_sentence = _parse_decimal(temporary_sentence, language)
+            temporary_sentence = complete_sentence
 
-        if numeral_system == 'roman':
-            complete_sentence = _parse_roman(input_string)
-            input_string = complete_sentence
+        elif numeral_system == 'roman':
+            complete_sentence = _parse_roman(temporary_sentence)
+            temporary_sentence = complete_sentence
+
+        else:
+            raise ValueError(f'"{numeral_system}" is not a supported numeral system')
 
     return complete_sentence
 
@@ -391,10 +414,10 @@ def _parse_decimal(input_string, language):
 
 def _parse_roman(input_string):
     tokens = _tokenize(input_string, None)
+    tokens = [item for item in tokens if item != '']
     for token in tokens:
-        if re.search("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", token.lower()):
-            if _build_roman(token) != 0:
-                tokens[tokens.index(token)] = str(_build_roman(token))
+        if _search_roman(token):
+            tokens[tokens.index(token)] = str(_build_roman(token))
     final_sentence = ''.join(tokens)
 
     return final_sentence
@@ -402,14 +425,21 @@ def _parse_roman(input_string):
 
 def _build_roman(roman_number):
     roman = {'i': 1, 'v': 5, 'x': 10, 'l': 50, 'c': 100, 'd': 500, 'm': 1000}
-    num_tokens = re.split("^(m{0,3})(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$", roman_number.lower())
+
+    num_tokens = re.split(ROMAN_REGEX_EXPRESSION, roman_number, re.IGNORECASE)
     num_tokens = [item for item in num_tokens if item != '']
+
     built_num = 0
+
     for num_token in num_tokens:
-        if re.search('iv|ix|xl|xc|cd|cm', num_token):
-            built_num += roman[num_token[1]] - roman[num_token[0]]
-        elif re.search('[vld][ixc]{1,3}', num_token):
-            built_num += roman[num_token[0]] + (roman[num_token[1]] * (len(num_token) - 1))
+
+        if re.search('iv|ix|xl|xc|cd|cm', num_token, re.IGNORECASE):
+            built_num += roman[num_token[1].lower()] - roman[num_token[0].lower()]
+
+        elif re.search('[XLVD][IXC]{1,4}', num_token, re.IGNORECASE):
+            built_num += roman[num_token[0].lower()] + (roman[num_token[1].lower()] * (len(num_token) - 1))
+
         else:
-            built_num += roman[num_token[0]] * len(num_token)
+            built_num += roman[num_token[0].lower()] * len(num_token)
+
     return built_num
