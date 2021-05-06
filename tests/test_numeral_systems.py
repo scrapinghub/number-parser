@@ -10,10 +10,10 @@ all_numeral_systems_but_decimal = [system for system in NUMERAL_SYSTEMS if syste
     "test_string, numeral_systems, expected",
     [
         ('Built in MMLXXVII.', None, 'Built in 2077.'),
-        ('Built in MMLXXVII.', ['decimal'], 'Built in MMLXXVII.'),
+        ('Built in MMLXXVII.', ['roman'], 'Built in 2077.'),
         ('I was given two IV injections.', all_numeral_systems_but_roman, 'I was given 2 IV injections.'),
         ('I was given two IV injections.', all_numeral_systems_but_decimal, '1 was given two 4 injections.'),
-        ('I have three apples.', all_numeral_systems_but_roman, 'I have 3 apples.')
+        ('I have three apples.', None, '1 have 3 apples.')
     ]
 )
 def test_parse_roman(test_string, numeral_systems, expected):
