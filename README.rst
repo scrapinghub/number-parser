@@ -29,7 +29,7 @@ Identifying the numbers in a text string, converting them to corresponding numer
 This also supports ordinal number conversion (for English only).
 
 >>> from number_parser import parse
->>> parse("I have two hats and thirty seven coats")
+>>> parse("I have two hats and thirty seven coats", numeral_systems=['decimal'])
 'I have 2 hats and 37 coats'
 >>> parse("One, Two, Three go")
 '1, 2, 3 go'
