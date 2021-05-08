@@ -289,7 +289,7 @@ def parse_number(input_string, language=None, numeral_systems=None):
             return int(_parse_roman(input_string))
 
         else:
-            raise ValueError(f'"{numeral_system}" is not a supported numeral system')
+            raise ValueError(f'{numeral_system!r} is not a supported numeral system')
 
 
 def parse_fraction(input_string, language=None):
