@@ -335,21 +335,19 @@ def parse(input_string, language=None, numeral_systems=None):
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
-    temporary_sentence = input_string
+    result = input_string
     for numeral_system in numeral_systems:
 
         if numeral_system == 'decimal':
-            complete_sentence = _parse_decimal(temporary_sentence, language)
-            temporary_sentence = complete_sentence
+            result = _parse_decimal(result, language)
 
         elif numeral_system == 'roman':
-            complete_sentence = _parse_roman(temporary_sentence)
-            temporary_sentence = complete_sentence
+            result = _parse_roman(result)
 
         else:
             raise ValueError(f'"{numeral_system}" is not a supported numeral system')
 
-    return complete_sentence
+    return result
 
 
 def _parse_decimal(input_string, language):
