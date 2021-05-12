@@ -244,7 +244,7 @@ def parse_ordinal(input_string, language=None):
     return parse_number(output_string, language)
 
 
-def _search_roman(search_string):
+def _is_roman(search_string):
     return re.search(ROMAN_REGEX_EXPRESSION, search_string, re.IGNORECASE)
 
 
@@ -260,13 +260,11 @@ def parse_number(input_string, language=None, numeral_systems=None):
         language = _valid_tokens_by_language(input_string)
 
     if numeral_systems is None:
-        numeral_systems = NUMERAL_SYSTEMS
+        if _is_roman(input_string):
+            numeral_systems = ['roman']
 
-    if _search_roman(input_string):
-        numeral_systems = ['roman']
-
-    else:
-        numeral_systems = ['decimal']
+        elif language in SUPPORTED_LANGUAGES and not _is_roman(input_string):
+            numeral_systems = ['decimal']
 
     for numeral_system in numeral_systems:
         if numeral_system == 'decimal':
@@ -327,8 +325,6 @@ def parse(input_string, language=None, numeral_systems=None):
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
-    complete_sentence = None
-
     if numeral_systems is None:
         numeral_systems = NUMERAL_SYSTEMS
 
@@ -414,7 +410,7 @@ def _parse_roman(input_string):
     tokens = _tokenize(input_string, None)
     tokens = [item for item in tokens if item != '']
     for token in tokens:
-        if _search_roman(token):
+        if _is_roman(token):
             tokens[tokens.index(token)] = str(_build_roman(token))
     final_sentence = ''.join(tokens)
 
@@ -437,7 +433,8 @@ def _build_roman(roman_number):
         elif re.search('[XLVD][IXC]{1,4}', num_token, re.IGNORECASE):
             built_num += roman[num_token[0].lower()] + (roman[num_token[1].lower()] * (len(num_token) - 1))
 
-        else:
+        elif re.search('[ixcm]{1,4}|[vld]{1}', num_token, re.IGNORECASE):
             built_num += roman[num_token[0].lower()] * len(num_token)
 
     return built_num
+
