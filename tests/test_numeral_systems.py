@@ -1,6 +1,6 @@
 import pytest
 
-from number_parser import parse, NUMERAL_SYSTEMS
+from number_parser import parse, parse_number, NUMERAL_SYSTEMS
 
 all_numeral_systems_but_roman = [system for system in NUMERAL_SYSTEMS if system != 'roman']
 all_numeral_systems_but_decimal = [system for system in NUMERAL_SYSTEMS if system != 'decimal']
@@ -16,6 +16,15 @@ all_numeral_systems_but_decimal = [system for system in NUMERAL_SYSTEMS if syste
         ('I have three apples.', None, '1 have 3 apples.')
     ]
 )
-def test_parse_roman(test_string, numeral_systems, expected):
-
+def test_supported_numerals(test_string, numeral_systems, expected):
     assert parse(test_string, numeral_systems=numeral_systems) == expected
+
+
+def test_parse_unsupported_numerals():
+    with pytest.raises(ValueError):
+        parse('I have six apples.', numeral_systems=['suzhou'])
+
+
+def test_parse_number_unsupported_numerals():
+    with pytest.raises(ValueError):
+        parse_number('Two thousand', numeral_systems=['suzhou'])
