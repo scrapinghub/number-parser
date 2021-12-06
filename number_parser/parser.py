@@ -147,6 +147,7 @@ def _tokenize(input_string, language):
     return re.split(r'(\W)', input_string)
 
 
+
 def _strip_accents(word):
     """Removes accent from the input word."""
     return ''.join(char for char in unicodedata.normalize('NFD', word) if unicodedata.category(char) != 'Mn')
@@ -189,8 +190,10 @@ def _is_skip_token(token, lang_data):
     return token in lang_data.skip_tokens
 
 
-def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language.
-    """Converts ordinal tokens to cardinal while leaving other tokens unchanged."""
+def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language. 
+    # "Converts ordinal tokens to cardinal while leaving other tokens unchanged."
+
+    
     CARDINAL_DIRECT_NUMBERS = {'first': 'one', 'second': 'two', 'third': 'three', 'fifth': 'five', 'eighth': 'eight',
                                'ninth': 'nine', 'twelfth': 'twelve'}
 
@@ -208,7 +211,7 @@ def _apply_cardinal_conversion(token, lang_data):  # Currently only for English 
     return token
 
 
-def _valid_tokens_by_language(input_string):
+def _valid_tokens_by_language(input_string,already_tokenized=None):
     language_matches = {}
 
     for language in SUPPORTED_LANGUAGES:
@@ -225,6 +228,8 @@ def _valid_tokens_by_language(input_string):
     best_language = max(language_matches, key=language_matches.get)
     if language_matches[best_language] == 0:  # return English if not matching words
         return 'en'
+    if already_tokenized==1:
+        return [best_language,tokens]
     return best_language
 
 
@@ -303,12 +308,14 @@ def parse(input_string, language=None):
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
     """
+    tokenized_flag = 0
     if language is None:
-        language = _valid_tokens_by_language(input_string)
+        tokenized_flag = 1
+        language,tokens = _valid_tokens_by_language(input_string,already_tokenized=tokenized_flag) 
 
-    lang_data = LanguageData(language)
-
-    tokens = _tokenize(input_string, language)
+    lang_data = LanguageData(language) 
+    if tokenized_flag == 0:
+        tokens = _tokenize(input_string, language)
 
     final_sentence = []
     current_sentence = []
