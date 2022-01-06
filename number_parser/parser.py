@@ -298,7 +298,7 @@ def parse_fraction(input_string, language=None):
     return None
 
 
-def parse(input_string, language=None):
+def parse(input_string, language=None, ignore=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
@@ -326,39 +326,78 @@ def parse(input_string, language=None):
                 current_sentence.pop()
 
     for token in tokens:
-        compare_token = _strip_accents(token.lower())
-        ordinal_number = _is_ordinal_token(compare_token, lang_data)
-
-        if not compare_token.strip():
-            if not tokens_taken:
-                current_sentence.append(token)
-            continue
-
-        if compare_token in SENTENCE_SEPARATORS:
-            _build_and_add_number(pop_last_space=True)
-            current_sentence.append(token)
-            final_sentence.extend(current_sentence)
-            current_sentence = []
-            continue
-
-        if ordinal_number:
-            tokens_taken.append(ordinal_number)
-            _build_and_add_number(pop_last_space=True)
-        elif (
-                _is_cardinal_token(compare_token, lang_data)
-                or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
-        ):
-            tokens_taken.append(compare_token)
-        else:
-            if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
-                # when finishing with a skip_token --> keep it
-                skip_token = tokens_taken[-1]
-                tokens_taken.pop()
+        if ignore:
+            if token in ignore:
                 _build_and_add_number()
-                current_sentence.extend([skip_token, " "])
+                current_sentence.append(token)
+            else:
+                compare_token = _strip_accents(token.lower())
+                ordinal_number = _is_ordinal_token(compare_token, lang_data)
 
-            _build_and_add_number()
-            current_sentence.append(token)
+                if not compare_token.strip():
+                    if not tokens_taken:
+                        current_sentence.append(token)
+                    continue
+
+                if compare_token in SENTENCE_SEPARATORS:
+                    _build_and_add_number(pop_last_space=True)
+                    current_sentence.append(token)
+                    final_sentence.extend(current_sentence)
+                    current_sentence = []
+                    continue
+
+                if ordinal_number:
+                    tokens_taken.append(ordinal_number)
+                    _build_and_add_number(pop_last_space=True)
+                elif (
+                        _is_cardinal_token(compare_token, lang_data)
+                        or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
+                ):
+                    tokens_taken.append(compare_token)
+                else:
+                    if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
+                        # when finishing with a skip_token --> keep it
+                        skip_token = tokens_taken[-1]
+                        tokens_taken.pop()
+                        _build_and_add_number()
+                        current_sentence.extend([skip_token, " "])
+
+                    _build_and_add_number()
+                    current_sentence.append(token)
+        else:
+            compare_token = _strip_accents(token.lower())
+            ordinal_number = _is_ordinal_token(compare_token, lang_data)
+
+            if not compare_token.strip():
+                if not tokens_taken:
+                    current_sentence.append(token)
+                continue
+
+            if compare_token in SENTENCE_SEPARATORS:
+                _build_and_add_number(pop_last_space=True)
+                current_sentence.append(token)
+                final_sentence.extend(current_sentence)
+                current_sentence = []
+                continue
+
+            if ordinal_number:
+                tokens_taken.append(ordinal_number)
+                _build_and_add_number(pop_last_space=True)
+            elif (
+                    _is_cardinal_token(compare_token, lang_data)
+                    or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
+            ):
+                tokens_taken.append(compare_token)
+            else:
+                if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
+                    # when finishing with a skip_token --> keep it
+                    skip_token = tokens_taken[-1]
+                    tokens_taken.pop()
+                    _build_and_add_number()
+                    current_sentence.extend([skip_token, " "])
+
+                _build_and_add_number()
+                current_sentence.append(token)
 
     _build_and_add_number()
 
