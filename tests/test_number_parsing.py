@@ -134,6 +134,7 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
         ('I have three apples and one pear.', "I have three apples and 1 pear.", 'en', ['three']),
         # numeric
         ('eleven', "eleven", 'en', ['eleven']),
+        ('ninety thirteen forty', "90 13 forty", 'en', ['forty']),
         ('one hundred and forty two', "one 140 two", 'en', ['one','two']),
         ('one hundred and one', "one 100 one", 'en', ['one']),
         ('seven thousand and nothing else',"seven 1000 and nothing else", 'en', ['seven']),
