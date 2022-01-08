@@ -135,8 +135,8 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
         # numeric
         ('eleven', "eleven", 'en', ['eleven']),
         ('one hundred and forty two', "one 140 two", 'en', ['one','two']),
-        ('one hundred and one', 'one 100 one', 'en', ['one']),
-        ('ignore this sentence', "ignore this sentence", 'en', ['ignore']),
+        ('one hundred and one', "one 100 one", 'en', ['one']),
+        ('seven thousand and nothing else',"seven 1000 and nothing else", 'en', ['seven']),
         ('five hundred sixty seven thousand twenty four', "five 167020 four", 'en', ['fifty','five','four']),
         ('one million four hundred twenty-three thousand nine hundred twenty-two', "1000400 twenty-3900 twenty-two", 'en', ['two','twenty']),
         ('nine hundred ninety-nine thousand nine hundred ninety-nine', "nine 190 nine 1000 nine 190 nine", 'en', ['nine']),
