@@ -7,7 +7,7 @@ number-parser
 
 ``number-parser`` is a simple library that allows you to convert numbers written in the natural
 language to it's equivalent numeric forms. It currently supports cardinal numbers in the following
-languages - English, Hindi, Spanish and Russian and ordinal numbers in English.
+languages - English, Hindi, Spanish, Ukrainian and Russian and ordinal numbers in English.
 
 Installation
 ============
@@ -76,7 +76,7 @@ Language Support
 
 The default language is English, you can pass the language parameter with corresponding locale for other languages.
 It currently supports cardinal numbers in the following
-languages - English, Hindi, Spanish and Russian and ordinal numbers in English.
+languages - English, Hindi, Spanish, Ukrainian and Russian and ordinal numbers in English.
 
 >>> from number_parser import parse, parse_number
 >>> parse("Hay tres gallinas y veintitrés patos", language='es')
