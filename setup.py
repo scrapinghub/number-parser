@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='number-parser',
-    version='0.2.1',
+    version='0.3.0',
     description='parse numbers written in natural language',
     long_description=open('README.rst', encoding="utf8").read() + "\n\n" + open('CHANGES.rst').read(),
     author='Arnav Kapoor',
