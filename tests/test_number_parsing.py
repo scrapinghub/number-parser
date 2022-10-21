@@ -121,6 +121,35 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
     assert parse(test_input, lang) == expected
 
 
+@pytest.mark.parametrize(
+    "test_input,expected,lang,ignore",
+    [
+        ('fifty fifth sixty seventh', "fifty 5 67", 'en', ['fifty','seven']),
+        ('hundredth and one', "100 and 1", 'en',[]),
+        ('one hundred and forty second', "140 second", 'en', ['second']),
+        ('five thousandth and one', "5000 and one", 'en', ['one']),
+        # en
+        ('Two thousand sentences', "2 thousand sentences", 'en', ['thousand']),
+        ('twenty one', "20 one", 'en', ['one']),
+        ('I have three apples and one pear.', "I have three apples and 1 pear.", 'en', ['three']),
+        # numeric
+        ('eleven', "eleven", 'en', ['eleven']),
+        ('ninety thirteen forty', "90 13 forty", 'en', ['forty']),
+        ('one hundred and forty two', "one 140 two", 'en', ['one','two']),
+        ('one hundred and one', "one 100 one", 'en', ['one']),
+        ('seven thousand and nothing else',"seven 1000 and nothing else", 'en', ['seven']),
+        ('five hundred sixty seven thousand twenty four', "five 167020 four", 'en', ['fifty','five','four']),
+        ('one million four hundred twenty-three thousand nine hundred twenty-two', "1000400 twenty-3900 twenty-two", 'en', ['two','twenty']),
+        ('nine hundred ninety-nine thousand nine hundred ninety-nine', "nine 190 nine 1000 nine 190 nine", 'en', ['nine']),
+        ('one million fifty thousand', "1000000 fifty 1000", 'en', ['fifty']),
+        ('two billion one hundred forty seven million four hundred eighty three thousand six hundred forty seven', 
+         "two 1000000000 one 140 seven 1000483 thousand 640 seven", 'en', ['two','thousand','seven','one']),
+
+    ]
+)
+def test_parse_including_ignore(expected, test_input, lang, ignore):
+    assert parse(test_input, lang, ignore) == expected
+
 
 @pytest.mark.parametrize(
     "test_input,expected,lang",
