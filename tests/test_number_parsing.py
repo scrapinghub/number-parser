@@ -121,7 +121,6 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
     assert parse(test_input, lang) == expected
 
 
-
 @pytest.mark.parametrize(
     "test_input,expected,lang",
     [

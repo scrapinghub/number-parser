@@ -79,6 +79,19 @@ def test_parse_ambiguity_in_separators(expected, test_input):
 @pytest.mark.parametrize(
     "test_input,expected",
     [
+        ("one, two, three,", "1, 2, 3,"),
+        ("one , two , three ,", "1 , 2 , 3 ,"),
+        ("fifty one . sixty two . seventy three .", "51 . 62 . 73 ."),
+        ("one hundred five. two thousand eight .", "105. 2008 ."),
+    ]
+)
+def test_parse_separators_and_spacing(expected, test_input):
+    assert parse(test_input, LANG) == expected
+
+
+@pytest.mark.parametrize(
+    "test_input,expected",
+    [
         ("two thousand thousand", "2000 1000"),
         ("two thousand million", "2000000000"),
         ("two thousand two million", "2002000000"),

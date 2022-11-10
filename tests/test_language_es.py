@@ -52,6 +52,19 @@ def test_parse(expected, test_input):
     assert parse(test_input, LANG) == expected
 
 
+@pytest.mark.parametrize(
+    "test_input,expected",
+    [
+        ("uno, dos, tres,", "1, 2, 3,"),
+        ("uno , dos , tres ,", "1 , 2 , 3 ,"),
+        ("cincuenta y uno . sesenta y dos . setenta y tres .", "51 . 62 . 73 ."),
+        ("ciento cinco. dos mil ocho .", "105. 2008 ."),
+    ]
+)
+def test_parse_separators_and_spacing(expected, test_input):
+    assert parse(test_input, LANG) == expected
+
+
 def test_parse_number_till_hundred():
     _test_files(HUNDREDS_DIRECTORY, LANG)
 

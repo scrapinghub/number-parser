@@ -313,6 +313,7 @@ def parse(input_string, language=None):
     final_sentence = []
     current_sentence = []
     tokens_taken = []
+    pop_last_space = True
 
     def _build_and_add_number(pop_last_space=False):
         if tokens_taken:
@@ -332,10 +333,13 @@ def parse(input_string, language=None):
         if not compare_token.strip():
             if not tokens_taken:
                 current_sentence.append(token)
+                pop_last_space = True
+            else:
+                pop_last_space = False
             continue
 
         if compare_token in SENTENCE_SEPARATORS:
-            _build_and_add_number(pop_last_space=True)
+            _build_and_add_number(pop_last_space=pop_last_space)
             current_sentence.append(token)
             final_sentence.extend(current_sentence)
             current_sentence = []
@@ -359,6 +363,8 @@ def parse(input_string, language=None):
 
             _build_and_add_number()
             current_sentence.append(token)
+
+        pop_last_space = True
 
     _build_and_add_number()
 
