@@ -28,13 +28,7 @@ jobs:
               TOXENV: py
           - python-version: "3.10"
             env:
-              TOXENV: py
-          - python-version: "3.10"
-            env:
               TOXENV: latest
-          - python-version: "3.11"
-            env:
-              TOXENV: py
           - python-version: "3.11"
             env:
               TOXENV: latest
