@@ -32,9 +32,6 @@ jobs:
           - python-version: "3.11"
             env:
               TOXENV: flake8
-          - python-version: "3.11"
-            env:
-              TOXENV: latest
     steps:
       - uses: actions/checkout@v3
       - name: 'Set up Python ${{ matrix.python-version }}'
@@ -48,5 +45,5 @@ jobs:
       - name: tox
         run: tox -e py
       - name: Upload coverage.xml to codecov
-        if: ${{ matrix.python-version == '3.11' && matrix.env.TOXENV == 'latest'}}
+        if: ${{ matrix.python-version == '3.11' && matrix.env.TOXENV == 'py'}}
         uses: codecov/codecov-action@v3
