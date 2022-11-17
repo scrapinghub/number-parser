@@ -14,21 +14,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - python-version: 3.8
-            env:
-              TOXENV: flake8
-          - python-version: 3.7
+          - python-version: "3.7"
             env:
               TOXENV: py
-          - python-version: 3.8
+          - python-version: "3.8"
             env:
               TOXENV: py
-          - python-version: 3.9
+          - python-version: "3.9"
             env:
               TOXENV: py
           - python-version: "3.10"
             env:
-              TOXENV: latest
+              TOXENV: py
+          - python-version: "3.11"
+            env:
+              TOXENV: py
+          - python-version: "3.11"
+            env:
+              TOXENV: flake8
           - python-version: "3.11"
             env:
               TOXENV: latest
@@ -45,5 +48,5 @@ jobs:
       - name: tox
         run: tox -e py
       - name: Upload coverage.xml to codecov
-        if: ${{ matrix.python-version == '3.9' && matrix.env.TOXENV == 'latest'}}
+        if: ${{ matrix.python-version == '3.11' && matrix.env.TOXENV == 'latest'}}
         uses: codecov/codecov-action@v3
