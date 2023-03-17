@@ -7,7 +7,6 @@ import os
 import json
 import re
 import logging
-from collections import OrderedDict
 
 SOURCE_PATH = "../number_parser_data/raw_cldr_translation_data/"
 SUPPLEMENTARY_PATH = "../number_parser_data/supplementary_translation_data/"
@@ -138,7 +137,13 @@ def write_complete_data():
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
-        ordered_language_data = OrderedDict((key, {}) for key in REQUIRED_NUMBERS_DATA)
+        ordered_language_data = {
+            "UNIT_NUMBERS": {},
+            "DIRECT_NUMBERS": {},
+            "TENS": {},
+            "HUNDREDS": {},
+            "BIG_POWERS_OF_TEN": {},
+        }
         with open(full_source_path, 'r') as source:
             data = json.load(source)
             try:
