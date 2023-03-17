@@ -144,6 +144,7 @@ def write_complete_data():
             "HUNDREDS": {},
             "BIG_POWERS_OF_TEN": {},
         }
+        ordered_language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
         with open(full_source_path, 'r') as source:
             data = json.load(source)
             try:
