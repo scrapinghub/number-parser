@@ -137,13 +137,6 @@ def write_complete_data():
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
-        ordered_language_data = {
-            "UNIT_NUMBERS": {},
-            "DIRECT_NUMBERS": {},
-            "TENS": {},
-            "HUNDREDS": {},
-            "BIG_POWERS_OF_TEN": {},
-        }
         ordered_language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
         with open(full_source_path, 'r') as source:
             data = json.load(source)
