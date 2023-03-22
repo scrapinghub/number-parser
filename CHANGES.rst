@@ -1,6 +1,18 @@
 Changes
 =======
 
+0.3.1 (2023-03-22)
+------------------
+
+Improvements:
+- Add Python 3.10, 3.11 support (#83)
+- Add __version__ (#87)
+- Replace OrderedDict to dict (#88)
+
+Fix:
+- Inconsistent Whitespace Handling around Sentence Separators Following Numbers (#76, #77)
+
+
 0.3.0 (2022-10-20)
 ------------------
 
