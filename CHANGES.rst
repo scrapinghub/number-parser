@@ -10,7 +10,7 @@ Improvements:
 - Replace OrderedDict with dict (#88)
 
 Fix:
-- Inconsistent Whitespace Handling around Sentence Separators Following Numbers (#76, #77)
+- Inconsistent white space handling around sentence separators following numbers (#76, #77)
 
 
 0.3.0 (2022-10-20)
