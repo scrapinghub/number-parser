@@ -19,6 +19,7 @@ setup(
     author_email="arnavk805@gmail.com",
     url="https://github.com/scrapinghub/number-parser/",
     packages=find_packages(exclude=["tests"]),
+    include_package_data=True,
     install_requires=[
         "attrs >= 17.3.0",
     ],
