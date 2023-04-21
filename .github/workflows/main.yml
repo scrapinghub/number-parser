@@ -47,3 +47,9 @@ jobs:
       - name: Upload coverage.xml to codecov
         if: ${{ matrix.python-version == '3.11' && matrix.env.TOXENV == 'py'}}
         uses: codecov/codecov-action@v3
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: pre-commit/action@v3.0.0
