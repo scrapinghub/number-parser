@@ -3,10 +3,10 @@ The raw CLDR data was retreived on 25th Jun , 2020 from the following link
 https://github.com/unicode-cldr/cldr-rbnf
 """
 
-import os
 import json
-import re
 import logging
+import os
+import re
 
 SOURCE_PATH = "../number_parser_data/raw_cldr_translation_data/"
 SUPPLEMENTARY_PATH = "../number_parser_data/supplementary_translation_data/"
@@ -18,8 +18,14 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]
 INVALID_KEYS = ["cents"]
-CAPTURE_BRACKET_CONTENT = r'\{(.*?)\}'
-REQUIRED_NUMBERS_DATA = ["UNIT_NUMBERS", "DIRECT_NUMBERS", "TENS", "HUNDREDS", "BIG_POWERS_OF_TEN"]
+CAPTURE_BRACKET_CONTENT = r"\{(.*?)\}"
+REQUIRED_NUMBERS_DATA = [
+    "UNIT_NUMBERS",
+    "DIRECT_NUMBERS",
+    "TENS",
+    "HUNDREDS",
+    "BIG_POWERS_OF_TEN",
+]
 
 
 def _is_valid(key):
@@ -60,7 +66,7 @@ def _add_compound_words(number, word, language_data):
     """Adding compound words - i.e words that may be used along with another word to form a number"""
     power_of_10 = _count_zero(number)
     first_dig = str(number)[0]
-    if power_of_10 == 0 or first_dig == '1':
+    if power_of_10 == 0 or first_dig == "1":
         return
 
     if "[" in word:
@@ -84,7 +90,7 @@ def _add_multiplier_words(number, word, language_data):
         return
 
     power_of_10 = _count_zero(number)
-    if '$' in required_part:
+    if "$" in required_part:
         valid_words = re.findall(CAPTURE_BRACKET_CONTENT, required_part)
         for valid_word in valid_words:
             power_of_10_num = pow(10, power_of_10)
@@ -109,10 +115,10 @@ def _extract_information(key, word, language_data):
         print(f"The given key {key} is not an integer")
         return
 
-    word = word.replace(";", '')
-    count_greater_than_sign = word.count('>')
-    count_less_than_sign = word.count('<')
-    count_equal_to_sign = word.count('=')
+    word = word.replace(";", "")
+    count_greater_than_sign = word.count(">")
+    count_less_than_sign = word.count("<")
+    count_equal_to_sign = word.count("=")
     if count_equal_to_sign != 0:
         return
     if count_greater_than_sign == 0 and count_less_than_sign == 0:
@@ -129,7 +135,7 @@ def write_complete_data():
     and write the combined results to the final target directory.
     """
     for file_name in os.listdir(SOURCE_PATH):
-        if file_name in ['root.json', 'es-419.json']:
+        if file_name in ["root.json", "es-419.json"]:
             # "root" is not a language, "es-419" doesn't contain spell-out rules
             continue
         full_source_path = os.path.join(SOURCE_PATH, file_name)
@@ -138,26 +144,30 @@ def write_complete_data():
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
         ordered_language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
-        with open(full_source_path, 'r') as source:
+        with open(full_source_path, "r") as source:
             data = json.load(source)
             try:
-                requisite_data = data['rbnf']['rbnf']['SpelloutRules']
+                requisite_data = data["rbnf"]["rbnf"]["SpelloutRules"]
             except KeyError:
-                logging.error(f"\"['rbnf']['rbnf']['SpelloutRules']\" doesn't exist in {file_name}")
+                logging.error(
+                    f"\"['rbnf']['rbnf']['SpelloutRules']\" doesn't exist in {file_name}"
+                )
                 continue
 
             for keys, vals in requisite_data.items():
                 if _is_valid(keys):
                     for key, val in vals.items():
                         # Removing soft-hyphens from the source file.
-                        val = val.replace('\xad', '')
+                        val = val.replace("\xad", "")
                         _extract_information(key, val, language_data)
 
-        with open(full_supplementary_path, 'r') as supplementary_data:
+        with open(full_supplementary_path, "r") as supplementary_data:
             data = json.load(supplementary_data)
             for keys in REQUIRED_NUMBERS_DATA:
                 language_data[keys].update(data[keys])
-                sorted_tuples = sorted(language_data[keys].items(), key=lambda x: (x[1], x[0]))
+                sorted_tuples = sorted(
+                    language_data[keys].items(), key=lambda x: (x[1], x[0])
+                )
                 for items in sorted_tuples:
                     word, number = items[0], items[1]
                     ordered_language_data[keys][word] = int(number)
@@ -167,14 +177,16 @@ def write_complete_data():
         except KeyError:
             logging.error(f"long_scale information missing in {file_name}")
 
-        translation_data = json.dumps(ordered_language_data, indent=4, ensure_ascii=False)
+        translation_data = json.dumps(
+            ordered_language_data, indent=4, ensure_ascii=False
+        )
         # Overwriting boolean value with capitalized form
-        translation_data = re.sub(r'\bfalse\b', 'False', translation_data)
-        translation_data = re.sub(r'\btrue\b', 'True', translation_data)
-        out_text = ('info = ' + translation_data + '\n')
-        with open(full_target_path, 'w+') as target_file:
+        translation_data = re.sub(r"\bfalse\b", "False", translation_data)
+        translation_data = re.sub(r"\btrue\b", "True", translation_data)
+        out_text = "info = " + translation_data + "\n"
+        with open(full_target_path, "w+") as target_file:
             target_file.write(out_text)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     write_complete_data()

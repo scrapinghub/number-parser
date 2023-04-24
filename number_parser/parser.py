@@ -1,13 +1,15 @@
 import re
-from importlib import import_module
 import unicodedata
+from importlib import import_module
+
 SENTENCE_SEPARATORS = [".", ","]
-SUPPORTED_LANGUAGES = ['en', 'es', 'hi', 'ru', 'uk']
-RE_BUG_LANGUAGES = ['hi']
+SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
+RE_BUG_LANGUAGES = ["hi"]
 
 
 class LanguageData:
     """Main language class to populate the requisite language-specific variables."""
+
     unit_numbers = {}
     direct_numbers = {}
     tens = {}
@@ -20,7 +22,7 @@ class LanguageData:
     def __init__(self, language):
         if language not in SUPPORTED_LANGUAGES:
             raise ValueError(f'"{language}" is not a supported language')
-        language_info = getattr(import_module('number_parser.data.' + language), 'info')
+        language_info = getattr(import_module("number_parser.data." + language), "info")
         self.unit_numbers = _normalize_dict(language_info["UNIT_NUMBERS"])
         self.direct_numbers = _normalize_dict(language_info["DIRECT_NUMBERS"])
         self.tens = _normalize_dict(language_info["TENS"])
@@ -28,18 +30,33 @@ class LanguageData:
         self.big_powers_of_ten = _normalize_dict(language_info["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
 
-        self.all_numbers = {**self.unit_numbers, **self.direct_numbers, **self.tens,
-                            **self.hundreds, **self.big_powers_of_ten}
+        self.all_numbers = {
+            **self.unit_numbers,
+            **self.direct_numbers,
+            **self.tens,
+            **self.hundreds,
+            **self.big_powers_of_ten,
+        }
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
         self.maximum_group_value = 10000 if language_info["USE_LONG_SCALE"] else 100
 
 
-def _check_validity(current_token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data):
+def _check_validity(
+    current_token,
+    previous_token,
+    previous_power_of_10,
+    total_value,
+    current_grp_value,
+    lang_data,
+):
     """Identifies whether the new token can continue building the previous number."""
     if previous_token is None:
         return True
 
-    if current_token in lang_data.unit_and_direct_numbers and previous_token in lang_data.unit_and_direct_numbers:
+    if (
+        current_token in lang_data.unit_and_direct_numbers
+        and previous_token in lang_data.unit_and_direct_numbers
+    ):
         # both tokens are "units" or "direct numbers"
         return False
 
@@ -47,12 +64,17 @@ def _check_validity(current_token, previous_token, previous_power_of_10, total_v
         # current token in "direct numbers" and previous token in "tens"
         return False
 
-    elif current_token in lang_data.tens \
-            and (previous_token in lang_data.tens or previous_token in lang_data.unit_and_direct_numbers):
+    elif current_token in lang_data.tens and (
+        previous_token in lang_data.tens
+        or previous_token in lang_data.unit_and_direct_numbers
+    ):
         # current token in "tens" and previous token in "tens" or it's a "unit" or "direct number"
         return False
 
-    elif current_token in lang_data.hundreds and previous_token not in lang_data.big_powers_of_ten:
+    elif (
+        current_token in lang_data.hundreds
+        and previous_token not in lang_data.big_powers_of_ten
+    ):
         # current token in "hundreds" and previous token is not a "big power of ten"
         return False
 
@@ -61,7 +83,11 @@ def _check_validity(current_token, previous_token, previous_power_of_10, total_v
         power_of_ten = lang_data.big_powers_of_ten[current_token]
         if power_of_ten < current_grp_value:
             return False
-        if total_value != 0 and previous_power_of_10 and power_of_ten >= previous_power_of_10:
+        if (
+            total_value != 0
+            and previous_power_of_10
+            and power_of_ten >= previous_power_of_10
+        ):
             return False
     return True
 
@@ -92,7 +118,9 @@ def _build_number(token_list, lang_data):
             used_skip_tokens.append(token)
             continue
 
-        is_large_multiplier = _check_large_multiplier(token, total_value, current_grp_value, lang_data)
+        is_large_multiplier = _check_large_multiplier(
+            token, total_value, current_grp_value, lang_data
+        )
         if is_large_multiplier:
             combined_value = total_value + current_grp_value
             total_value = combined_value * lang_data.big_powers_of_ten[token]
@@ -102,7 +130,14 @@ def _build_number(token_list, lang_data):
             previous_power_of_10 = lang_data.big_powers_of_ten[token]
             continue
 
-        valid = _check_validity(token, previous_token, previous_power_of_10, total_value, current_grp_value, lang_data)
+        valid = _check_validity(
+            token,
+            previous_token,
+            previous_power_of_10,
+            total_value,
+            current_grp_value,
+            lang_data,
+        )
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
@@ -141,15 +176,19 @@ def _build_number(token_list, lang_data):
 
 def _tokenize(input_string, language):
     """Breaks string on any non-word character."""
-    input_string = input_string.replace('\xad', '')
+    input_string = input_string.replace("\xad", "")
     if language in RE_BUG_LANGUAGES:
-        return re.split(r'(\s+)', input_string)
-    return re.split(r'(\W)', input_string)
+        return re.split(r"(\s+)", input_string)
+    return re.split(r"(\W)", input_string)
 
 
 def _strip_accents(word):
     """Removes accent from the input word."""
-    return ''.join(char for char in unicodedata.normalize('NFD', word) if unicodedata.category(char) != 'Mn')
+    return "".join(
+        char
+        for char in unicodedata.normalize("NFD", word)
+        if unicodedata.category(char) != "Mn"
+    )
 
 
 def _normalize_tokens(token_list):
@@ -189,19 +228,28 @@ def _is_skip_token(token, lang_data):
     return token in lang_data.skip_tokens
 
 
-def _apply_cardinal_conversion(token, lang_data):  # Currently only for English language.
+def _apply_cardinal_conversion(
+    token, lang_data
+):  # Currently only for English language.
     """Converts ordinal tokens to cardinal while leaving other tokens unchanged."""
-    CARDINAL_DIRECT_NUMBERS = {'first': 'one', 'second': 'two', 'third': 'three', 'fifth': 'five', 'eighth': 'eight',
-                               'ninth': 'nine', 'twelfth': 'twelve'}
+    CARDINAL_DIRECT_NUMBERS = {
+        "first": "one",
+        "second": "two",
+        "third": "three",
+        "fifth": "five",
+        "eighth": "eight",
+        "ninth": "nine",
+        "twelfth": "twelve",
+    }
 
     for word, number in CARDINAL_DIRECT_NUMBERS.items():
         token = token.replace(word, number)
 
-    token_cardinal_form_1 = re.sub(r'ieth$', 'y', token)
+    token_cardinal_form_1 = re.sub(r"ieth$", "y", token)
     if _is_cardinal_token(token_cardinal_form_1, lang_data) is not None:
         return token_cardinal_form_1
 
-    token_cardinal_form_2 = re.sub(r'th$', '', token)
+    token_cardinal_form_2 = re.sub(r"th$", "", token)
     if _is_cardinal_token(token_cardinal_form_2, lang_data) is not None:
         return token_cardinal_form_2
 
@@ -216,7 +264,8 @@ def _valid_tokens_by_language(input_string):
         tokens = _tokenize(input_string, language)
         normalized_tokens = _normalize_tokens(tokens)
         valid_list = [
-            _is_number_token(token, lang_data) is not None or _is_skip_token(token, lang_data)
+            _is_number_token(token, lang_data) is not None
+            or _is_skip_token(token, lang_data)
             for token in normalized_tokens
         ]
         cnt_valid_words = valid_list.count(True)
@@ -224,7 +273,7 @@ def _valid_tokens_by_language(input_string):
 
     best_language = max(language_matches, key=language_matches.get)
     if language_matches[best_language] == 0:  # return English if not matching words
-        return 'en'
+        return "en"
     return best_language
 
 
@@ -236,8 +285,10 @@ def parse_ordinal(input_string, language=None):
     lang_data = LanguageData(language)
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
-    processed_tokens = [_apply_cardinal_conversion(token, lang_data) for token in normalized_tokens]
-    output_string = ' '.join(processed_tokens)
+    processed_tokens = [
+        _apply_cardinal_conversion(token, lang_data) for token in normalized_tokens
+    ]
+    output_string = " ".join(processed_tokens)
     return parse_number(output_string, language)
 
 
@@ -285,7 +336,7 @@ def parse_fraction(input_string, language=None):
             continue
 
         string_before_separator = input_string[:position_of_separator]
-        string_after_separator = input_string[position_of_separator + len(separator):]
+        string_after_separator = input_string[position_of_separator + len(separator) :]
 
         number_before_separator = parse_number(string_before_separator, language)
         number_after_separator = parse_number(string_after_separator, language)
@@ -293,7 +344,7 @@ def parse_fraction(input_string, language=None):
         if number_before_separator is None or number_after_separator is None:
             return None
 
-        return f'{number_before_separator}/{number_after_separator}'
+        return f"{number_before_separator}/{number_after_separator}"
 
     return None
 
@@ -348,9 +399,8 @@ def parse(input_string, language=None):
         if ordinal_number:
             tokens_taken.append(ordinal_number)
             _build_and_add_number(pop_last_space=True)
-        elif (
-                _is_cardinal_token(compare_token, lang_data)
-                or (_is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0)
+        elif _is_cardinal_token(compare_token, lang_data) or (
+            _is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0
         ):
             tokens_taken.append(compare_token)
         else:
@@ -369,4 +419,4 @@ def parse(input_string, language=None):
     _build_and_add_number()
 
     final_sentence.extend(current_sentence)
-    return ''.join(final_sentence).strip()
+    return "".join(final_sentence).strip()

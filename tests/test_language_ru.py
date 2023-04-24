@@ -1,9 +1,9 @@
 import pytest
-from number_parser import parse_number
-from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY
-from tests import _test_files
 
-LANG = 'ru'
+from number_parser import parse_number
+from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY, _test_files
+
+LANG = "ru"
 
 
 @pytest.mark.parametrize(
@@ -31,7 +31,6 @@ LANG = 'ru'
         ("семь тысяч четыре", 7_004),
         ("двадцать один миллион", 21_000_000),
         ("двадцать один миллион семьдесят три", 21_000_073),
-
         # Advanced/Formal forms
         ("одного", 1),
         ("одному", 1),
@@ -69,7 +68,7 @@ LANG = 'ru'
         ("пятистах девяноста шести", 596),
         ("тысяче", 1_000),
         ("двадцать одним миллионом", 21_000_000),
-    ]
+    ],
 )
 def test_parse_number(expected, test_input):
     assert parse_number(test_input, LANG) == expected
