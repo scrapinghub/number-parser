@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/PyCQA/flake8
-  rev: 6.0.0  # 6.0.0 drops Python 3.7 support
+  rev: 5.0.4  # 6.0.0 drops Python 3.7 support
   hooks:
   - id: flake8
     args: ['--config=.flake8']
@@ -10,6 +10,6 @@ repos:
   - id: black
     exclude: ^number_parser/data
 - repo: https://github.com/pycqa/isort
-  rev: 5.12.0  # 5.12 drops Python 3.7 support
+  rev: 5.11.5  # 5.12 drops Python 3.7 support
   hooks:
   - id: isort
