@@ -103,7 +103,7 @@ def _check_large_multiplier(current_token, total_value, current_grp_value, lang_
 
 
 def _build_number(token_list, lang_data):
-    """Incrementaly builds a number from the list of tokens."""
+    """Incrementally builds a number from the list of tokens."""
     total_value = 0
     current_grp_value = 0
     previous_token = None
