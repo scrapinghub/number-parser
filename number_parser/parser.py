@@ -305,6 +305,10 @@ def parse_number(input_string, language=None):
 
     lang_data = LanguageData(language)
 
+    # Normalize the input string by removing apostrophes
+    input_string = input_string.replace("'", "")
+    input_string = input_string.replace("’", "")
+
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
     for index, token in enumerate(normalized_tokens):
