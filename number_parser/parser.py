@@ -1,10 +1,20 @@
 import re
 import unicodedata
+from decimal import Decimal
 from importlib import import_module
+from itertools import islice
 
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+# (group separator, decimal separator)
+DIGIT_SEPARATORS = {
+    "en": (",", "."),
+    "es": (".", ","),
+    "hi": (",", "."),
+    "ru": ("", ","),
+    "uk": ("", ","),
+}
 
 
 class LanguageData:
@@ -40,6 +50,12 @@ class LanguageData:
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
         self.maximum_group_value = 10000 if language_info["USE_LONG_SCALE"] else 100
 
+        self.group_separator, self.decimal_separator = DIGIT_SEPARATORS[language]
+        self.digits_pattern = re.compile(
+            r"(?:\d{1,3}(?:%s\d{3})+|\d+)(?:%s\d+)?"
+            % (re.escape(self.group_separator), re.escape(self.decimal_separator))
+        )
+
 
 def _check_validity(
     current_token,
@@ -52,6 +68,9 @@ def _check_validity(
     """Identifies whether the new token can continue building the previous number."""
     if previous_token is None:
         return True
+
+    if isinstance(current_token, Decimal):
+        return False
 
     if (
         current_token in lang_data.unit_and_direct_numbers
@@ -112,7 +131,7 @@ def _build_number(token_list, lang_data):
     used_skip_tokens = []
 
     for token in token_list:
-        if not token.strip():
+        if isinstance(token, str) and not token.strip():
             continue
         if token in lang_data.skip_tokens:
             used_skip_tokens.append(token)
@@ -140,14 +159,17 @@ def _build_number(token_list, lang_data):
         )
         if not valid:
             total_value += current_grp_value
-            value_list.append(str(total_value))
+            value_list.append(str(int(total_value)))
             total_value = 0
             current_grp_value = 0
             for skip_token in used_skip_tokens:
                 value_list.append(skip_token)
             previous_power_of_10 = None
 
-        if token in lang_data.unit_and_direct_numbers:
+        if isinstance(token, Decimal):
+            current_grp_value += token
+
+        elif token in lang_data.unit_and_direct_numbers:
             current_grp_value += lang_data.unit_and_direct_numbers[token]
 
         elif token in lang_data.tens:
@@ -170,7 +192,7 @@ def _build_number(token_list, lang_data):
         previous_token = token
         used_skip_tokens = []
     total_value += current_grp_value
-    value_list.append(str(total_value))
+    value_list.append(str(int(total_value)))
     return value_list
 
 
@@ -179,7 +201,7 @@ def _tokenize(input_string, language):
     input_string = input_string.replace("\xad", "")
     if language in RE_BUG_LANGUAGES:
         return re.split(r"(\s+)", input_string)
-    return re.split(r"(\W)", input_string)
+    return re.split(r"(\b\d+(?:[.,]\d+)*\b|\W)", input_string)
 
 
 def _strip_accents(word):
@@ -222,6 +244,22 @@ def _is_number_token(token, lang_data):
     """
     token = _apply_cardinal_conversion(token, lang_data)
     return _is_cardinal_token(token, lang_data)
+
+
+def _digits_before_multiplier(token, next_token, lang_data):
+    """Returns the value of digits followed by a big power of ten that they
+    multiply into an integer, or None."""
+    multiplier = lang_data.big_powers_of_ten.get(next_token)
+    if multiplier is None or not lang_data.digits_pattern.fullmatch(token):
+        return None
+    value = Decimal(
+        token.replace(lang_data.group_separator, "").replace(
+            lang_data.decimal_separator, "."
+        )
+    )
+    if value >= multiplier or value * multiplier % 1:
+        return None
+    return value
 
 
 def _is_skip_token(token, lang_data):
@@ -381,7 +419,7 @@ def parse(input_string, language=None):
             if pop_last_space:
                 current_sentence.pop()
 
-    for token in tokens:
+    for index, token in enumerate(tokens):
         compare_token = _strip_accents(token.lower())
         ordinal_number = _is_ordinal_token(compare_token, lang_data)
 
@@ -403,6 +441,16 @@ def parse(input_string, language=None):
         if ordinal_number:
             tokens_taken.append(ordinal_number)
             _build_and_add_number(pop_last_space=True)
+        elif (
+            digits := _digits_before_multiplier(
+                compare_token,
+                _strip_accents(
+                    next((t for t in islice(tokens, index + 1, None) if t.strip()), "")
+                ).lower(),
+                lang_data,
+            )
+        ) is not None:
+            tokens_taken.append(digits)
         elif _is_cardinal_token(compare_token, lang_data) or (
             _is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0
         ):

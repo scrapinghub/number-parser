@@ -95,6 +95,31 @@ def test_parse_basic_sentences(expected, test_input, lang):
 @pytest.mark.parametrize(
     "test_input,expected,lang",
     [
+        ("1 million", "1000000", "en"),
+        ("5 hundred and 6", "500 and 6", "en"),
+        ("5 hundred and six", "506", "en"),
+        ("$1.5 Billion", "$1500000000", "en"),
+        ("1,500 million", "1500000000", "en"),
+        ("1,5 million", "1,5 1000000", "en"),
+        ("1.2345 thousand", "1.2345 1000", "en"),
+        ("5000 thousand", "5000 1000", "en"),
+        ("hundred 73, sixty 5, 5 nine thousand", "100 73, 60 5, 5 9000", "en"),
+        ("5 cows,  2.5 kg", "5 cows,  2.5 kg", "en"),
+        ("2,5 millones", "2500000", "es"),
+        ("1.500 millones", "1500000000", "es"),
+        ("5 сто", "5 100", "ru"),
+        ("5 тысяч", "5000", "ru"),
+        ("5 тисяч", "5000", "uk"),
+        ("5 सौ", "500", "hi"),
+    ],
+)
+def test_parse_digits_before_multiplier(expected, test_input, lang):
+    assert parse(test_input, lang) == expected
+
+
+@pytest.mark.parametrize(
+    "test_input,expected,lang",
+    [
         ("OnE DaY at a Time.", "1 DaY at a Time.", "en"),
         ("SeVentY THREE days of SUMMER!!!.", "73 days of SUMMER!!!.", "en"),
         ("Twelve 11 pm", "12 11 pm", "en"),
