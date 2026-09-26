@@ -262,6 +262,10 @@ def _digits_before_multiplier(token, next_token, lang_data):
     return value
 
 
+def _next_word(tokens, index):
+    return next((t for t in islice(tokens, index + 1, None) if t.strip()), "")
+
+
 def _is_skip_token(token, lang_data):
     return token in lang_data.skip_tokens
 
@@ -354,7 +358,12 @@ def parse_number(input_string, language=None):
             continue
         if _is_skip_token(token, lang_data) and index != 0:
             continue
-        return None
+        digits = _digits_before_multiplier(
+            token, _next_word(normalized_tokens, index), lang_data
+        )
+        if digits is None:
+            return None
+        normalized_tokens[index] = digits
     number_built = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
         return int(number_built[0])
@@ -444,9 +453,7 @@ def parse(input_string, language=None):
         elif (
             digits := _digits_before_multiplier(
                 compare_token,
-                _strip_accents(
-                    next((t for t in islice(tokens, index + 1, None) if t.strip()), "")
-                ).lower(),
+                _strip_accents(_next_word(tokens, index).lower()),
                 lang_data,
             )
         ) is not None:

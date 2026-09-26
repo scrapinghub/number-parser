@@ -48,6 +48,12 @@ from number_parser.parser import LanguageData, parse_ordinal
             3_023_001_432,
             "es",
         ),
+        # digits before a multiplier
+        ("2.4 million", 2_400_000, None),
+        ("2 million three thousand", 2_003_000, "en"),
+        ("one 2 million", None, "en"),
+        ("1.2345 thousand", None, "en"),
+        ("2,5 millones", 2_500_000, "es"),
     ],
 )
 def test_parse_number(expected, test_input, lang):
