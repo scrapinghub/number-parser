@@ -149,6 +149,11 @@ def test_parse_ambiguity_in_multipliers(expected, test_input):
             set(),
             "two and thirty seven coats, the twenty first",
         ),
+        ("wait one second", {"cardinal"}, "wait 1 second"),
+        ("wait one second", {"ordinal"}, "wait one 2nd"),
+        ("two and twenty first", {"cardinal"}, "2 and twenty first"),
+        ("two and twenty first", {"ordinal"}, "two and 21st"),
+        ("two and twenty first", None, "2 and 21st"),
     ],
 )
 def test_parse_types(test_input, types, expected):
