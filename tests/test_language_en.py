@@ -154,6 +154,8 @@ def test_parse_ambiguity_in_multipliers(expected, test_input):
         ("two and twenty first", {"cardinal"}, "2 and twenty first"),
         ("two and twenty first", {"ordinal"}, "two and 21st"),
         ("two and twenty first", None, "2 and 21st"),
+        ("two third prizes", None, "2 3rd prizes"),
+        ("a second chance", None, "a 2nd chance"),
     ],
 )
 def test_parse_types(test_input, types, expected):

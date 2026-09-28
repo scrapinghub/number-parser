@@ -37,6 +37,8 @@ This also supports ordinal number conversion (for English only).
 '1st day of year 2000'
 >>> parse("First day of year two thousand", types={"cardinal"})
 'First day of year 2000'
+>>> parse("Wait one second", types={"cardinal"})
+'Wait 1 second'
 
 Parsing a number
 ----------------
