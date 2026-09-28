@@ -85,6 +85,16 @@ as is.
 >>> parse_number("MMXXIV")
 2024
 
+Suzhou numerals
+---------------
+
+`Suzhou numerals <https://en.wikipedia.org/wiki/Suzhou_numerals>`_ are
+supported in their positional form, with 一二三 accepted in place of 〡〢〣
+next to other Suzhou digits, as in 〡一 (11).
+
+>>> parse("价格〤〇〢元")
+'价格402元'
+
 Language Support
 ----------------
 

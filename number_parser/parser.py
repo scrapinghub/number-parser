@@ -5,10 +5,12 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
-_NUMBER_TYPES = {"cardinal", "ordinal", "roman"}
+_NUMBER_TYPES = {"cardinal", "ordinal", "roman", "suzhou"}
 _DEFAULT_NUMBER_TYPES = _NUMBER_TYPES - {"roman"}
 _ROMAN_RE = re.compile(r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
 _ROMAN_VALUES = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+# 一二三 alternate with 〡〢〣 to tell adjacent digits apart, e.g. 〡一 for 11.
+_SUZHOU_RE = re.compile("[〇一二三]*[〡-〩〸-〺][〇〡-〩〸-〺一二三]*")
 
 
 class LanguageData:
@@ -271,6 +273,21 @@ def _parse_roman(token):
     return total
 
 
+def _parse_suzhou(numerals):
+    """Returns the value of a run of Suzhou numerals, or None."""
+    if not _SUZHOU_RE.fullmatch(numerals):
+        return None
+    # 〸〹〺 (10, 20, 30) stand on their own.
+    if len(numerals) > 1 and set(numerals) & set("〸〹〺"):
+        return None
+    return int("".join(str(int(unicodedata.numeric(char))) for char in numerals))
+
+
+def _replace_suzhou(match):
+    number = _parse_suzhou(match[0])
+    return match[0] if number is None else str(number)
+
+
 def _valid_tokens_by_language(input_string):
     language_matches = {}
 
@@ -311,6 +328,10 @@ def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
     if not input_string.strip():
         return None
+
+    suzhou_number = _parse_suzhou(input_string.strip())
+    if suzhou_number is not None:
+        return suzhou_number
 
     if input_string.strip().isnumeric():
         return int(input_string)
@@ -378,10 +399,10 @@ def parse(input_string, language=None, types=None):
     the other words unchanged. Returns the transformed string.
 
     *types* is a set of the types of numbers to convert: ``"cardinal"``,
-    ``"ordinal"`` and ``"roman"`` (uppercase Roman numerals other than a lone
-    ``I``). It defaults to all supported types except ``"roman"``, including
-    any that future versions add, so set it explicitly to keep the output
-    stable.
+    ``"ordinal"``, ``"roman"`` (uppercase Roman numerals other than a lone
+    ``I``) and ``"suzhou"``. It defaults to all supported types except
+    ``"roman"``, including any that future versions add, so set it explicitly
+    to keep the output stable.
     """
     if types is None:
         types = _DEFAULT_NUMBER_TYPES
@@ -466,9 +487,11 @@ def parse(input_string, language=None, types=None):
             roman_number = (
                 _parse_roman(token) if "roman" in types and token != "I" else None
             )
-            current_sentence.append(
-                token if roman_number is None else str(roman_number)
-            )
+            if roman_number is not None:
+                token = str(roman_number)
+            elif "suzhou" in types:
+                token = _SUZHOU_RE.sub(_replace_suzhou, token)
+            current_sentence.append(token)
 
         pop_last_space = True
 
