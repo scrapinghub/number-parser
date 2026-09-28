@@ -3,8 +3,10 @@ import unicodedata
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
-SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
+SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk", "ja", "ko", "zh", "zh-Hant"]
 RE_BUG_LANGUAGES = ["hi"]
+_CJK_LANGUAGES = ["ja", "ko", "zh", "zh-Hant"]
+_CJK_MYRIAD = 10_000
 
 
 class LanguageData:
@@ -39,6 +41,8 @@ class LanguageData:
         }
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
         self.maximum_group_value = 10000 if language_info["USE_LONG_SCALE"] else 100
+        self._is_cjk = language in _CJK_LANGUAGES
+        self._is_ko = language == "ko"
 
 
 def _check_validity(
@@ -102,8 +106,83 @@ def _check_large_multiplier(current_token, total_value, current_grp_value, lang_
     return False
 
 
+def _build_cjk_number(token_list, lang_data):
+    """
+    Builds numbers from CJK tokens, where 十, 百 and 千 multiply the digit
+    before them, and 万, 億 and bigger multiply everything before them since
+    the previous bigger multiplier. Digits without multipliers, e.g. 二〇二四,
+    are read positionally, except in Korean.
+    """
+    value_list = []
+    total = section = 0
+    digit = None
+    digits = ""
+    last_small = last_big = None
+
+    def _value():
+        if digits:
+            return int(digits)
+        return total + section + (digit or 0)
+
+    for token in token_list:
+        if not token.strip():
+            continue
+        is_multiplier = token in lang_data.big_powers_of_ten
+        in_positional_run = len(digits) > 1
+        if is_multiplier:
+            multiplier = lang_data.big_powers_of_ten[token]
+            below = section + (digit or 0)
+            if multiplier < _CJK_MYRIAD:
+                valid = not in_positional_run and (
+                    last_small is None or multiplier < last_small
+                )
+            else:
+                valid = not in_positional_run and (
+                    last_big is None
+                    or multiplier < last_big
+                    or total + below < multiplier
+                )
+        else:
+            valid = (
+                digit is None
+                or (digits and not total and not section and not lang_data._is_ko)
+                or (digit == 0 and (total or section))
+            )
+        if not valid:
+            value_list.append(str(_value()))
+            total = section = 0
+            digit = None
+            digits = ""
+            last_small = last_big = None
+
+        if not is_multiplier:
+            digit = lang_data.unit_numbers[token]
+            if not total and not section:
+                digits += str(digit)
+            continue
+        digits = ""
+        if multiplier < _CJK_MYRIAD:
+            section += (1 if digit is None else digit) * multiplier
+            last_small = multiplier
+        else:
+            below = section + (digit or 0)
+            if last_big is not None and multiplier > last_big:
+                total = (total + below) * multiplier
+            else:
+                total += (below or 1) * multiplier
+            section = 0
+            last_small = None
+            last_big = multiplier
+        digit = None
+
+    value_list.append(str(_value()))
+    return value_list
+
+
 def _build_number(token_list, lang_data):
     """Incrementally builds a number from the list of tokens."""
+    if lang_data._is_cjk:
+        return _build_cjk_number(token_list, lang_data)
     total_value = 0
     current_grp_value = 0
     previous_token = None
@@ -179,6 +258,8 @@ def _tokenize(input_string, language):
     input_string = input_string.replace("\xad", "")
     if language in RE_BUG_LANGUAGES:
         return re.split(r"(\s+)", input_string)
+    if language in _CJK_LANGUAGES:
+        return list(input_string)
     return re.split(r"(\W)", input_string)
 
 
@@ -297,7 +378,7 @@ def parse_number(input_string, language=None):
     if not input_string.strip():
         return None
 
-    if input_string.strip().isnumeric():
+    if input_string.strip().isdecimal():
         return int(input_string)
 
     if language is None:
@@ -353,6 +434,35 @@ def parse_fraction(input_string, language=None):
     return None
 
 
+def _parse_korean(input_string, lang_data):
+    """
+    Korean number syllables are also common words and particles, e.g. 이 (this)
+    or 만 (only), so only runs of 2+ syllables at the start of a word count.
+    Trailing syllables that would start another number are left as text, e.g.
+    일 (day) in 이십오일.
+    """
+    # ponytail: words made only of number syllables, e.g. 구조 (structure),
+    # still get converted; a word list would be needed to tell them apart.
+    chars = "".join(
+        unicodedata.normalize("NFC", token) for token in lang_data.all_numbers
+    )
+    group = r"(?<!\w)[" + chars + "]{2,}"
+    pattern = group + r"(?:(?<=[만억조])\s+" + group + ")*"
+
+    def _replace(match):
+        text = match.group()
+        while True:
+            numbers = _build_cjk_number(_normalize_tokens(list(text)), lang_data)
+            if len(numbers) == 1:
+                break
+            text = text[:-1].rstrip()
+        if len(text) < 2:
+            return match.group()
+        return numbers[0] + match.group()[len(text) :]
+
+    return re.sub(pattern, _replace, input_string)
+
+
 def parse(input_string, language=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
@@ -362,6 +472,8 @@ def parse(input_string, language=None):
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
+    if lang_data._is_ko:
+        return _parse_korean(input_string, lang_data)
 
     tokens = _tokenize(input_string, language)
 
@@ -415,7 +527,7 @@ def parse(input_string, language=None):
                 _build_and_add_number()
                 current_sentence.extend([skip_token, " "])
 
-            _build_and_add_number()
+            _build_and_add_number(pop_last_space=pop_last_space)
             current_sentence.append(token)
 
         pop_last_space = True
