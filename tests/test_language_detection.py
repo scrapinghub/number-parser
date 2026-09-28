@@ -84,8 +84,8 @@ def test_parse_ordinal_lang_auto(expected, test_input):
     "test_input,expected",
     [
         # en
-        ("eleventh day of summer", "11 day of summer"),
-        ("nineteenth may two thousand", "19 may 2000"),
+        ("eleventh day of summer", "11th day of summer"),
+        ("nineteenth may two thousand", "19th may 2000"),
     ],
 )
 def test_parse_sentences_ordinal(expected, test_input):

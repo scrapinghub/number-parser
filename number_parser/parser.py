@@ -5,6 +5,7 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+_NUMBER_TYPES = {"cardinal", "ordinal"}
 
 
 class LanguageData:
@@ -103,15 +104,20 @@ def _check_large_multiplier(current_token, total_value, current_grp_value, lang_
 
 
 def _build_number(token_list, lang_data):
-    """Incrementally builds a number from the list of tokens."""
+    """Incrementally builds a number from the list of tokens.
+
+    Returns the list of values built, and the index in *token_list* of the
+    first token of the last value.
+    """
     total_value = 0
     current_grp_value = 0
     previous_token = None
     previous_power_of_10 = None
     value_list = []
     used_skip_tokens = []
+    last_start = 0
 
-    for token in token_list:
+    for index, token in enumerate(token_list):
         if not token.strip():
             continue
         if token in lang_data.skip_tokens:
@@ -146,6 +152,7 @@ def _build_number(token_list, lang_data):
             for skip_token in used_skip_tokens:
                 value_list.append(skip_token)
             previous_power_of_10 = None
+            last_start = index
 
         if token in lang_data.unit_and_direct_numbers:
             current_grp_value += lang_data.unit_and_direct_numbers[token]
@@ -171,7 +178,7 @@ def _build_number(token_list, lang_data):
         used_skip_tokens = []
     total_value += current_grp_value
     value_list.append(str(total_value))
-    return value_list
+    return value_list, last_start
 
 
 def _tokenize(input_string, language):
@@ -317,7 +324,7 @@ def parse_number(input_string, language=None):
         if _is_skip_token(token, lang_data) and index != 0:
             continue
         return None
-    number_built = _build_number(normalized_tokens, lang_data)
+    number_built, _ = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
         return int(number_built[0])
     return None
@@ -353,11 +360,26 @@ def parse_fraction(input_string, language=None):
     return None
 
 
-def parse(input_string, language=None):
+def _ordinal_suffix(number):
+    if number % 100 in (11, 12, 13):
+        return "th"
+    return {1: "st", 2: "nd", 3: "rd"}.get(number % 10, "th")
+
+
+def parse(input_string, language=None, types=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
+
+    *types* is a set of the types of numbers to convert, ``"cardinal"`` and
+    ``"ordinal"``. It defaults to all supported types, including any that
+    future versions add, so set it explicitly to keep the output stable.
     """
+    if types is None:
+        types = _NUMBER_TYPES
+    elif unknown_types := set(types) - _NUMBER_TYPES:
+        raise ValueError(f"Unknown number types: {sorted(unknown_types)}")
+
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
@@ -368,18 +390,49 @@ def parse(input_string, language=None):
     final_sentence = []
     current_sentence = []
     tokens_taken = []
+    # Original text of each taken token, including the whitespace before it.
+    raw_tokens_taken = []
+    pending_whitespace = []
     pop_last_space = True
 
-    def _build_and_add_number(pop_last_space=False):
+    def _build_and_add_number(pop_last_space=False, number_type="cardinal"):
         if tokens_taken:
-            result = _build_number(tokens_taken, lang_data)
+            # Only the last number of a run can be an ordinal, e.g. with
+            # ordinals only, "two twenty first" becomes "two 21".
+            values, last_start = _build_number(tokens_taken, lang_data)
+            if number_type == "cardinal":
+                parts = [("cardinal", values, raw_tokens_taken)]
+            else:
+                parts = [
+                    ("cardinal", values[:-1], raw_tokens_taken[:last_start]),
+                    (
+                        number_type,
+                        [values[-1] + _ordinal_suffix(int(values[-1]))],
+                        raw_tokens_taken[last_start:],
+                    ),
+                ]
+            result = []
+            for part_type, part_values, part_raw_tokens in parts:
+                if not part_raw_tokens:
+                    continue
+                if part_type in types:
+                    result.extend(part_values)
+                else:
+                    result.append("".join(part_raw_tokens).lstrip())
             tokens_taken.clear()
+            raw_tokens_taken.clear()
+            pending_whitespace.clear()
 
             for number in result:
                 current_sentence.extend([number, " "])
 
             if pop_last_space:
                 current_sentence.pop()
+
+    def _take(token, compare_token):
+        tokens_taken.append(compare_token)
+        raw_tokens_taken.append("".join(pending_whitespace) + token)
+        pending_whitespace.clear()
 
     for token in tokens:
         compare_token = _strip_accents(token.lower())
@@ -390,6 +443,7 @@ def parse(input_string, language=None):
                 current_sentence.append(token)
                 pop_last_space = True
             else:
+                pending_whitespace.append(token)
                 pop_last_space = False
             continue
 
@@ -401,17 +455,17 @@ def parse(input_string, language=None):
             continue
 
         if ordinal_number:
-            tokens_taken.append(ordinal_number)
-            _build_and_add_number(pop_last_space=True)
+            _take(token, ordinal_number)
+            _build_and_add_number(pop_last_space=True, number_type="ordinal")
         elif _is_cardinal_token(compare_token, lang_data) or (
             _is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0
         ):
-            tokens_taken.append(compare_token)
+            _take(token, compare_token)
         else:
             if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
                 # when finishing with a skip_token --> keep it
-                skip_token = tokens_taken[-1]
-                tokens_taken.pop()
+                skip_token = tokens_taken.pop()
+                raw_tokens_taken.pop()
                 _build_and_add_number()
                 current_sentence.extend([skip_token, " "])
 

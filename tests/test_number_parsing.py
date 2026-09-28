@@ -135,23 +135,23 @@ def test_parse_ordinal(expected, test_input, lang):
 @pytest.mark.parametrize(
     "test_input,expected,lang",
     [
-        ("eleventh day of summer", "11 day of summer", "en"),
-        ("nineteenth may two thousand", "19 may 2000", "en"),
-        ("hundredth and one", "100 and 1", "en"),
-        ("one hundred and forty second", "142", "en"),
-        ("five thousandth and one", "5000 and 1", "en"),
-        ("thirty seven and fifth", "37 and 5", "en"),
+        ("eleventh day of summer", "11th day of summer", "en"),
+        ("nineteenth may two thousand", "19th may 2000", "en"),
+        ("hundredth and one", "100th and 1", "en"),
+        ("one hundred and forty second", "142nd", "en"),
+        ("five thousandth and one", "5000th and 1", "en"),
+        ("thirty seven and fifth", "37 and 5th", "en"),
         (
             "eighth month of year two thousand and twentieth",
-            "8 month of year 2020",
+            "8th month of year 2020th",
             "en",
         ),
         (
             "He crieth, a path with fifty fifth steps",
-            "He crieth, a path with 55 steps",
+            "He crieth, a path with 55th steps",
             "en",
         ),
-        ("twentieth seventh fiftieth third", "20 7 50 3", "en"),
+        ("twentieth seventh fiftieth third", "20th 7th 50th 3rd", "en"),
     ],
 )
 def test_parse_sentences_ordinal(expected, test_input, lang):
