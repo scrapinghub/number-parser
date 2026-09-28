@@ -25,6 +25,18 @@ info = {
     "DIRECT_NUMBERS": {},
     "TENS": {},
     "HUNDREDS": {},
-    "BIG_POWERS_OF_TEN": {},
-    "SKIP_TOKENS": []
+    "BIG_POWERS_OF_TEN": {
+        "十": 10,
+        "拾": 10,
+        "佰": 100,
+        "百": 100,
+        "仟": 1000,
+        "千": 1000,
+        "万": 10000,
+        "萬": 10000,
+        "亿": 100000000,
+        "億": 100000000
+    },
+    "SKIP_TOKENS": [],
+    "USE_LONG_SCALE": False
 }
