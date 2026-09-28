@@ -41,5 +41,8 @@ info = {
     "HUNDREDS": {},
     "BIG_POWERS_OF_TEN": {},
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "마이너스"
+    ],
     "USE_LONG_SCALE": False
 }

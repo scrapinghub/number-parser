@@ -103,5 +103,8 @@ info = {
     "SKIP_TOKENS": [
         "y"
     ],
+    "NEGATIVE_WORDS": [
+        "menos"
+    ],
     "USE_LONG_SCALE": True
 }

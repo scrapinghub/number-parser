@@ -61,5 +61,8 @@ info = {
         "quatriliões": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "menos"
+    ],
     "USE_LONG_SCALE": True
 }

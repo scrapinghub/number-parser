@@ -40,5 +40,8 @@ info = {
     "HUNDREDS": {},
     "BIG_POWERS_OF_TEN": {},
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "míneas"
+    ],
     "USE_LONG_SCALE": False
 }

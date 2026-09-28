@@ -107,6 +107,13 @@ def _add_multiplier_words(number, word, language_data):
         language_data["BIG_POWERS_OF_TEN"][valid_word] = power_of_10_num
 
 
+def _add_negative_word(word, language_data):
+    """Adding the word that precedes a number to make it negative."""
+    match = re.fullmatch(r"([^<>=]+?)\s*>>;", word.replace("\u200b", ""))
+    if match:
+        language_data["NEGATIVE_WORDS"].add(match.group(1))
+
+
 def _extract_information(key, word, language_data):
     """Identify the type of number - simple,compound,multiplier."""
     try:
@@ -143,6 +150,7 @@ def write_complete_data():
         full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
+        language_data["NEGATIVE_WORDS"] = set()
         ordered_language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
         with open(full_source_path, "r") as source:
             data = json.load(source)
@@ -159,7 +167,10 @@ def write_complete_data():
                     for key, val in vals.items():
                         # Removing soft-hyphens from the source file.
                         val = val.replace("\xad", "")
-                        _extract_information(key, val, language_data)
+                        if key == "-x":
+                            _add_negative_word(val, language_data)
+                        else:
+                            _extract_information(key, val, language_data)
 
         with open(full_supplementary_path, "r") as supplementary_data:
             data = json.load(supplementary_data)
@@ -172,6 +183,9 @@ def write_complete_data():
                     word, number = items[0], items[1]
                     ordered_language_data[keys][word] = int(number)
         ordered_language_data["SKIP_TOKENS"] = sorted(data["SKIP_TOKENS"])
+        ordered_language_data["NEGATIVE_WORDS"] = sorted(
+            language_data["NEGATIVE_WORDS"]
+        )
         try:
             ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
         except KeyError:

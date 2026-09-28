@@ -5,6 +5,7 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+NEGATIVE_SIGNS = ["-", "−"]
 
 
 class LanguageData:
@@ -29,6 +30,9 @@ class LanguageData:
         self.hundreds = _normalize_dict(language_info["HUNDREDS"])
         self.big_powers_of_ten = _normalize_dict(language_info["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
+        self.negative_words = [
+            _strip_accents(word) for word in language_info["NEGATIVE_WORDS"]
+        ]
 
         self.all_numbers = {
             **self.unit_numbers,
@@ -228,6 +232,40 @@ def _is_skip_token(token, lang_data):
     return token in lang_data.skip_tokens
 
 
+def _is_negative_word(token, lang_data):
+    return _strip_accents(token.lower()) in lang_data.negative_words
+
+
+def _strip_negative_prefix(input_string, lang_data):
+    """
+    Returns the input string without its leading negative sign or word, or None
+    if it does not start with one.
+    """
+    input_string = input_string.lstrip()
+    if input_string[:1] in NEGATIVE_SIGNS:
+        return input_string[1:]
+    first_word, *rest = input_string.split(maxsplit=1)
+    if _is_negative_word(first_word, lang_data):
+        return rest[0] if rest else ""
+    return None
+
+
+def _pop_negative_word(sentence, lang_data):
+    """
+    Removes a trailing negative word, and any whitespace after it, from the
+    sentence tokens, and returns whether it was there.
+
+    A negative word right after a number is a subtraction, and is kept.
+    """
+    words = [(i, token) for i, token in enumerate(sentence) if token.strip()]
+    if not words or not _is_negative_word(words[-1][1], lang_data):
+        return False
+    if len(words) > 1 and words[-2][1].lstrip("".join(NEGATIVE_SIGNS)).isdigit():
+        return False
+    del sentence[words[-1][0] :]
+    return True
+
+
 def _apply_cardinal_conversion(
     token, lang_data
 ):  # Currently only for English language.
@@ -266,6 +304,7 @@ def _valid_tokens_by_language(input_string):
         valid_list = [
             _is_number_token(token, lang_data) is not None
             or _is_skip_token(token, lang_data)
+            or _is_negative_word(token, lang_data)
             for token in normalized_tokens
         ]
         cnt_valid_words = valid_list.count(True)
@@ -297,13 +336,23 @@ def parse_number(input_string, language=None):
     if not input_string.strip():
         return None
 
-    if input_string.strip().isnumeric():
-        return int(input_string)
-
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
+    unsigned_string = _strip_negative_prefix(input_string, lang_data)
+    if unsigned_string is None:
+        return _parse_unsigned_number(input_string, language, lang_data)
+    number = _parse_unsigned_number(unsigned_string, language, lang_data)
+    return None if number is None else -number
+
+
+def _parse_unsigned_number(input_string, language, lang_data):
+    if not input_string.strip():
+        return None
+
+    if input_string.strip().isnumeric():
+        return int(input_string)
 
     # Normalize the input string by removing apostrophes
     input_string = input_string.replace("'", "")
@@ -374,6 +423,8 @@ def parse(input_string, language=None):
         if tokens_taken:
             result = _build_number(tokens_taken, lang_data)
             tokens_taken.clear()
+            if _pop_negative_word(current_sentence, lang_data):
+                result[0] = f"-{result[0]}"
 
             for number in result:
                 current_sentence.extend([number, " "])

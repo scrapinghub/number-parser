@@ -42,5 +42,8 @@ info = {
         "ბილიარდ": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "მინუს"
+    ],
     "USE_LONG_SCALE": False
 }
