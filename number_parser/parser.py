@@ -297,7 +297,7 @@ def parse_number(input_string, language=None):
     if not input_string.strip():
         return None
 
-    if input_string.strip().isnumeric():
+    if input_string.strip().isdecimal():
         return int(input_string)
 
     if language is None:
