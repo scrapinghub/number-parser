@@ -5,6 +5,12 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+_NUMBER_TYPES = {"cardinal", "ordinal", "roman", "suzhou"}
+_DEFAULT_NUMBER_TYPES = _NUMBER_TYPES - {"roman"}
+_ROMAN_RE = re.compile(r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
+_ROMAN_VALUES = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+# 一二三 alternate with 〡〢〣 to tell adjacent digits apart, e.g. 〡一 for 11.
+_SUZHOU_RE = re.compile("[〇一二三]*[〡-〩〸-〺][〇〡-〩〸-〺一二三]*")
 
 
 class LanguageData:
@@ -256,6 +262,32 @@ def _apply_cardinal_conversion(
     return token
 
 
+def _parse_roman(token):
+    """Returns the value of an uppercase Roman numeral from 1 to 3999, or None."""
+    if not token or not _ROMAN_RE.fullmatch(token):
+        return None
+    total = 0
+    for char, next_char in zip(token, token[1:] + " "):
+        value = _ROMAN_VALUES[char]
+        total += -value if _ROMAN_VALUES.get(next_char, 0) > value else value
+    return total
+
+
+def _parse_suzhou(numerals):
+    """Returns the value of a run of Suzhou numerals, or None."""
+    if not _SUZHOU_RE.fullmatch(numerals):
+        return None
+    # 〸〹〺 (10, 20, 30) stand on their own.
+    if len(numerals) > 1 and set(numerals) & set("〸〹〺"):
+        return None
+    return int("".join(str(int(unicodedata.numeric(char))) for char in numerals))
+
+
+def _replace_suzhou(match):
+    number = _parse_suzhou(match[0])
+    return match[0] if number is None else str(number)
+
+
 def _valid_tokens_by_language(input_string):
     language_matches = {}
 
@@ -297,8 +329,16 @@ def parse_number(input_string, language=None):
     if not input_string.strip():
         return None
 
+    suzhou_number = _parse_suzhou(input_string.strip())
+    if suzhou_number is not None:
+        return suzhou_number
+
     if input_string.strip().isnumeric():
         return int(input_string)
+
+    roman_number = _parse_roman(input_string.strip())
+    if roman_number is not None:
+        return roman_number
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
@@ -353,11 +393,22 @@ def parse_fraction(input_string, language=None):
     return None
 
 
-def parse(input_string, language=None):
+def parse(input_string, language=None, types=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
+
+    *types* is a set of the types of numbers to convert: ``"cardinal"``,
+    ``"ordinal"``, ``"roman"`` (uppercase Roman numerals other than a lone
+    ``I``) and ``"suzhou"``. It defaults to all supported types except
+    ``"roman"``, including any that future versions add, so set it explicitly
+    to keep the output stable.
     """
+    if types is None:
+        types = _DEFAULT_NUMBER_TYPES
+    elif unknown_types := set(types) - _NUMBER_TYPES:
+        raise ValueError(f"Unknown number types: {sorted(unknown_types)}")
+
     if language is None:
         language = _valid_tokens_by_language(input_string)
 
@@ -368,18 +419,33 @@ def parse(input_string, language=None):
     final_sentence = []
     current_sentence = []
     tokens_taken = []
+    # Original text of each taken token, including the whitespace before it.
+    raw_tokens_taken = []
+    pending_whitespace = []
     pop_last_space = True
 
-    def _build_and_add_number(pop_last_space=False):
+    def _build_and_add_number(pop_last_space=False, number_type="cardinal"):
         if tokens_taken:
-            result = _build_number(tokens_taken, lang_data)
+            # A run is kept or converted as a whole, e.g. with ordinals only,
+            # "two twenty first" becomes "2 21".
+            if number_type in types:
+                result = _build_number(tokens_taken, lang_data)
+            else:
+                result = ["".join(raw_tokens_taken)]
             tokens_taken.clear()
+            raw_tokens_taken.clear()
+            pending_whitespace.clear()
 
             for number in result:
                 current_sentence.extend([number, " "])
 
             if pop_last_space:
                 current_sentence.pop()
+
+    def _take(token, compare_token):
+        tokens_taken.append(compare_token)
+        raw_tokens_taken.append("".join(pending_whitespace) + token)
+        pending_whitespace.clear()
 
     for token in tokens:
         compare_token = _strip_accents(token.lower())
@@ -390,6 +456,7 @@ def parse(input_string, language=None):
                 current_sentence.append(token)
                 pop_last_space = True
             else:
+                pending_whitespace.append(token)
                 pop_last_space = False
             continue
 
@@ -401,21 +468,29 @@ def parse(input_string, language=None):
             continue
 
         if ordinal_number:
-            tokens_taken.append(ordinal_number)
-            _build_and_add_number(pop_last_space=True)
+            _take(token, ordinal_number)
+            _build_and_add_number(pop_last_space=True, number_type="ordinal")
         elif _is_cardinal_token(compare_token, lang_data) or (
             _is_skip_token(compare_token, lang_data) and len(tokens_taken) != 0
         ):
-            tokens_taken.append(compare_token)
+            _take(token, compare_token)
         else:
             if tokens_taken and _is_skip_token(tokens_taken[-1], lang_data):
                 # when finishing with a skip_token --> keep it
-                skip_token = tokens_taken[-1]
-                tokens_taken.pop()
+                skip_token = tokens_taken.pop()
+                raw_tokens_taken.pop()
                 _build_and_add_number()
                 current_sentence.extend([skip_token, " "])
 
             _build_and_add_number()
+            # "I" is far more likely to be the English pronoun.
+            roman_number = (
+                _parse_roman(token) if "roman" in types and token != "I" else None
+            )
+            if roman_number is not None:
+                token = str(roman_number)
+            elif "suzhou" in types:
+                token = _SUZHOU_RE.sub(_replace_suzhou, token)
             current_sentence.append(token)
 
         pop_last_space = True

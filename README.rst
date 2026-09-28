@@ -35,6 +35,8 @@ This also supports ordinal number conversion (for English only).
 '1, 2, 3 go'
 >>> parse("First day of year two thousand")
 '1 day of year 2000'
+>>> parse("First day of year two thousand", types={"cardinal"})
+'First day of year 2000'
 
 Parsing a number
 ----------------
@@ -70,6 +72,28 @@ Converting a fractional number written in words to its corresponding integral fr
 >>> parse_fraction("forty two / one million")
 '42/1000000'
 
+
+Roman numerals
+--------------
+
+Uppercase Roman numerals from I to MMMCMXCIX are also supported. ``parse``
+only converts them if ``types`` includes ``"roman"``, and leaves a lone ``I``
+as is.
+
+>>> parse("Louis XIV was born in MDCXXXVIII", types={"cardinal", "roman"})
+'Louis 14 was born in 1638'
+>>> parse_number("MMXXIV")
+2024
+
+Suzhou numerals
+---------------
+
+`Suzhou numerals <https://en.wikipedia.org/wiki/Suzhou_numerals>`_ are
+supported in their positional form, with 一二三 accepted in place of 〡〢〣
+next to other Suzhou digits, as in 〡一 (11).
+
+>>> parse("价格〤〇〢元")
+'价格402元'
 
 Language Support
 ----------------
