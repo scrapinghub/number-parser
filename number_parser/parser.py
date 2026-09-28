@@ -5,7 +5,10 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
-_NUMBER_TYPES = {"cardinal", "ordinal"}
+_NUMBER_TYPES = {"cardinal", "ordinal", "roman"}
+_DEFAULT_NUMBER_TYPES = _NUMBER_TYPES - {"roman"}
+_ROMAN_RE = re.compile(r"M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})")
+_ROMAN_VALUES = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
 
 
 class LanguageData:
@@ -257,6 +260,17 @@ def _apply_cardinal_conversion(
     return token
 
 
+def _parse_roman(token):
+    """Returns the value of an uppercase Roman numeral from 1 to 3999, or None."""
+    if not token or not _ROMAN_RE.fullmatch(token):
+        return None
+    total = 0
+    for char, next_char in zip(token, token[1:] + " "):
+        value = _ROMAN_VALUES[char]
+        total += -value if _ROMAN_VALUES.get(next_char, 0) > value else value
+    return total
+
+
 def _valid_tokens_by_language(input_string):
     language_matches = {}
 
@@ -300,6 +314,10 @@ def parse_number(input_string, language=None):
 
     if input_string.strip().isnumeric():
         return int(input_string)
+
+    roman_number = _parse_roman(input_string.strip())
+    if roman_number is not None:
+        return roman_number
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
@@ -359,12 +377,14 @@ def parse(input_string, language=None, types=None):
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
     the other words unchanged. Returns the transformed string.
 
-    *types* is a set of the types of numbers to convert, ``"cardinal"`` and
-    ``"ordinal"``. It defaults to all supported types, including any that
-    future versions add, so set it explicitly to keep the output stable.
+    *types* is a set of the types of numbers to convert: ``"cardinal"``,
+    ``"ordinal"`` and ``"roman"`` (uppercase Roman numerals other than a lone
+    ``I``). It defaults to all supported types except ``"roman"``, including
+    any that future versions add, so set it explicitly to keep the output
+    stable.
     """
     if types is None:
-        types = _NUMBER_TYPES
+        types = _DEFAULT_NUMBER_TYPES
     elif unknown_types := set(types) - _NUMBER_TYPES:
         raise ValueError(f"Unknown number types: {sorted(unknown_types)}")
 
@@ -442,7 +462,13 @@ def parse(input_string, language=None, types=None):
                 current_sentence.extend([skip_token, " "])
 
             _build_and_add_number()
-            current_sentence.append(token)
+            # "I" is far more likely to be the English pronoun.
+            roman_number = (
+                _parse_roman(token) if "roman" in types and token != "I" else None
+            )
+            current_sentence.append(
+                token if roman_number is None else str(roman_number)
+            )
 
         pop_last_space = True
 
