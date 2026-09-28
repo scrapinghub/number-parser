@@ -20,5 +20,8 @@ info = {
         "triệu": 1000000,
         "tỷ": 1000000000
     },
-    "SKIP_TOKENS": []
+    "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "âm"
+    ]
 }

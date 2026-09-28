@@ -190,3 +190,45 @@ def test_parse_fraction(expected, test_input, lang):
 def test_LanguageData_unsupported_language():
     with pytest.raises(ValueError):
         LanguageData("xxxx")
+
+
+@pytest.mark.parametrize(
+    "test_input,expected,lang",
+    [
+        ("-9", -9, None),
+        ("−9", -9, None),
+        ("-nine", -9, "en"),
+        ("minus 9", -9, "en"),
+        ("Minus  twenty one", -21, "en"),
+        ("minus", None, "en"),
+        ("minus minus nine", None, "en"),
+        ("--9", None, None),
+        ("five minus three", None, "en"),
+        ("menos cinco", -5, None),
+        ("ऋण पाँच", -5, "hi"),
+        ("минус пять", -5, "ru"),
+        ("мінус п'ять", -5, "uk"),
+    ],
+)
+def test_parse_number_negative(expected, test_input, lang):
+    assert parse_number(test_input, language=lang) == expected
+
+
+@pytest.mark.parametrize(
+    "test_input,expected,lang",
+    [
+        ("it is minus nine degrees", "it is -9 degrees", "en"),
+        ("Minus nine. Minus ten, minus eleven", "-9. -10, -11", "en"),
+        ("minus twenty one and minus two", "-21 and -2", "en"),
+        ("five minus three is two", "5 minus 3 is 2", "en"),
+        ("5 minus three", "5 minus 3", "en"),
+        ("the minus sign", "the minus sign", "en"),
+        ("menos tres grados", "-3 grados", None),
+    ],
+)
+def test_parse_negative(expected, test_input, lang):
+    assert parse(test_input, language=lang) == expected
+
+
+def test_parse_fraction_negative():
+    assert parse_fraction("minus one over two") == "-1/2"
