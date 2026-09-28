@@ -354,6 +354,12 @@ def parse_fraction(input_string, language=None):
     return None
 
 
+def _ordinal_suffix(number):
+    if number % 100 in (11, 12, 13):
+        return "th"
+    return {1: "st", 2: "nd", 3: "rd"}.get(number % 10, "th")
+
+
 def parse(input_string, language=None, types=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
@@ -386,9 +392,11 @@ def parse(input_string, language=None, types=None):
     def _build_and_add_number(pop_last_space=False, number_type="cardinal"):
         if tokens_taken:
             # A run is kept or converted as a whole, e.g. with ordinals only,
-            # "two twenty first" becomes "2 21".
+            # "two twenty first" becomes "2 21st".
             if number_type in types:
                 result = _build_number(tokens_taken, lang_data)
+                if number_type == "ordinal":
+                    result[-1] += _ordinal_suffix(int(result[-1]))
             else:
                 result = ["".join(raw_tokens_taken)]
             tokens_taken.clear()

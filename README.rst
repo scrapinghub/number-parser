@@ -34,7 +34,7 @@ This also supports ordinal number conversion (for English only).
 >>> parse("One, Two, Three go")
 '1, 2, 3 go'
 >>> parse("First day of year two thousand")
-'1 day of year 2000'
+'1st day of year 2000'
 >>> parse("First day of year two thousand", types={"cardinal"})
 'First day of year 2000'
 

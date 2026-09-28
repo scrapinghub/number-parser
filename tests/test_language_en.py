@@ -142,7 +142,7 @@ def test_parse_ambiguity_in_multipliers(expected, test_input):
         (
             "two and thirty seven coats, the twenty first",
             {"ordinal"},
-            "two and thirty seven coats, the 21",
+            "two and thirty seven coats, the 21st",
         ),
         (
             "two and thirty seven coats, the twenty first",
