@@ -23,6 +23,8 @@ from number_parser.parser import _valid_tokens_by_language, parse_ordinal
         ("тысяче testing", "ru"),
         ("dos two двух", "en"),  # Code-mix data with equal counts , no guarentee.
         ("एक लाख five", "hi"),
+        ("Ich habe dreiundzwanzig Äpfel", "de"),
+        ("Ik heb drieëntwintig appels", "nl"),
     ],
 )
 def test_valid_tokens_by_language(expected, test_input):
