@@ -3,9 +3,9 @@ import unicodedata
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
-SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk", "ja", "zh", "zh-Hant"]
+SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk", "ja", "ko", "zh", "zh-Hant"]
 RE_BUG_LANGUAGES = ["hi"]
-_CJK_LANGUAGES = ["ja", "zh", "zh-Hant"]
+_CJK_LANGUAGES = ["ja", "ko", "zh", "zh-Hant"]
 _CJK_MYRIAD = 10_000
 
 
@@ -42,6 +42,7 @@ class LanguageData:
         self.unit_and_direct_numbers = {**self.unit_numbers, **self.direct_numbers}
         self.maximum_group_value = 10000 if language_info["USE_LONG_SCALE"] else 100
         self._is_cjk = language in _CJK_LANGUAGES
+        self._is_ko = language == "ko"
 
 
 def _check_validity(
@@ -110,7 +111,7 @@ def _build_cjk_number(token_list, lang_data):
     Builds numbers from CJK tokens, where 十, 百 and 千 multiply the digit
     before them, and 万, 億 and bigger multiply everything before them since
     the previous bigger multiplier. Digits without multipliers, e.g. 二〇二四,
-    are read positionally.
+    are read positionally, except in Korean.
     """
     value_list = []
     total = section = 0
@@ -144,7 +145,7 @@ def _build_cjk_number(token_list, lang_data):
         else:
             valid = (
                 digit is None
-                or (digits and not total and not section)
+                or (digits and not total and not section and not lang_data._is_ko)
                 or (digit == 0 and (total or section))
             )
         if not valid:
@@ -433,6 +434,35 @@ def parse_fraction(input_string, language=None):
     return None
 
 
+def _parse_korean(input_string, lang_data):
+    """
+    Korean number syllables are also common words and particles, e.g. 이 (this)
+    or 만 (only), so only runs of 2+ syllables at the start of a word count.
+    Trailing syllables that would start another number are left as text, e.g.
+    일 (day) in 이십오일.
+    """
+    # ponytail: words made only of number syllables, e.g. 구조 (structure),
+    # still get converted; a word list would be needed to tell them apart.
+    chars = "".join(
+        unicodedata.normalize("NFC", token) for token in lang_data.all_numbers
+    )
+    group = r"(?<!\w)[" + chars + "]{2,}"
+    pattern = group + r"(?:(?<=[만억조])\s+" + group + ")*"
+
+    def _replace(match):
+        text = match.group()
+        while True:
+            numbers = _build_cjk_number(_normalize_tokens(list(text)), lang_data)
+            if len(numbers) == 1:
+                break
+            text = text[:-1].rstrip()
+        if len(text) < 2:
+            return match.group()
+        return numbers[0] + match.group()[len(text) :]
+
+    return re.sub(pattern, _replace, input_string)
+
+
 def parse(input_string, language=None):
     """
     Converts all the numbers in a sentence written in natural language to their numeric type while keeping
@@ -442,6 +472,8 @@ def parse(input_string, language=None):
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
+    if lang_data._is_ko:
+        return _parse_korean(input_string, lang_data)
 
     tokens = _tokenize(input_string, language)
 

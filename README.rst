@@ -77,8 +77,8 @@ Language Support
 The input language is detected automatically, falling back to English. If you
 know the language, pass its locale as the ``language`` parameter: parsing is
 much faster, and it avoids misdetection. It currently supports cardinal numbers
-in English, Hindi, Spanish, Ukrainian, Russian, Chinese and Japanese, and
-ordinal numbers in English.
+in English, Hindi, Spanish, Ukrainian, Russian, Chinese, Japanese and Korean
+(Sino-Korean only), and ordinal numbers in English.
 
 >>> from number_parser import parse, parse_number
 >>> parse("Hay tres gallinas y veintitrés patos", language='es')

@@ -22,6 +22,10 @@ from number_parser import parse, parse_number
         ("一万二千亿", 1_200_000_000_000, "zh"),
         ("萬", 10_000, "zh-Hant"),
         ("万万", None, "zh"),
+        ("만", 10_000, None),
+        ("삼천오백", 3_500, "ko"),
+        ("이억 오천만", 250_000_000, "ko"),
+        ("사이", None, "ko"),
     ],
 )
 def test_parse_number(expected, test_input, lang):
@@ -35,6 +39,9 @@ def test_parse_number(expected, test_input, lang):
         ("二〇二四年三月十五日", "2024年3月15日", "zh"),
         ("価格は一万二千円です", "価格は12000円です", "ja"),
         ("一億五千萬人", "150000000人", "zh-Hant"),
+        ("이 사람은 삼천오백원을 냈다", "이 사람은 3500원을 냈다", "ko"),
+        ("이십오일에 너만 와", "25일에 너만 와", None),
+        ("인구는 오천만 명", "인구는 50000000 명", "ko"),
     ],
 )
 def test_parse(expected, test_input, lang):
