@@ -3,9 +3,21 @@ import unicodedata
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
-SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk", "ja", "ko", "zh", "zh-Hant"]
+SUPPORTED_LANGUAGES = [
+    "en",
+    "es",
+    "hi",
+    "ru",
+    "uk",
+    "ja",
+    "ko",
+    "zh",
+    "zh-Hant",
+    "yue",
+    "yue-Hans",
+]
 RE_BUG_LANGUAGES = ["hi"]
-_CJK_LANGUAGES = ["ja", "ko", "zh", "zh-Hant"]
+_CJK_LANGUAGES = ["ja", "ko", "zh", "zh-Hant", "yue", "yue-Hans"]
 _CJK_MYRIAD = 10_000
 
 
