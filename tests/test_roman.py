@@ -19,6 +19,11 @@ from number_parser import parse, parse_number
         ("VX", None),
         ("MMMM", None),
         ("xiv", None),
+        ("Ⅻ", 12),
+        ("ⅳ", 4),
+        ("ↀ", 1000),
+        ("ⅯⅯⅩⅩⅣ", 2024),
+        ("Ↄ", None),
     ],
 )
 def test_parse_number(test_input, expected):
@@ -33,6 +38,7 @@ def test_parse_number(test_input, expected):
         ("I have II hats and three coats", "I have 2 hats and 3 coats"),
         ("Chapter IIII", "Chapter IIII"),
         ("Mix it", "Mix it"),
+        ("Chapter Ⅰ, section ⅳ", "Chapter 1, section 4"),
     ],
 )
 def test_parse(test_input, expected):

@@ -261,7 +261,15 @@ def _apply_cardinal_conversion(
 
 
 def _parse_roman(token):
-    """Returns the value of an uppercase Roman numeral from 1 to 3999, or None."""
+    """
+    Returns the value of an uppercase Roman numeral from 1 to 3999 or of one
+    written with Unicode Roman numeral characters, e.g. Ⅻ or ⅯⅯⅩⅩⅣ, or None.
+    """
+    if token and all("\u2160" <= char <= "\u2188" for char in token):
+        if len(token) == 1:
+            value = unicodedata.numeric(token, None)
+            return None if value is None else int(value)
+        token = unicodedata.normalize("NFKC", token).upper()
     if not token or not _ROMAN_RE.fullmatch(token):
         return None
     total = 0
@@ -312,12 +320,12 @@ def parse_number(input_string, language=None):
     if not input_string.strip():
         return None
 
-    if input_string.strip().isnumeric():
-        return int(input_string)
-
     roman_number = _parse_roman(input_string.strip())
     if roman_number is not None:
         return roman_number
+
+    if input_string.strip().isnumeric():
+        return int(input_string)
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
@@ -379,9 +387,9 @@ def parse(input_string, language=None, types=None):
 
     *types* is a set of the types of numbers to convert: ``"cardinal"``,
     ``"ordinal"`` and ``"roman"`` (uppercase Roman numerals other than a lone
-    ``I``). It defaults to all supported types except ``"roman"``, including
-    any that future versions add, so set it explicitly to keep the output
-    stable.
+    ``I``, and Unicode ones like Ⅻ). It defaults to all supported types except
+    ``"roman"``, including any that future versions add, so set it explicitly
+    to keep the output stable.
     """
     if types is None:
         types = _DEFAULT_NUMBER_TYPES

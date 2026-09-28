@@ -76,14 +76,16 @@ Converting a fractional number written in words to its corresponding integral fr
 Roman numerals
 --------------
 
-Uppercase Roman numerals from I to MMMCMXCIX are also supported. ``parse``
-only converts them if ``types`` includes ``"roman"``, and leaves a lone ``I``
-as is.
+Uppercase Roman numerals from I to MMMCMXCIX, and Unicode Roman numeral
+characters like Ⅻ, are also supported. ``parse`` only converts them if
+``types`` includes ``"roman"``, and leaves a lone ``I`` as is.
 
 >>> parse("Louis XIV was born in MDCXXXVIII", types={"cardinal", "roman"})
 'Louis 14 was born in 1638'
 >>> parse_number("MMXXIV")
 2024
+>>> parse_number("Ⅻ")
+12
 
 Language Support
 ----------------
