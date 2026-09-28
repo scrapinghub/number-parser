@@ -49,13 +49,16 @@ Converting a single number written in words to it's corresponding integer.
 Parsing an ordinal
 ------------------
 
-Converting a single ordinal number written in words to its corresponding integer. (Support for English only)
+Converting a single ordinal number written in words to its corresponding
+integer.
 
 >>> from number_parser import parse_ordinal
 >>> parse_ordinal("twenty third")
 23
 >>> parse_ordinal("seventy fifth")
 75
+>>> parse_ordinal("第二十三")
+23
 
 Parsing a fraction
 ------------------
@@ -78,7 +81,8 @@ The input language is detected automatically, falling back to English. If you
 know the language, pass its locale as the ``language`` parameter: parsing is
 much faster, and it avoids misdetection. It currently supports cardinal numbers
 in English, Hindi, Spanish, Ukrainian, Russian, Chinese, Cantonese, Japanese
-and Korean (Sino-Korean only), and ordinal numbers in English.
+and Korean (Sino-Korean only), and ordinal numbers in English, Chinese,
+Cantonese, Japanese and Korean.
 
 >>> from number_parser import parse, parse_number
 >>> parse("Hay tres gallinas y veintitrés patos", language='es')

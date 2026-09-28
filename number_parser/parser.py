@@ -19,6 +19,7 @@ SUPPORTED_LANGUAGES = [
 RE_BUG_LANGUAGES = ["hi"]
 _CJK_LANGUAGES = ["ja", "ko", "zh", "zh-Hant", "yue", "yue-Hans"]
 _CJK_MYRIAD = 10_000
+_CJK_ORDINAL_RE = re.compile(r"(?:第|제)?(.*?)(?:番目)?")
 
 
 class LanguageData:
@@ -374,6 +375,10 @@ def parse_ordinal(input_string, language=None):
     """Converts a single number in ordinal or cardinal form to it's numeric equivalent"""
     if language is None:
         language = _valid_tokens_by_language(input_string)
+
+    if language in _CJK_LANGUAGES:
+        number = _CJK_ORDINAL_RE.fullmatch(input_string.strip())[1]
+        return parse_number(number, language)
 
     lang_data = LanguageData(language)
     tokens = _tokenize(input_string, language)

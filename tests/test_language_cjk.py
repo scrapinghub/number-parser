@@ -1,6 +1,6 @@
 import pytest
 
-from number_parser import parse, parse_number
+from number_parser import parse, parse_number, parse_ordinal
 
 
 @pytest.mark.parametrize(
@@ -50,3 +50,20 @@ def test_parse_number(expected, test_input, lang):
 )
 def test_parse(expected, test_input, lang):
     assert parse(test_input, language=lang) == expected
+
+
+@pytest.mark.parametrize(
+    "test_input,expected,lang",
+    [
+        ("第三", 3, None),
+        ("第一百零五", 105, "zh"),
+        ("三番目", 3, "ja"),
+        ("第二十三", 23, "yue"),
+        ("제이십오", 25, None),
+        ("第3", 3, "zh"),
+        ("第", None, "zh"),
+        ("第三章", None, "zh"),
+    ],
+)
+def test_parse_ordinal(expected, test_input, lang):
+    assert parse_ordinal(test_input, language=lang) == expected
