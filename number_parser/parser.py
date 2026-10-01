@@ -1,10 +1,12 @@
 import re
 import unicodedata
+from decimal import Decimal
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+NUMERAL_RE = re.compile(r"^\d+(\.\d+)?$")
 
 
 class LanguageData:
@@ -41,6 +43,18 @@ class LanguageData:
         self.maximum_group_value = 10000 if language_info["USE_LONG_SCALE"] else 100
 
 
+def _is_numeral_token(token):
+    """Checks if the given token is a digit-based number, e.g. "2" or "2.4"."""
+    return bool(NUMERAL_RE.match(token))
+
+
+def _parse_numeral(token):
+    """Converts a digit-based token to its numeric value."""
+    if "." in token:
+        return Decimal(token)
+    return int(token)
+
+
 def _check_validity(
     current_token,
     previous_token,
@@ -52,6 +66,11 @@ def _check_validity(
     """Identifies whether the new token can continue building the previous number."""
     if previous_token is None:
         return True
+
+    if _is_numeral_token(current_token):
+        # a digit-based number (e.g. "2" or "2.4") can only start a new group, it
+        # never combines with whatever came before it, such as "twenty 1" or "1 2"
+        return False
 
     if (
         current_token in lang_data.unit_and_direct_numbers
@@ -102,6 +121,15 @@ def _check_large_multiplier(current_token, total_value, current_grp_value, lang_
     return False
 
 
+def _format_value(value):
+    """Converts a built-up number to its string form, normalizing whole Decimals to ints."""
+    if isinstance(value, Decimal):
+        if value == value.to_integral_value():
+            return str(int(value))
+        return str(float(value))
+    return str(value)
+
+
 def _build_number(token_list, lang_data):
     """Incrementally builds a number from the list of tokens."""
     total_value = 0
@@ -140,14 +168,17 @@ def _build_number(token_list, lang_data):
         )
         if not valid:
             total_value += current_grp_value
-            value_list.append(str(total_value))
+            value_list.append(_format_value(total_value))
             total_value = 0
             current_grp_value = 0
             for skip_token in used_skip_tokens:
                 value_list.append(skip_token)
             previous_power_of_10 = None
 
-        if token in lang_data.unit_and_direct_numbers:
+        if _is_numeral_token(token):
+            current_grp_value += _parse_numeral(token)
+
+        elif token in lang_data.unit_and_direct_numbers:
             current_grp_value += lang_data.unit_and_direct_numbers[token]
 
         elif token in lang_data.tens:
@@ -170,16 +201,16 @@ def _build_number(token_list, lang_data):
         previous_token = token
         used_skip_tokens = []
     total_value += current_grp_value
-    value_list.append(str(total_value))
+    value_list.append(_format_value(total_value))
     return value_list
 
 
 def _tokenize(input_string, language):
-    """Breaks string on any non-word character."""
+    """Breaks string on any non-word character, keeping decimal numbers as a single token."""
     input_string = input_string.replace("\xad", "")
     if language in RE_BUG_LANGUAGES:
         return re.split(r"(\s+)", input_string)
-    return re.split(r"(\W)", input_string)
+    return re.split(r"(\d+\.\d+|\W)", input_string)
 
 
 def _strip_accents(word):
@@ -203,7 +234,7 @@ def _normalize_dict(lang_data):
 
 def _is_cardinal_token(token, lang_data):
     """Checks if the given token is a cardinal number and returns token"""
-    if token in lang_data.all_numbers:
+    if token in lang_data.all_numbers or _is_numeral_token(token):
         return token
     return None
 
@@ -319,7 +350,10 @@ def parse_number(input_string, language=None):
         return None
     number_built = _build_number(normalized_tokens, lang_data)
     if len(number_built) == 1:
-        return int(number_built[0])
+        value_string = number_built[0]
+        if "." in value_string:
+            return float(value_string)
+        return int(value_string)
     return None
 
 

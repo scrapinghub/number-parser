@@ -26,6 +26,14 @@ from number_parser.parser import LanguageData, parse_ordinal
             "en",
         ),
         ("nineteen billion and nineteen", 19_000_000_019, "en"),
+        # mixing digits and number words
+        ("2.4 million", 2_400_000, "en"),
+        ("2 million", 2_000_000, "en"),
+        ("2.5 billion", 2_500_000_000, "en"),
+        ("100 thousand", 100_000, "en"),
+        ("2 hundred", 200, "en"),
+        ("twenty 1", None, "en"),
+        ("1 2", None, "en"),
         # hi
         ("छह सौ छियासठ", 666, "hi"),
         ("एक लाख", 100000, "hi"),
@@ -75,6 +83,7 @@ def test_parse_number(expected, test_input, lang):
             "the     sun      is     112 km     away.",
             "en",
         ),
+        ("I have 2.4 million dollars", "I have 2400000 dollars", "en"),
         # es
         (
             "dos y dos son cuatro cuatro y dos son seis seis y dos son ocho y ocho dieciséis",
