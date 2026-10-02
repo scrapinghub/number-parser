@@ -7,7 +7,7 @@ LANG = "ru"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("ноль", 0),
         ("один", 1),

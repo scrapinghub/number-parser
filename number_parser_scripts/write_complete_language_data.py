@@ -144,7 +144,7 @@ def write_complete_data():
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
         ordered_language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
-        with open(full_source_path, "r") as source:
+        with open(full_source_path) as source:
             data = json.load(source)
             try:
                 requisite_data = data["rbnf"]["rbnf"]["SpelloutRules"]
@@ -161,7 +161,7 @@ def write_complete_data():
                         val = val.replace("\xad", "")
                         _extract_information(key, val, language_data)
 
-        with open(full_supplementary_path, "r") as supplementary_data:
+        with open(full_supplementary_path) as supplementary_data:
             data = json.load(supplementary_data)
             for keys in REQUIRED_NUMBERS_DATA:
                 language_data[keys].update(data[keys])
