@@ -135,6 +135,8 @@ ignore = [
     "SIM115",
     # Yoda condition detected
     "SIM300",
+    # Prefer `TypeError` exception for invalid type
+    "TRY004",
 ]
 
 [tool.ruff.lint.isort]
