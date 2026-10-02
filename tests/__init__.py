@@ -28,5 +28,5 @@ def _test_files(path, language, is_ordinal=True):
                     assert fnx(row["text"], language) == int(row["number"])
                 except AssertionError as e:
                     raise AssertionError(
-                        f"Failed execution of {row['text']} (file: \"{filename}\")"
+                        f'Failed execution of {row["text"]} (file: "{filename}")'
                     ) from e
