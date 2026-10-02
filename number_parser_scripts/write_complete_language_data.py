@@ -15,7 +15,7 @@ TARGET_PATH = Path("../number_parser/data/")
 
 logger = logging.getLogger(__name__)
 
-os.chdir(Path(__file__).resolve().parent)
+os.chdir(Path(__file__).absolute().parent)
 
 
 VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]

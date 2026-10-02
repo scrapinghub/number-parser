@@ -3,7 +3,7 @@ from pathlib import Path
 
 from number_parser import parse_number, parse_ordinal
 
-TEST_ROOT = Path(__file__).resolve().parent
+TEST_ROOT = Path(__file__).absolute().parent
 HUNDREDS_DIRECTORY = TEST_ROOT / "data" / "hundreds"
 PERMUTATION_DIRECTORY = TEST_ROOT / "data" / "permutations"
 ORDINALS_DIRECTORY = TEST_ROOT / "data" / "ordinals"
