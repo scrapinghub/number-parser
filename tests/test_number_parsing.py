@@ -188,5 +188,5 @@ def test_parse_fraction(expected, test_input, lang):
 
 
 def test_LanguageData_unsupported_language():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='"xxxx" is not a supported language'):
         LanguageData("xxxx")

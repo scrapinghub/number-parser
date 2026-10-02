@@ -143,8 +143,7 @@ def _build_number(token_list, lang_data):
             value_list.append(str(total_value))
             total_value = 0
             current_grp_value = 0
-            for skip_token in used_skip_tokens:
-                value_list.append(skip_token)
+            value_list.extend(used_skip_tokens)
             previous_power_of_10 = None
 
         if token in lang_data.unit_and_direct_numbers:
