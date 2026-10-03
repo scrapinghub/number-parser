@@ -7,7 +7,7 @@ LANG = "uk"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("нуль", 0),
         ("нулю", 0),

@@ -5,7 +5,7 @@ from number_parser.parser import LanguageData, parse_ordinal
 
 
 @pytest.mark.parametrize(
-    "test_input,expected,lang",
+    ("test_input", "expected", "lang"),
     [
         # empty / not-a-number
         ("", None, None),
@@ -55,7 +55,7 @@ def test_parse_number(expected, test_input, lang):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected,lang",
+    ("test_input", "expected", "lang"),
     [
         # en
         (
@@ -93,7 +93,7 @@ def test_parse_basic_sentences(expected, test_input, lang):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected,lang",
+    ("test_input", "expected", "lang"),
     [
         ("OnE DaY at a Time.", "1 DaY at a Time.", "en"),
         ("SeVentY THREE days of SUMMER!!!.", "73 days of SUMMER!!!.", "en"),
@@ -105,7 +105,7 @@ def test_parse_case_of_string(expected, test_input, lang):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected,lang",
+    ("test_input", "expected", "lang"),
     [
         # 'en'
         ("eleventh", 11, "en"),
@@ -133,7 +133,7 @@ def test_parse_ordinal(expected, test_input, lang):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected,lang",
+    ("test_input", "expected", "lang"),
     [
         ("eleventh day of summer", "11 day of summer", "en"),
         ("nineteenth may two thousand", "19 may 2000", "en"),
@@ -159,7 +159,7 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected,lang",
+    ("test_input", "expected", "lang"),
     [
         # empty / not-a-number
         ("", None, None),
@@ -188,5 +188,5 @@ def test_parse_fraction(expected, test_input, lang):
 
 
 def test_LanguageData_unsupported_language():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='"xxxx" is not a supported language'):
         LanguageData("xxxx")
