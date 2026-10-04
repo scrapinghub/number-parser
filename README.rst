@@ -5,9 +5,9 @@ number-parser
    :target: https://pypi.python.org/pypi/price-parser
    :alt: Supported Python Versions
 
-``number-parser`` is a simple library that allows you to convert numbers written in the natural
-language to it's equivalent numeric forms. It currently supports cardinal numbers in the following
-languages - English, Hindi, Spanish, Ukrainian and Russian and ordinal numbers in English.
+``number-parser`` is a simple library that allows you to convert numbers
+written in natural language to their numeric form, in `several languages
+<Language Support_>`_.
 
 Installation
 ============
@@ -49,13 +49,16 @@ Converting a single number written in words to it's corresponding integer.
 Parsing an ordinal
 ------------------
 
-Converting a single ordinal number written in words to its corresponding integer. (Support for English only)
+Converting a single ordinal number written in words to its corresponding
+integer.
 
 >>> from number_parser import parse_ordinal
 >>> parse_ordinal("twenty third")
 23
 >>> parse_ordinal("seventy fifth")
 75
+>>> parse_ordinal("第二十三")
+23
 
 Parsing a fraction
 ------------------
@@ -74,15 +77,20 @@ Converting a fractional number written in words to its corresponding integral fr
 Language Support
 ----------------
 
-The default language is English, you can pass the language parameter with corresponding locale for other languages.
-It currently supports cardinal numbers in the following
-languages - English, Hindi, Spanish, Ukrainian and Russian and ordinal numbers in English.
+The input language is detected automatically, falling back to English. If you
+know the language, pass its locale as the ``language`` parameter: parsing is
+much faster, and it avoids misdetection. It currently supports cardinal numbers
+in English, Hindi, Spanish, Ukrainian, Russian, Chinese, Cantonese, Japanese
+and Korean (Sino-Korean only), and ordinal numbers in English, Chinese,
+Cantonese, Japanese and Korean.
 
 >>> from number_parser import parse, parse_number
 >>> parse("Hay tres gallinas y veintitrés patos", language='es')
 'Hay 3 gallinas y 23 patos'
 >>> parse_number("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", language='hi')
 1432524
+>>> parse("二〇二四年の売上は一億二千万円", language='ja')
+'2024年の売上は120000000円'
 
 Supported cases
 ---------------
