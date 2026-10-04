@@ -13,6 +13,10 @@ from number_parser.parser import LanguageData, parse_ordinal
         # numeric
         ("32", 32, None),
         (" 3 ", 3, None),
+        ("٣", 3, None),
+        ("三", None, None),
+        ("Ⅻ", None, None),
+        ("½", None, None),
         # en
         ("eleven", 11, "en"),
         ("one hundred and forty two", 142, "en"),
