@@ -126,6 +126,47 @@ def test_parse_ambiguity_in_multipliers(expected, test_input):
     assert parse(test_input, LANG) == expected
 
 
+@pytest.mark.parametrize(
+    "test_input,types,expected",
+    [
+        (
+            "First day, the Twenty  First and one hundred and second",
+            {"cardinal"},
+            "First day, the Twenty  First and one hundred and second",
+        ),
+        (
+            "two and thirty seven coats, the twenty first",
+            {"cardinal"},
+            "2 and 37 coats, the twenty first",
+        ),
+        (
+            "two and thirty seven coats, the twenty first",
+            {"ordinal"},
+            "two and thirty seven coats, the 21st",
+        ),
+        (
+            "two and thirty seven coats, the twenty first",
+            set(),
+            "two and thirty seven coats, the twenty first",
+        ),
+        ("wait one second", {"cardinal"}, "wait 1 second"),
+        ("wait one second", {"ordinal"}, "wait one 2nd"),
+        ("two and twenty first", {"cardinal"}, "2 and twenty first"),
+        ("two and twenty first", {"ordinal"}, "two and 21st"),
+        ("two and twenty first", None, "2 and 21st"),
+        ("two third prizes", None, "2 3rd prizes"),
+        ("a second chance", None, "a 2nd chance"),
+    ],
+)
+def test_parse_types(test_input, types, expected):
+    assert parse(test_input, LANG, types=types) == expected
+
+
+def test_parse_unknown_type():
+    with pytest.raises(ValueError):
+        parse("two", LANG, types={"fraction"})
+
+
 def test_parse_number_till_hundred():
     _test_files(HUNDREDS_DIRECTORY, LANG)
 
