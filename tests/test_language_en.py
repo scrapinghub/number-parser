@@ -76,6 +76,8 @@ def test_parse_number_digits(expected, test_input):
             "the     sun      is     hundred     and   twelve       km     away.",
             "the     sun      is     112 km     away.",
         ),
+        ("thirty and six hundred", "30 and 600"),
+        ("two hundred and thirty and six", "230 and 6"),
     ],
 )
 def test_parse_basic_sentences(expected, test_input):
