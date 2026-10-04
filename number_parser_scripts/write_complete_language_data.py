@@ -19,7 +19,7 @@ os.chdir(Path(__file__).absolute().parent)
 
 
 VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]
-INVALID_KEYS = ["cents"]
+INVALID_KEYS = ["cents", "native"]
 CAPTURE_BRACKET_CONTENT = r"\{(.*?)\}"
 REQUIRED_NUMBERS_DATA = [
     "UNIT_NUMBERS",
