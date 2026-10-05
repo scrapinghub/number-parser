@@ -20,17 +20,40 @@ info = {
         "zehn": 10,
         "elf": 11,
         "zwölf": 12,
+        "dreizehn": 13,
+        "vierzehn": 14,
+        "fünfzehn": 15,
         "sechzehn": 16,
-        "siebzehn": 17
+        "siebzehn": 17,
+        "achtzehn": 18,
+        "neunzehn": 19
     },
-    "TENS": {},
+    "TENS": {
+        "zwanzig": 20,
+        "dreissig": 30,
+        "dreißig": 30,
+        "vierzig": 40,
+        "fünfzig": 50,
+        "sechzig": 60,
+        "siebzig": 70,
+        "achtzig": 80,
+        "neunzig": 90
+    },
     "HUNDREDS": {},
     "BIG_POWERS_OF_TEN": {
+        "hundert": 100,
+        "tausend": 1000,
         "Millionen": 1000000,
+        "million": 1000000,
         "Milliarden": 1000000000,
+        "milliarde": 1000000000,
         "Billionen": 1000000000000,
-        "Billiarden": 1000000000000000
+        "billion": 1000000000000,
+        "Billiarden": 1000000000000000,
+        "billiarde": 1000000000000000
     },
-    "SKIP_TOKENS": [],
-    "USE_LONG_SCALE": True
+    "SKIP_TOKENS": [
+        "und"
+    ],
+    "USE_LONG_SCALE": False
 }

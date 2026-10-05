@@ -1,9 +1,27 @@
 {
     "UNIT_NUMBERS": {},
     "DIRECT_NUMBERS": {},
-    "TENS": {},
+    "TENS": {
+        "twintig": 20,
+        "dertig": 30,
+        "veertig": 40,
+        "vijftig": 50,
+        "zestig": 60,
+        "zeventig": 70,
+        "tachtig": 80,
+        "negentig": 90
+    },
     "HUNDREDS": {},
-    "BIG_POWERS_OF_TEN": {},
-    "SKIP_TOKENS": [],
-    "USE_LONG_SCALE": true
+    "BIG_POWERS_OF_TEN": {
+        "honderd": 100,
+        "duizend": 1000,
+        "miljoenen": 1000000,
+        "miljarden": 1000000000,
+        "biljoenen": 1000000000000,
+        "biljarden": 1000000000000000
+    },
+    "SKIP_TOKENS": [
+        "en"
+    ],
+    "USE_LONG_SCALE": false
 }

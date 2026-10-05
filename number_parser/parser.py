@@ -3,25 +3,27 @@ import unicodedata
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
-SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
+SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk", "de", "nl"]
 RE_BUG_LANGUAGES = ["hi"]
+_COMPOUND_LANGUAGES = ["de", "nl"]
 
 
 class LanguageData:
     """Main language class to populate the requisite language-specific variables."""
 
-    unit_numbers = {}
-    direct_numbers = {}
-    tens = {}
-    hundreds = {}
-    big_powers_of_ten = {}
-    skip_tokens = []
-    all_numbers = {}
-    unit_and_direct_numbers = {}
+    unit_numbers: dict[str, int] = {}
+    direct_numbers: dict[str, int] = {}
+    tens: dict[str, int] = {}
+    hundreds: dict[str, int] = {}
+    big_powers_of_ten: dict[str, int] = {}
+    skip_tokens: list[str] = []
+    all_numbers: dict[str, int] = {}
+    unit_and_direct_numbers: dict[str, int] = {}
 
     def __init__(self, language):
         if language not in SUPPORTED_LANGUAGES:
             raise ValueError(f'"{language}" is not a supported language')
+        self.language = language
         language_info = import_module("number_parser.data." + language).info
         self.unit_numbers = _normalize_dict(language_info["UNIT_NUMBERS"])
         self.direct_numbers = _normalize_dict(language_info["DIRECT_NUMBERS"])
@@ -173,12 +175,61 @@ def _build_number(token_list, lang_data):
     return value_list
 
 
-def _tokenize(input_string, language):
+def _tokenize(input_string, lang_data):
     """Breaks string on any non-word character."""
     input_string = input_string.replace("\xad", "")
-    if language in RE_BUG_LANGUAGES:
+    if lang_data.language in RE_BUG_LANGUAGES:
         return re.split(r"(\s+)", input_string)
-    return re.split(r"(\W)", input_string)
+    tokens = re.split(r"(\W)", input_string)
+    if lang_data.language in _COMPOUND_LANGUAGES:
+        return [
+            piece
+            for token in tokens
+            for piece in _split_compound(token, lang_data) or [token]
+        ]
+    return tokens
+
+
+def _split_compound(word, lang_data):
+    """
+    Splits a word made entirely of number words, e.g. "dreiundzwanzig", into
+    those number words, moving units that precede tens after them, e.g.
+    ["zwanzig", "drei"]. Returns None if *word* is not such a compound.
+    """
+    known_words = {**lang_data.all_numbers, **dict.fromkeys(lang_data.skip_tokens)}
+    # Maps each position of the word to the split of the rest of the word
+    # that has the longest first piece.
+    splits = {len(word): []}
+    for start in range(len(word) - 1, -1, -1):
+        for end in range(len(word), start, -1):
+            if end in splits and _strip_accents(word[start:end].lower()) in known_words:
+                splits[start] = [word[start:end], *splits[end]]
+                break
+    pieces = splits.get(0)
+    if not pieces or len(pieces) == 1:
+        return None
+    normalized = _normalize_tokens(pieces)
+    if (
+        normalized[0] in lang_data.skip_tokens
+        or normalized[-1] in lang_data.skip_tokens
+    ):
+        return None
+
+    result = []
+    index = 0
+    while index < len(pieces):
+        if (
+            index + 2 < len(pieces)
+            and normalized[index] in lang_data.unit_numbers
+            and normalized[index + 1] in lang_data.skip_tokens
+            and normalized[index + 2] in lang_data.tens
+        ):
+            result += [pieces[index + 2], pieces[index]]
+            index += 3
+        else:
+            result.append(pieces[index])
+            index += 1
+    return result
 
 
 def _strip_accents(word):
@@ -196,8 +247,8 @@ def _normalize_tokens(token_list):
 
 
 def _normalize_dict(lang_data):
-    """Removes the accent from each key of input dictionary"""
-    return {_strip_accents(word): number for word, number in lang_data.items()}
+    """Lowercases and removes the accent from each key of input dictionary"""
+    return {_strip_accents(word.lower()): number for word, number in lang_data.items()}
 
 
 def _is_cardinal_token(token, lang_data):
@@ -260,7 +311,7 @@ def _valid_tokens_by_language(input_string):
 
     for language in SUPPORTED_LANGUAGES:
         lang_data = LanguageData(language)
-        tokens = _tokenize(input_string, language)
+        tokens = _tokenize(input_string, lang_data)
         normalized_tokens = _normalize_tokens(tokens)
         valid_list = [
             _is_number_token(token, lang_data) is not None
@@ -282,7 +333,7 @@ def parse_ordinal(input_string, language=None):
         language = _valid_tokens_by_language(input_string)
 
     lang_data = LanguageData(language)
-    tokens = _tokenize(input_string, language)
+    tokens = _tokenize(input_string, lang_data)
     normalized_tokens = _normalize_tokens(tokens)
     processed_tokens = [
         _apply_cardinal_conversion(token, lang_data) for token in normalized_tokens
@@ -308,7 +359,7 @@ def parse_number(input_string, language=None):
     input_string = input_string.replace("'", "")
     input_string = input_string.replace("’", "")
 
-    tokens = _tokenize(input_string, language)
+    tokens = _tokenize(input_string, lang_data)
     normalized_tokens = _normalize_tokens(tokens)
     for index, token in enumerate(normalized_tokens):
         if _is_cardinal_token(token, lang_data) or not token.strip():
@@ -362,7 +413,7 @@ def parse(input_string, language=None):
 
     lang_data = LanguageData(language)
 
-    tokens = _tokenize(input_string, language)
+    tokens = _tokenize(input_string, lang_data)
 
     final_sentence = []
     current_sentence = []
