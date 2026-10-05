@@ -29,9 +29,6 @@ jobs:
           - python-version: "3.13"
             env:
               TOXENV: py
-          - python-version: "3.13"
-            env:
-              TOXENV: flake8
     steps:
       - uses: actions/checkout@v3
       - name: 'Set up Python ${{ matrix.python-version }}'

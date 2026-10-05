@@ -13,7 +13,7 @@ LANG = "en"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("eleven", 11),
         ("nineteen", 19),
@@ -41,7 +41,7 @@ def test_parse_number(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("100000", 100_000),
         ("1 2", None),
@@ -54,7 +54,7 @@ def test_parse_number_digits(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         (
             "twenty-five cows, twelve chickens and one hundred twenty five kg of potatoes.",
@@ -83,7 +83,7 @@ def test_parse_basic_sentences(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("one two three four twenty five.", "1 2 3 4 25."),
         ("one two three four twenty, five.", "1 2 3 4 20, 5."),
@@ -95,7 +95,7 @@ def test_parse_ambiguity_in_separators(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("one, two, three,", "1, 2, 3,"),
         ("one , two , three ,", "1 , 2 , 3 ,"),
@@ -108,7 +108,7 @@ def test_parse_separators_and_spacing(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("two thousand thousand", "2000 1000"),
         ("two thousand million", "2000000000"),
