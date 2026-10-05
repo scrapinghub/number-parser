@@ -114,5 +114,8 @@ info = {
         "खरब": 100000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "ऋण"
+    ],
     "USE_LONG_SCALE": False
 }

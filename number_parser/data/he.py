@@ -51,5 +51,8 @@ info = {
         "טריליון": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "מינוס"
+    ],
     "USE_LONG_SCALE": False
 }

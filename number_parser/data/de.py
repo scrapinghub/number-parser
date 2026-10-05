@@ -32,5 +32,8 @@ info = {
         "Billiarden": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "minus"
+    ],
     "USE_LONG_SCALE": True
 }

@@ -48,5 +48,8 @@ info = {
         "லட்சம்": 100000,
         "கோடி": 10000000
     },
-    "SKIP_TOKENS": []
+    "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "எதிர்ம"
+    ]
 }

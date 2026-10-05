@@ -32,5 +32,8 @@ info = {
         "katrilyon": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "əksi"
+    ],
     "USE_LONG_SCALE": False
 }

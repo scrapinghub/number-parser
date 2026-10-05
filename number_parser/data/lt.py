@@ -36,5 +36,8 @@ info = {
         "kvadrilijonų": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "mīnus"
+    ],
     "USE_LONG_SCALE": False
 }
