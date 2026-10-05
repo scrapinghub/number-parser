@@ -6,7 +6,7 @@ LANG = "de"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("null", 0),
         ("eins", 1),
@@ -40,7 +40,7 @@ def test_parse_number(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         (
             "Ich habe dreiundzwanzig Äpfel und zwei Birnen",

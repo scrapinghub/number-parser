@@ -1,4 +1,4 @@
-info = {
+info: dict = {
     "UNIT_NUMBERS": {},
     "DIRECT_NUMBERS": {},
     "TENS": {},

@@ -6,7 +6,7 @@ LANG = "nl"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("nul", 0),
         ("één", 1),
@@ -28,7 +28,7 @@ def test_parse_number(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         (
             "Ik heb drieëntwintig appels en twee peren",

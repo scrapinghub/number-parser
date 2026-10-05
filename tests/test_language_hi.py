@@ -7,7 +7,7 @@ LANG = "hi"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("छब्बीस", 26),
         ("इकतीस", 31),
@@ -28,7 +28,7 @@ def test_parse_number(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("तेरह जनवरी 1997 11:08", "13 जनवरी 1997 11:08"),
         ("मैें बीस साल का हूँ", "मैें 20 साल का हूँ"),
