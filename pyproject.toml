@@ -1,5 +1,5 @@
 [tool.ruff]
-target-version = "py39"
+target-version = "py311"
 extend-exclude = ["number_parser/data"]
 force-exclude = true
 
