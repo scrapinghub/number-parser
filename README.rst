@@ -15,7 +15,7 @@ Installation
 
     pip install number-parser
 
-number-parser requires Python 3.9+.
+number-parser requires Python 3.11+.
 
 Usage
 =====
