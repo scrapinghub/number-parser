@@ -11,9 +11,8 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def _load_find_symlinks():
-    """Load find_symlinks() from setup.py; setup() only runs as a script."""
     spec = importlib.util.spec_from_file_location(
-        "number_parser_setup", ROOT / "setup.py"
+        "packaging_checks", ROOT / "packaging_checks.py"
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -24,7 +23,7 @@ find_symlinks = _load_find_symlinks()
 
 
 def test_repository_has_no_symlinks_in_packaged_files():
-    assert find_symlinks() == []
+    assert find_symlinks(ROOT) == []
 
 
 def test_repository_tracks_no_symlinks():
@@ -57,6 +56,8 @@ def test_repository_tracks_no_symlinks():
         "number_parser/link.txt",
         "number_parser/data/link.py",
         "README.rst",
+        "NOTICE",
+        "AUTHORS.txt",
     ],
 )
 def test_find_symlinks_reports_links(tmp_path, link):
@@ -90,10 +91,17 @@ def test_find_symlinks_reports_directory_links(tmp_path):
 
 @pytest.mark.skipif(not hasattr(os, "symlink"), reason="symlinks are not supported")
 def test_setup_refuses_to_build_with_a_symlink(tmp_path):
+    pytest.importorskip("setuptools")
     root = tmp_path / "repo"
     (root / "number_parser").mkdir(parents=True)
     (root / "tests").mkdir()
-    for name in ("setup.py", "README.rst", "CHANGES.rst", "number_parser/VERSION"):
+    for name in (
+        "setup.py",
+        "packaging_checks.py",
+        "README.rst",
+        "CHANGES.rst",
+        "number_parser/VERSION",
+    ):
         (root / name).write_bytes((ROOT / name).read_bytes())
     outside = tmp_path / "outside.txt"
     outside.write_text("not part of the repository")
