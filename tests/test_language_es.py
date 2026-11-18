@@ -7,7 +7,7 @@ LANG = "es"
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("veintiséis", 26),
         ("treinta y una", 31),
@@ -47,7 +47,7 @@ def test_parse_number(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("Hay tres gallinas y veintitrés patos", "Hay 3 gallinas y 23 patos"),
         (
@@ -67,7 +67,7 @@ def test_parse(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ("uno, dos, tres,", "1, 2, 3,"),
         ("uno , dos , tres ,", "1 , 2 , 3 ,"),

@@ -7,13 +7,15 @@ import json
 import logging
 import os
 import re
+from pathlib import Path
 
-SOURCE_PATH = "../number_parser_data/raw_cldr_translation_data/"
-SUPPLEMENTARY_PATH = "../number_parser_data/supplementary_translation_data/"
-TARGET_PATH = "../number_parser/data/"
+SOURCE_PATH = Path("../number_parser_data/raw_cldr_translation_data/")
+SUPPLEMENTARY_PATH = Path("../number_parser_data/supplementary_translation_data/")
+TARGET_PATH = Path("../number_parser/data/")
 
+logger = logging.getLogger(__name__)
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(Path(__file__).absolute().parent)
 
 
 VALID_KEYS = ["spellout-cardinal", "spellout-numbering"]
@@ -42,7 +44,7 @@ def _is_valid(key):
 
 def _add_base_words(number, word, language_data):
     """Adding basic two digit words - i.e words that are standalone numbers on their own."""
-    if word == "ERROR" or word == "":
+    if word in {"ERROR", ""}:
         return
     if number <= 9:
         language_data["UNIT_NUMBERS"][word] = number
@@ -134,34 +136,34 @@ def write_complete_data():
     Main function to extract data from source files , merge with supplementary data
     and write the combined results to the final target directory.
     """
-    for file_name in os.listdir(SOURCE_PATH):
+    for full_source_path in SOURCE_PATH.iterdir():
+        file_name = full_source_path.name
         if file_name in ["root.json", "es-419.json"]:
             # "root" is not a language, "es-419" doesn't contain spell-out rules
             continue
-        full_source_path = os.path.join(SOURCE_PATH, file_name)
-        full_target_path = os.path.join(TARGET_PATH, file_name.split(".")[0] + ".py")
-        full_supplementary_path = os.path.join(SUPPLEMENTARY_PATH, file_name)
+        full_target_path = TARGET_PATH / (file_name.split(".")[0] + ".py")
+        full_supplementary_path = SUPPLEMENTARY_PATH / file_name
 
         language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
         ordered_language_data = {key: {} for key in REQUIRED_NUMBERS_DATA}
-        with open(full_source_path, "r") as source:
+        with full_source_path.open() as source:
             data = json.load(source)
             try:
                 requisite_data = data["rbnf"]["rbnf"]["SpelloutRules"]
             except KeyError:
-                logging.error(
+                logger.error(
                     f"\"['rbnf']['rbnf']['SpelloutRules']\" doesn't exist in {file_name}"
                 )
                 continue
 
             for keys, vals in requisite_data.items():
                 if _is_valid(keys):
-                    for key, val in vals.items():
+                    for key, raw_val in vals.items():
                         # Removing soft-hyphens from the source file.
-                        val = val.replace("\xad", "")
+                        val = raw_val.replace("\xad", "")
                         _extract_information(key, val, language_data)
 
-        with open(full_supplementary_path, "r") as supplementary_data:
+        with full_supplementary_path.open() as supplementary_data:
             data = json.load(supplementary_data)
             for keys in REQUIRED_NUMBERS_DATA:
                 language_data[keys].update(data[keys])
@@ -175,7 +177,7 @@ def write_complete_data():
         try:
             ordered_language_data["USE_LONG_SCALE"] = data["USE_LONG_SCALE"]
         except KeyError:
-            logging.error(f"long_scale information missing in {file_name}")
+            logger.error(f"long_scale information missing in {file_name}")
 
         translation_data = json.dumps(
             ordered_language_data, indent=4, ensure_ascii=False
@@ -184,7 +186,7 @@ def write_complete_data():
         translation_data = re.sub(r"\bfalse\b", "False", translation_data)
         translation_data = re.sub(r"\btrue\b", "True", translation_data)
         out_text = "info = " + translation_data + "\n"
-        with open(full_target_path, "w+") as target_file:
+        with full_target_path.open("w+") as target_file:
             target_file.write(out_text)
 
 

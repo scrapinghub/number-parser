@@ -5,7 +5,7 @@ from number_parser.parser import _valid_tokens_by_language, parse_ordinal
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         (
             "twenty-five cows, twelve chickens and one hundred twenty five kg of potatoes.",
@@ -30,7 +30,7 @@ def test_valid_tokens_by_language(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         (
             "one hundred twenty three million four hundred fifty six thousand seven hundred \
@@ -51,7 +51,7 @@ def test_parse_number_lang_auto(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         (
             "twenty-five cows, twelve chickens and one hundred twenty five kg of potatoes.",
@@ -68,7 +68,7 @@ def test_parse_basic_sentences_lang_auto(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         # 'en'
         ("eleventh", 11),
@@ -81,7 +81,7 @@ def test_parse_ordinal_lang_auto(expected, test_input):
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         # en
         ("eleventh day of summer", "11 day of summer"),
