@@ -18,10 +18,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
-      - name: Build and publish
+      - name: Refuse tracked symbolic links
+        run: |
+          if git ls-files -s | grep '^120000 '; then
+            echo "::error::Tracked symbolic links are not allowed in a release"
+            exit 1
+          fi
+      - name: Build
+        run: python setup.py sdist bdist_wheel
+      - name: Publish
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          python setup.py sdist bdist_wheel
-          twine upload dist/*
+        run: twine upload dist/*
