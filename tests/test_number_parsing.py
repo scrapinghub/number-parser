@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from number_parser import parse, parse_fraction, parse_number
@@ -195,6 +197,36 @@ def test_digit_string_length_limit(function, lang):
     assert function(f" {longest}\n", lang) == int(longest)
     assert function(longest + "1", lang) is None
     assert function("1" * (MAX_NUMBER_DIGITS * 10), lang) is None
+
+
+@pytest.mark.skipif(
+    not hasattr(sys, "set_int_max_str_digits"),
+    reason="the interpreter has no int/str digit limit",
+)
+def test_digit_string_longer_than_interpreter_limit():
+    previous = sys.get_int_max_str_digits()
+    sys.set_int_max_str_digits(640)
+    try:
+        assert parse_number("1" * 640) == int("1" * 640)
+        assert parse_number("1" * 641) is None
+    finally:
+        sys.set_int_max_str_digits(previous)
+
+
+def test_raised_digit_limit(monkeypatch):
+    monkeypatch.setattr("number_parser.parser.MAX_NUMBER_DIGITS", 3)
+    assert parse_number("123") == 123
+    assert parse_number("1234") is None
+
+
+@pytest.mark.parametrize("test_input", ["½", "²", "Ⅻ", "一", "①"])
+def test_numeric_but_not_decimal_string(test_input):
+    assert parse_number(test_input, "en") is None
+
+
+def test_digit_string_with_separator_control_characters():
+    # str.strip() removes U+001C to U+001F, int() does not accept them
+    assert parse_number("5\x1c", "en") == 5
 
 
 def test_fraction_with_long_digit_string():

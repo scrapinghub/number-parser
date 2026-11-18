@@ -8,6 +8,8 @@ RE_BUG_LANGUAGES = ["hi"]
 # Longest digit string that parse_number converts. Converting a decimal string to
 # int takes quadratic time in CPython, and only the interpreters that have the
 # int/str digit limit (4300 by default; 3.11+, 3.10.7+, 3.9.14+) refuse long input.
+# The value is read on every call, so an application that needs longer numbers
+# can raise it together with the interpreter limit.
 MAX_NUMBER_DIGITS = 4300
 
 
@@ -297,13 +299,19 @@ def parse_ordinal(input_string, language=None):
 
 def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
-    if not input_string.strip():
+    stripped_string = input_string.strip()
+    if not stripped_string:
         return None
 
-    if input_string.strip().isnumeric():
-        if len(input_string.strip()) > MAX_NUMBER_DIGITS:
+    if stripped_string.isnumeric():
+        if len(stripped_string) > MAX_NUMBER_DIGITS:
             return None
-        return int(input_string)
+        try:
+            return int(stripped_string)
+        except ValueError:
+            # A character that is numeric but not a decimal digit, or a string
+            # longer than the int/str digit limit of the interpreter.
+            return None
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
