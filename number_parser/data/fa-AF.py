@@ -42,5 +42,8 @@ info = {
         "بیلیارد": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "منفی"
+    ],
     "USE_LONG_SCALE": False
 }

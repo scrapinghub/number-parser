@@ -32,5 +32,8 @@ info = {
         "biljard": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "min"
+    ],
     "USE_LONG_SCALE": True
 }

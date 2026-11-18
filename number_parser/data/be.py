@@ -67,5 +67,8 @@ info = {
         "квадрыльёны": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "мінус"
+    ],
     "USE_LONG_SCALE": False
 }

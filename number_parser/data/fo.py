@@ -47,5 +47,9 @@ info = {
         "billiarder": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "minus",
+        "mínus"
+    ],
     "USE_LONG_SCALE": True
 }

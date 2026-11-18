@@ -48,5 +48,8 @@ info = {
         "-",
         "and"
     ],
+    "NEGATIVE_WORDS": [
+        "minus"
+    ],
     "USE_LONG_SCALE": False
 }

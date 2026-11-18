@@ -23,5 +23,8 @@ info = {
         "biljard": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "eret"
+    ],
     "USE_LONG_SCALE": False
 }

@@ -39,5 +39,8 @@ info = {
         "𑄣𑄇𑄴": 100000,
         "𑄇𑄪𑄖𑄨": 10000000
     },
-    "SKIP_TOKENS": []
+    "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "𑄜𑄢𑄧𑄇𑄴"
+    ]
 }

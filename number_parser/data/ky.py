@@ -32,5 +32,8 @@ info = {
         "квадриллион": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "минус"
+    ],
     "USE_LONG_SCALE": False
 }

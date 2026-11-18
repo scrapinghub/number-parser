@@ -43,5 +43,8 @@ info = {
         "biliardi": 1000000000000000
     },
     "SKIP_TOKENS": [],
+    "NEGATIVE_WORDS": [
+        "meno"
+    ],
     "USE_LONG_SCALE": True
 }

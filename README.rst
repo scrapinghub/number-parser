@@ -35,6 +35,8 @@ This also supports ordinal number conversion (for English only).
 '1, 2, 3 go'
 >>> parse("First day of year two thousand")
 '1 day of year 2000'
+>>> parse("It dropped to minus five degrees")
+'It dropped to -5 degrees'
 
 Parsing a number
 ----------------
@@ -44,6 +46,8 @@ Converting a single number written in words to it's corresponding integer.
 >>> from number_parser import parse_number
 >>> parse_number("two thousand and twenty")
 2020
+>>> parse_number("minus twelve")
+-12
 >>> parse_number("not_a_number")
 
 Parsing an ordinal
