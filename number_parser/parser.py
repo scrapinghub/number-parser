@@ -5,6 +5,10 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+# Longest digit string that parse_number converts. Converting a decimal string to
+# int takes quadratic time in CPython, and only the interpreters that have the
+# int/str digit limit (4300 by default; 3.11+, 3.10.7+, 3.9.14+) refuse long input.
+MAX_NUMBER_DIGITS = 4300
 
 
 class LanguageData:
@@ -297,6 +301,8 @@ def parse_number(input_string, language=None):
         return None
 
     if input_string.strip().isnumeric():
+        if len(input_string.strip()) > MAX_NUMBER_DIGITS:
+            return None
         return int(input_string)
 
     if language is None:

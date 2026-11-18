@@ -1,7 +1,7 @@
 import pytest
 
 from number_parser import parse, parse_fraction, parse_number
-from number_parser.parser import LanguageData, parse_ordinal
+from number_parser.parser import MAX_NUMBER_DIGITS, LanguageData, parse_ordinal
 
 
 @pytest.mark.parametrize(
@@ -185,6 +185,22 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
 )
 def test_parse_fraction(expected, test_input, lang):
     assert parse_fraction(test_input, language=lang) == expected
+
+
+@pytest.mark.parametrize("function", [parse_number, parse_ordinal])
+@pytest.mark.parametrize("lang", [None, "en"])
+def test_digit_string_length_limit(function, lang):
+    longest = "1" * MAX_NUMBER_DIGITS
+    assert function(longest, lang) == int(longest)
+    assert function(f" {longest}\n", lang) == int(longest)
+    assert function(longest + "1", lang) is None
+    assert function("1" * (MAX_NUMBER_DIGITS * 10), lang) is None
+
+
+def test_fraction_with_long_digit_string():
+    too_long = "1" * (MAX_NUMBER_DIGITS + 1)
+    assert parse_fraction(f"{too_long}/2") is None
+    assert parse_fraction(f"2/{too_long}") is None
 
 
 def test_LanguageData_unsupported_language():
