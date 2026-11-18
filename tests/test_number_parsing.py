@@ -17,6 +17,7 @@ from number_parser.parser import LanguageData, parse_ordinal
         ("三", None, None),
         ("Ⅻ", None, None),
         ("½", None, None),
+        ("²", None, "en"),
         # en
         ("eleven", 11, "en"),
         ("one hundred and forty two", 142, "en"),
@@ -130,6 +131,7 @@ def test_parse_case_of_string(expected, test_input, lang):
         ("fiftieth fifth", 55, "en"),
         ("fiftieth five", 55, "en"),
         ("fifty five", 55, "en"),
+        ("½", None, "en"),
     ],
 )
 def test_parse_ordinal(expected, test_input, lang):
