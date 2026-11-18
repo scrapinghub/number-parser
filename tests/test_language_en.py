@@ -34,6 +34,8 @@ LANG = "en"
             123_456_789,
         ),
         ("nineteen billion and nineteen", 19_000_000_019),
+        ("five hundred and one thousand", 501_000),
+        ("thirty and six hundred", None),
     ],
 )
 def test_parse_number(expected, test_input):
@@ -76,6 +78,8 @@ def test_parse_number_digits(expected, test_input):
             "the     sun      is     hundred     and   twelve       km     away.",
             "the     sun      is     112 km     away.",
         ),
+        ("thirty and six hundred", "30 and 600"),
+        ("two hundred and thirty and six", "230 and 6"),
     ],
 )
 def test_parse_basic_sentences(expected, test_input):

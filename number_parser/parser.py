@@ -5,6 +5,8 @@ from importlib import import_module
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+_SCALE_SKIP_TOKENS = {"en": ["and"]}
+"""Skip tokens that can only follow a hundred or a bigger power of ten."""
 
 
 class LanguageData:
@@ -29,6 +31,7 @@ class LanguageData:
         self.hundreds = _normalize_dict(language_info["HUNDREDS"])
         self.big_powers_of_ten = _normalize_dict(language_info["BIG_POWERS_OF_TEN"])
         self.skip_tokens = language_info["SKIP_TOKENS"]
+        self._scale_skip_tokens = _SCALE_SKIP_TOKENS.get(language, [])
 
         self.all_numbers = {
             **self.unit_numbers,
@@ -138,6 +141,13 @@ def _build_number(token_list, lang_data):
             current_grp_value,
             lang_data,
         )
+        if (
+            valid
+            and previous_token not in lang_data.hundreds
+            and previous_token not in lang_data.big_powers_of_ten
+            and any(t in lang_data._scale_skip_tokens for t in used_skip_tokens)
+        ):
+            valid = False
         if not valid:
             total_value += current_grp_value
             value_list.append(str(total_value))
