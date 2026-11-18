@@ -26,6 +26,9 @@ from number_parser.parser import LanguageData, parse_ordinal
             "en",
         ),
         ("nineteen billion and nineteen", 19_000_000_019, "en"),
+        ("and five", None, "en"),
+        (" and five", None, "en"),
+        ("\tand five", None, "en"),
         # hi
         ("छह सौ छियासठ", 666, "hi"),
         ("एक लाख", 100000, "hi"),

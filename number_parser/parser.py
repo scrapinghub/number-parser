@@ -359,8 +359,9 @@ def _parse_unsigned_number(input_string, language, lang_data):
 
     tokens = _tokenize(input_string, language)
     normalized_tokens = _normalize_tokens(tokens)
-    for index, token in enumerate(normalized_tokens):
-        if _is_cardinal_token(token, lang_data) or not token.strip():
+    words = [token for token in normalized_tokens if token.strip()]
+    for index, token in enumerate(words):
+        if _is_cardinal_token(token, lang_data):
             continue
         if _is_skip_token(token, lang_data) and index != 0:
             continue
