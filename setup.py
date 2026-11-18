@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from pathlib import Path
 
@@ -12,9 +11,9 @@ setup(
     name="number-parser",
     version=version,
     description="parse numbers written in natural language",
-    long_description=open("README.rst", encoding="utf8").read()
+    long_description=Path("README.rst").read_text(encoding="utf8")
     + "\n\n"
-    + open("CHANGES.rst").read(),
+    + Path("CHANGES.rst").read_text(),
     author="Arnav Kapoor",
     author_email="arnavk805@gmail.com",
     url="https://github.com/scrapinghub/number-parser/",

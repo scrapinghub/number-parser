@@ -22,7 +22,7 @@ class LanguageData:
     def __init__(self, language):
         if language not in SUPPORTED_LANGUAGES:
             raise ValueError(f'"{language}" is not a supported language')
-        language_info = getattr(import_module("number_parser.data." + language), "info")
+        language_info = import_module("number_parser.data." + language).info
         self.unit_numbers = _normalize_dict(language_info["UNIT_NUMBERS"])
         self.direct_numbers = _normalize_dict(language_info["DIRECT_NUMBERS"])
         self.tens = _normalize_dict(language_info["TENS"])
@@ -60,25 +60,25 @@ def _check_validity(
         # both tokens are "units" or "direct numbers"
         return False
 
-    elif current_token in lang_data.direct_numbers and previous_token in lang_data.tens:
+    if current_token in lang_data.direct_numbers and previous_token in lang_data.tens:
         # current token in "direct numbers" and previous token in "tens"
         return False
 
-    elif current_token in lang_data.tens and (
+    if current_token in lang_data.tens and (
         previous_token in lang_data.tens
         or previous_token in lang_data.unit_and_direct_numbers
     ):
         # current token in "tens" and previous token in "tens" or it's a "unit" or "direct number"
         return False
 
-    elif (
+    if (
         current_token in lang_data.hundreds
         and previous_token not in lang_data.big_powers_of_ten
     ):
         # current token in "hundreds" and previous token is not a "big power of ten"
         return False
 
-    elif current_token in lang_data.big_powers_of_ten:
+    if current_token in lang_data.big_powers_of_ten:
         # current token is a "big power of ten"
         power_of_ten = lang_data.big_powers_of_ten[current_token]
         if power_of_ten < current_grp_value:
@@ -143,8 +143,7 @@ def _build_number(token_list, lang_data):
             value_list.append(str(total_value))
             total_value = 0
             current_grp_value = 0
-            for skip_token in used_skip_tokens:
-                value_list.append(skip_token)
+            value_list.extend(used_skip_tokens)
             previous_power_of_10 = None
 
         if token in lang_data.unit_and_direct_numbers:
