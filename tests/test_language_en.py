@@ -34,6 +34,8 @@ LANG = "en"
             123_456_789,
         ),
         ("nineteen billion and nineteen", 19_000_000_019),
+        ("five hundred and one thousand", 501_000),
+        ("thirty and six hundred", None),
     ],
 )
 def test_parse_number(expected, test_input):
