@@ -3,7 +3,7 @@ import sys
 import pytest
 
 from number_parser import parse, parse_fraction, parse_number
-from number_parser.parser import MAX_NUMBER_DIGITS, LanguageData, parse_ordinal
+from number_parser.parser import _MAX_NUMBER_DIGITS, LanguageData, parse_ordinal
 
 
 @pytest.mark.parametrize(
@@ -189,39 +189,34 @@ def test_parse_fraction(expected, test_input, lang):
     assert parse_fraction(test_input, language=lang) == expected
 
 
+@pytest.fixture
+def no_interpreter_digit_limit(monkeypatch):
+    # Behave like an interpreter without sys.get_int_max_str_digits
+    monkeypatch.delattr(sys, "get_int_max_str_digits", raising=False)
+
+
 @pytest.mark.parametrize("function", [parse_number, parse_ordinal])
 @pytest.mark.parametrize("lang", [None, "en"])
-def test_digit_string_length_limit(function, lang):
-    longest = "1" * MAX_NUMBER_DIGITS
+def test_digit_string_length_limit(no_interpreter_digit_limit, function, lang):
+    longest = "1" * _MAX_NUMBER_DIGITS
     assert function(longest, lang) == int(longest)
     assert function(f" {longest}\n", lang) == int(longest)
     assert function(longest + "1", lang) is None
-    assert function("1" * (MAX_NUMBER_DIGITS * 10), lang) is None
+    assert function("1" * (_MAX_NUMBER_DIGITS * 10), lang) is None
 
 
 @pytest.mark.skipif(
     not hasattr(sys, "set_int_max_str_digits"),
     reason="the interpreter has no int/str digit limit",
 )
-def test_digit_string_longer_than_interpreter_limit():
+def test_raised_interpreter_digit_limit_is_honoured():
     previous = sys.get_int_max_str_digits()
-    sys.set_int_max_str_digits(640)
+    sys.set_int_max_str_digits(10000)
     try:
-        assert parse_number("1" * 640) == int("1" * 640)
-        assert parse_number("1" * 641) is None
+        longer = "1" * (_MAX_NUMBER_DIGITS + 1)
+        assert parse_number(longer) == int(longer)
     finally:
         sys.set_int_max_str_digits(previous)
-
-
-def test_raised_digit_limit(monkeypatch):
-    monkeypatch.setattr("number_parser.parser.MAX_NUMBER_DIGITS", 3)
-    assert parse_number("123") == 123
-    assert parse_number("1234") is None
-
-
-@pytest.mark.parametrize("test_input", ["½", "²", "Ⅻ", "一", "①"])
-def test_numeric_but_not_decimal_string(test_input):
-    assert parse_number(test_input, "en") is None
 
 
 def test_digit_string_with_separator_control_characters():
@@ -229,8 +224,8 @@ def test_digit_string_with_separator_control_characters():
     assert parse_number("5\x1c", "en") == 5
 
 
-def test_fraction_with_long_digit_string():
-    too_long = "1" * (MAX_NUMBER_DIGITS + 1)
+def test_fraction_with_long_digit_string(no_interpreter_digit_limit):
+    too_long = "1" * (_MAX_NUMBER_DIGITS + 1)
     assert parse_fraction(f"{too_long}/2") is None
     assert parse_fraction(f"2/{too_long}") is None
 

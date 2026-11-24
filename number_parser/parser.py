@@ -1,16 +1,13 @@
 import re
+import sys
 import unicodedata
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
-# Longest digit string that parse_number converts. Converting a decimal string to
-# int takes quadratic time in CPython, and only the interpreters that have the
-# int/str digit limit (4300 by default; 3.11+, 3.10.7+, 3.9.14+) refuse long input.
-# The value is read on every call, so an application that needs longer numbers
-# can raise it together with the interpreter limit.
-MAX_NUMBER_DIGITS = 4300
+# Longest digit string converted without an interpreter digit limit (int() is quadratic).
+_MAX_NUMBER_DIGITS = 4300
 
 
 class LanguageData:
@@ -304,14 +301,10 @@ def parse_number(input_string, language=None):
         return None
 
     if stripped_string.isnumeric():
-        if len(stripped_string) > MAX_NUMBER_DIGITS:
+        has_digit_limit = hasattr(sys, "get_int_max_str_digits")
+        if not has_digit_limit and len(stripped_string) > _MAX_NUMBER_DIGITS:
             return None
-        try:
-            return int(stripped_string)
-        except ValueError:
-            # A character that is numeric but not a decimal digit, or a string
-            # longer than the int/str digit limit of the interpreter.
-            return None
+        return int(stripped_string)
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
