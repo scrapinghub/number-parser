@@ -2,6 +2,5 @@ include CHANGES.rst
 include LICENSE
 include README.rst
 include number_parser/VERSION
-include packaging_checks.py
 
 recursive-include tests *

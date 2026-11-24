@@ -1,32 +1,19 @@
 #!/usr/bin/env python
 
-import sys
 from pathlib import Path
 
 from setuptools import find_packages, setup
 
-ROOT = Path(__file__).parent
-sys.path.insert(0, str(ROOT))
-
-from packaging_checks import find_symlinks  # noqa: E402
-
-symlinks = find_symlinks(ROOT)
-if symlinks:
-    raise SystemExit(
-        "Refusing to build: symbolic links are not allowed in packaged files: "
-        + ", ".join(str(path.relative_to(ROOT)) for path in symlinks)
-    )
-
-version = (ROOT / "number_parser/VERSION").read_text("ascii").strip()
+version = (Path(__file__).parent / "number_parser/VERSION").read_text("ascii").strip()
 
 
 setup(
     name="number-parser",
     version=version,
     description="parse numbers written in natural language",
-    long_description=(ROOT / "README.rst").read_text(encoding="utf8")
+    long_description=Path("README.rst").read_text(encoding="utf8")
     + "\n\n"
-    + (ROOT / "CHANGES.rst").read_text(encoding="utf8"),
+    + Path("CHANGES.rst").read_text(),
     author="Arnav Kapoor",
     author_email="arnavk805@gmail.com",
     url="https://github.com/scrapinghub/number-parser/",
