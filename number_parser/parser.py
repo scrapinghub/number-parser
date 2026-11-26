@@ -333,18 +333,26 @@ def parse_fraction(input_string, language=None):
     FRACTION_SEPARATORS = ["divided by", "over", "by", "/"]
 
     for separator in FRACTION_SEPARATORS:
-        position_of_separator = input_string.find(separator)
+        if separator == "/":
+            separator_match = re.search(re.escape(separator), input_string)
+        else:
+            separator_match = re.search(
+                rf"\b{re.escape(separator)}\b", input_string, re.IGNORECASE
+            )
 
-        if position_of_separator == -1:
+        if separator_match is None:
             continue
 
-        string_before_separator = input_string[:position_of_separator]
-        string_after_separator = input_string[position_of_separator + len(separator) :]
+        string_before_separator = input_string[: separator_match.start()]
+        string_after_separator = input_string[separator_match.end() :]
 
         number_before_separator = parse_number(string_before_separator, language)
         number_after_separator = parse_number(string_after_separator, language)
 
         if number_before_separator is None or number_after_separator is None:
+            return None
+
+        if number_after_separator == 0:
             return None
 
         return f"{number_before_separator}/{number_after_separator}"
