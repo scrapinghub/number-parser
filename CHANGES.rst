@@ -1,6 +1,13 @@
 Changes
 =======
 
+0.3.3 (unreleased)
+------------------
+
+Security bug fixes:
+- The release workflow refuses a tracked symbolic link. setuptools archives the target of a link as the content of the link, so a link in the release tree could publish a file from outside the checkout
+
+
 0.3.2 (2023-03-28)
 ------------------
 
