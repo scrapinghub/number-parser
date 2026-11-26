@@ -181,6 +181,17 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
             "en",
         ),
         ("billion over nineteen billion and nineteen", "1000000000/19000000019", "en"),
+        # zero denominator
+        ("one over zero", None, "en"),
+        ("zero over zero", None, "en"),
+        # capitalized separators
+        ("One Over Two", "1/2", "en"),
+        ("One over Two", "1/2", "en"),
+        ("One Divided By Two", "1/2", "en"),
+        # "by" inside another word should not match as a separator
+        ("one baby two", None, "en"),
+        ("five baby one", None, "en"),
+        ("one by two", "1/2", "en"),
     ],
 )
 def test_parse_fraction(expected, test_input, lang):
