@@ -1,6 +1,7 @@
 import pytest
 
 from number_parser import parse, parse_number
+from number_parser.data.es import info
 from tests import HUNDREDS_DIRECTORY, PERMUTATION_DIRECTORY, _test_files
 
 LANG = "es"
@@ -77,6 +78,19 @@ def test_parse(expected, test_input):
 )
 def test_parse_separators_and_spacing(expected, test_input):
     assert parse(test_input, LANG) == expected
+
+
+@pytest.mark.parametrize(
+    "singular",
+    [
+        word
+        for word in info["BIG_POWERS_OF_TEN"]
+        if word.endswith("ón") and word[:-2] + "ones" in info["BIG_POWERS_OF_TEN"]
+    ],
+)
+def test_big_power_of_ten_singular_plural_match(singular):
+    plural = singular[:-2] + "ones"
+    assert info["BIG_POWERS_OF_TEN"][plural] == info["BIG_POWERS_OF_TEN"][singular]
 
 
 def test_parse_number_till_hundred():
