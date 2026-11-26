@@ -1,7 +1,9 @@
+import sys
+
 import pytest
 
 from number_parser import parse, parse_fraction, parse_number
-from number_parser.parser import LanguageData, parse_ordinal
+from number_parser.parser import _MAX_NUMBER_DIGITS, LanguageData, parse_ordinal
 
 
 @pytest.mark.parametrize(
@@ -185,6 +187,47 @@ def test_parse_sentences_ordinal(expected, test_input, lang):
 )
 def test_parse_fraction(expected, test_input, lang):
     assert parse_fraction(test_input, language=lang) == expected
+
+
+@pytest.fixture
+def no_interpreter_digit_limit(monkeypatch):
+    # Behave like an interpreter without sys.get_int_max_str_digits
+    monkeypatch.delattr(sys, "get_int_max_str_digits", raising=False)
+
+
+@pytest.mark.parametrize("function", [parse_number, parse_ordinal])
+@pytest.mark.parametrize("lang", [None, "en"])
+def test_digit_string_length_limit(no_interpreter_digit_limit, function, lang):
+    longest = "1" * _MAX_NUMBER_DIGITS
+    assert function(longest, lang) == int(longest)
+    assert function(f" {longest}\n", lang) == int(longest)
+    assert function(longest + "1", lang) is None
+    assert function("1" * (_MAX_NUMBER_DIGITS * 10), lang) is None
+
+
+@pytest.mark.skipif(
+    not hasattr(sys, "set_int_max_str_digits"),
+    reason="the interpreter has no int/str digit limit",
+)
+def test_raised_interpreter_digit_limit_is_honoured():
+    previous = sys.get_int_max_str_digits()
+    sys.set_int_max_str_digits(10000)
+    try:
+        longer = "1" * (_MAX_NUMBER_DIGITS + 1)
+        assert parse_number(longer) == int(longer)
+    finally:
+        sys.set_int_max_str_digits(previous)
+
+
+def test_digit_string_with_separator_control_characters():
+    # str.strip() removes U+001C to U+001F, int() does not accept them
+    assert parse_number("5\x1c", "en") == 5
+
+
+def test_fraction_with_long_digit_string(no_interpreter_digit_limit):
+    too_long = "1" * (_MAX_NUMBER_DIGITS + 1)
+    assert parse_fraction(f"{too_long}/2") is None
+    assert parse_fraction(f"2/{too_long}") is None
 
 
 def test_LanguageData_unsupported_language():

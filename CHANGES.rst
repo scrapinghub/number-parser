@@ -1,6 +1,13 @@
 Changes
 =======
 
+0.3.3 (unreleased)
+------------------
+
+Security bug fixes:
+- On interpreters without the int/str digit limit (CPython releases before 3.9.14 and 3.10.7), ``parse_number`` returns ``None`` for a digit string longer than 4300 characters instead of converting it in quadratic time
+
+
 0.3.2 (2023-03-28)
 ------------------
 

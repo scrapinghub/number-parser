@@ -1,10 +1,13 @@
 import re
+import sys
 import unicodedata
 from importlib import import_module
 
 SENTENCE_SEPARATORS = [".", ","]
 SUPPORTED_LANGUAGES = ["en", "es", "hi", "ru", "uk"]
 RE_BUG_LANGUAGES = ["hi"]
+# Longest digit string converted without an interpreter digit limit (int() is quadratic).
+_MAX_NUMBER_DIGITS = 4300
 
 
 class LanguageData:
@@ -293,11 +296,15 @@ def parse_ordinal(input_string, language=None):
 
 def parse_number(input_string, language=None):
     """Converts a single number written in natural language to a numeric type"""
-    if not input_string.strip():
+    stripped_string = input_string.strip()
+    if not stripped_string:
         return None
 
-    if input_string.strip().isnumeric():
-        return int(input_string)
+    if stripped_string.isnumeric():
+        has_digit_limit = hasattr(sys, "get_int_max_str_digits")
+        if not has_digit_limit and len(stripped_string) > _MAX_NUMBER_DIGITS:
+            return None
+        return int(stripped_string)
 
     if language is None:
         language = _valid_tokens_by_language(input_string)
