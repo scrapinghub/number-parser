@@ -36,6 +36,8 @@ from number_parser.parser import LanguageData, parse_ordinal
         ("छह सौ छियासठ", 666, "hi"),
         ("एक लाख", 100000, "hi"),
         ("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", 1_432_524, "hi"),
+        ("शून्य सौ", 0, "hi"),
+        ("शून्य हज़ार", 0, "hi"),
         # ru
         ("пятьсот девяносто шесть", 596, "ru"),
         ("пятьюстами девяноста шестью", 596, "ru"),
@@ -56,6 +58,9 @@ from number_parser.parser import LanguageData, parse_ordinal
             "es",
         ),
         ("cero mil", 0, "es"),
+        # uk
+        ("нуль тисяч", 0, "uk"),
+        ("нуль мільйонів", 0, "uk"),
     ],
 )
 def test_parse_number(expected, test_input, lang):
