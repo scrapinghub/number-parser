@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 jobs:
   build:
     name: Build
@@ -30,9 +32,11 @@ jobs:
             env:
               TOXENV: py
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
+        with:
+          persist-credentials: false
       - name: 'Set up Python ${{ matrix.python-version }}'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
         with:
           python-version: '${{ matrix.python-version }}'
       - name: Install language-pack-fr
@@ -43,10 +47,12 @@ jobs:
         run: tox -e py
       - name: Upload coverage.xml to codecov
         if: ${{ matrix.python-version == '3.13' && matrix.env.TOXENV == 'py'}}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
 
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: pre-commit/action@v3.0.0
+    - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
+      with:
+        persist-credentials: false
+    - uses: pre-commit/action@646c83fcd040023954eafda54b4db0192ce70507 # v3.0.0
