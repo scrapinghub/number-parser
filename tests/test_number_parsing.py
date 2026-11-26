@@ -26,15 +26,24 @@ from number_parser.parser import LanguageData, parse_ordinal
             "en",
         ),
         ("nineteen billion and nineteen", 19_000_000_019, "en"),
+        # an explicit zero before a power word must stay zero (issue #117)
+        ("zero", 0, "en"),
+        ("zero hundred", 0, "en"),
+        ("zero thousand", 0, "en"),
+        ("zero million", 0, "en"),
+        ("thousand", 1_000, "en"),
         # hi
         ("छह सौ छियासठ", 666, "hi"),
         ("एक लाख", 100000, "hi"),
         ("चौदह लाख बत्तीस हज़ार पाँच सौ चौबीस", 1_432_524, "hi"),
+        ("शून्य सौ", 0, "hi"),
+        ("शून्य हज़ार", 0, "hi"),
         # ru
         ("пятьсот девяносто шесть", 596, "ru"),
         ("пятьюстами девяноста шестью", 596, "ru"),
         ("пятистах девяноста шести", 596, "ru"),
         ("тысяче", 1_000, "ru"),
+        ("ноль тысяч", 0, "ru"),
         # es
         (
             "Dos mil ciento cuarenta y siete millones cuatrocientos ochenta \
@@ -48,10 +57,25 @@ from number_parser.parser import LanguageData, parse_ordinal
             3_023_001_432,
             "es",
         ),
+        ("cero mil", 0, "es"),
+        # uk
+        ("нуль тисяч", 0, "uk"),
+        ("нуль мільйонів", 0, "uk"),
     ],
 )
 def test_parse_number(expected, test_input, lang):
     assert parse_number(test_input, language=lang) == expected
+
+
+@pytest.mark.parametrize(
+    ("test_input", "expected"),
+    [
+        ("report at zero hundred hours", "report at 0 hours"),
+        ("zero thousand books", "0 books"),
+    ],
+)
+def test_parse_explicit_zero_before_power_word(test_input, expected):
+    assert parse(test_input) == expected
 
 
 @pytest.mark.parametrize(

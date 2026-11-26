@@ -102,10 +102,28 @@ def _check_large_multiplier(current_token, total_value, current_grp_value, lang_
     return False
 
 
+def _apply_big_power_of_ten(token, current_grp_value, group_has_token, lang_data):
+    """Multiplies the current group by a big power-of-ten token, flushing it if needed."""
+    power_of_ten = lang_data.big_powers_of_ten[token]
+    if not group_has_token:
+        current_grp_value = 1
+
+    current_grp_value *= power_of_ten
+    flushed_value = 0
+    if power_of_ten > lang_data.maximum_group_value:
+        flushed_value = current_grp_value
+        current_grp_value = 0
+        group_has_token = False
+        return current_grp_value, group_has_token, flushed_value, power_of_ten
+
+    return current_grp_value, True, flushed_value, None
+
+
 def _build_number(token_list, lang_data):
     """Incrementally builds a number from the list of tokens."""
     total_value = 0
     current_grp_value = 0
+    group_has_token = False
     previous_token = None
     previous_power_of_10 = None
     value_list = []
@@ -126,6 +144,7 @@ def _build_number(token_list, lang_data):
             total_value = combined_value * lang_data.big_powers_of_ten[token]
             previous_token = token
             current_grp_value = 0
+            group_has_token = False
             used_skip_tokens = []
             previous_power_of_10 = lang_data.big_powers_of_ten[token]
             continue
@@ -143,28 +162,31 @@ def _build_number(token_list, lang_data):
             value_list.append(str(total_value))
             total_value = 0
             current_grp_value = 0
+            group_has_token = False
             value_list.extend(used_skip_tokens)
             previous_power_of_10 = None
 
         if token in lang_data.unit_and_direct_numbers:
             current_grp_value += lang_data.unit_and_direct_numbers[token]
+            group_has_token = True
 
         elif token in lang_data.tens:
             current_grp_value += lang_data.tens[token]
+            group_has_token = True
 
         elif token in lang_data.hundreds:
             current_grp_value += lang_data.hundreds[token]
+            group_has_token = True
 
         elif token in lang_data.big_powers_of_ten:
-            power_of_ten = lang_data.big_powers_of_ten[token]
-            if current_grp_value == 0:
-                current_grp_value = 1
-
-            current_grp_value *= power_of_ten
-            if power_of_ten > lang_data.maximum_group_value:
-                total_value += current_grp_value
-                current_grp_value = 0
-                previous_power_of_10 = power_of_ten
+            current_grp_value, group_has_token, flushed_value, new_power_of_10 = (
+                _apply_big_power_of_ten(
+                    token, current_grp_value, group_has_token, lang_data
+                )
+            )
+            total_value += flushed_value
+            if new_power_of_10 is not None:
+                previous_power_of_10 = new_power_of_10
 
         previous_token = token
         used_skip_tokens = []
